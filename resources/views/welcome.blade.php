@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth scroll-pt-24 md:scroll-pt-28">
+<html lang="es" class="scroll-smooth scroll-pt-20 md:scroll-pt-20 border-none">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -187,7 +187,7 @@
         </section>
 
         <!-- Sección de Filtro y Catálogo con JS Dinámico -->
-        <section id="catalogo" class="py-24 relative">
+        <section id="catalogo" class="pt-4 md:pt-6 pb-24 relative">
             <!-- Lineas diagonales de decoracion -->
             <div class="absolute inset-0 w-full h-full bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.01)_25%,rgba(255,255,255,0.01)_50%,transparent_50%,transparent_75%,rgba(255,255,255,0.01)_75%,rgba(255,255,255,0.01)_100%)] bg-[length:20px_20px] pointer-events-none"></div>
 
@@ -200,13 +200,18 @@
                     </div>
                 </div>
 
-                <div class="flex flex-col lg:flex-row gap-10">
+                <div class="flex flex-col lg:flex-row gap-8 lg:gap-10 items-start relative">
                     <!-- Sidebar de Filtros (Izquierda) -->
-                    <aside class="w-full lg:w-1/4 xl:w-1/5 shrink-0 gsap-reveal gs-slide-right">
-                        <div class="glass-card rounded-2xl p-6 sticky top-32 mouse-glow">
-                            <div class="flex items-center gap-3 mb-6 pb-6 border-b border-white/5">
+                    <aside class="w-full lg:w-1/4 xl:w-1/5 shrink-0 glass-card rounded-2xl p-5 sticky top-28 mouse-glow z-20 lg:-mt-[22px]">
+                        <div class="flex items-center gap-3 mb-6 pb-6 border-b border-white/5">
                                 <i class='bx bx-radar text-2xl text-accent-cyan'></i>
                                 <h3 class="font-display text-xl font-bold text-white">Consola Filtros</h3>
+                            </div>
+                            
+                            <!-- Buscador Inteligente -->
+                            <div class="mb-8 relative group">
+                                <input type="text" id="filter-search" placeholder="Búsqueda táctica (Ej. Glock)..." class="w-full bg-tactical-800/50 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white text-sm focus:outline-none focus:border-accent-cyan/50 focus:ring-1 focus:ring-accent-cyan/50 transition-all font-mono placeholder:text-gray-500">
+                                <i class='bx bx-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg group-focus-within:text-accent-cyan transition-colors'></i>
                             </div>
                             
                             <!-- Filtro Categorias -->
@@ -270,7 +275,6 @@
                                     </li>
                                 </ul>
                             </div>
-                        </div>
                     </aside>
 
                     <!-- Grilla de Productos (Derecha) -->
@@ -278,9 +282,10 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="product-grid">
 
                             <!-- Producto 1: Pistola -->
-                            <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow product-item" data-cat="pistola" data-branch="poptun">
-                                <div class="bg-black/30 rounded-xl h-56 flex items-center justify-center p-6 relative overflow-hidden group">
+                            <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow product-item cursor-pointer group/card" data-cat="pistola" data-branch="poptun" onclick="openProductModal('Glock 19X Custom', '{{ asset('images/pistol.png') }}', 'Pistola', 'Sede Poptún', 'Q 8,500.00', 'Pistola diseñada para uso táctico y militar. Combina el cañón compacto de la Glock 19 con el frame completo de la Glock 17, ofreciendo la mejor ergonomía y capacidad posibles. Acabado especial Coyote texturizado.', 'Hola, me interesa comprar la Glock 19X Custom en Poptun.')">
+                                <div class="bg-black/30 rounded-xl h-56 flex items-center justify-center p-2 relative overflow-hidden group">
                                     <div class="absolute inset-0 bg-cyan-500/10 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                                    <div class="absolute top-3 right-3 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 w-8 h-8 rounded bg-white/10 flex items-center justify-center text-white backdrop-blur-md z-20"><i class='bx bx-zoom-in'></i></div>
                                     <img src="{{ asset('images/pistol.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500 relative z-10" alt="Glock">
                                 </div>
                                 <div class="p-5 flex flex-col flex-1 relative z-10">
@@ -288,11 +293,11 @@
                                         <div class="text-[10px] text-accent-cyan border border-accent-cyan/30 bg-accent-cyan/10 px-2 py-0.5 rounded font-bold tracking-widest uppercase">Pistola</div>
                                         <div class="text-[10px] text-gray-400 font-mono"><i class='bx bx-map'></i> Sede Poptún</div>
                                     </div>
-                                    <h4 class="font-display text-xl font-bold text-white mb-4">Glock 19X Custom</h4>
+                                    <h4 class="font-display text-xl font-bold text-white mb-4 group-hover/card:text-accent-cyan transition-colors">Glock 19X Custom</h4>
                                     
                                     <div class="mt-auto flex items-center justify-between">
                                         <p class="text-lg font-bold text-white tracking-wide">Q 8,500.00</p>
-                                        <a href="https://wa.me/50255556666?text=Hola,%20me%20interesa%20comprar%20la%20*Glock%2019X%20Custom*%20en%20Poptun." target="_blank" class="w-10 h-10 rounded-[10px] btn-whatsapp flex items-center justify-center text-white shadow-lg" title="Preguntar por WhatsApp">
+                                        <a href="https://wa.me/50255556666?text=Hola,%20me%20interesa%20comprar%20la%20*Glock%2019X%20Custom*%20en%20Poptun." onclick="event.stopPropagation();" target="_blank" class="w-10 h-10 rounded-[10px] btn-whatsapp flex items-center justify-center text-white shadow-lg" title="Preguntar por WhatsApp">
                                             <i class='bx bxl-whatsapp text-2xl'></i>
                                         </a>
                                     </div>
@@ -300,8 +305,10 @@
                             </div>
 
                             <!-- Producto 2: Rifle Asalto -->
-                            <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow product-item" data-cat="fusil" data-branch="poptun,sanluis">
-                                <div class="bg-black/30 rounded-xl h-56 flex items-center justify-center p-6 relative overflow-hidden group">
+                            <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow product-item cursor-pointer group/card" data-cat="fusil" data-branch="poptun,sanluis" onclick="openProductModal('SIG MCX Spear', '{{ asset('images/rifle.png') }}', 'Fusil', 'Multi-Sede (Poptún, San Luis)', 'Q 28,000.00', 'El SIG MCX Spear es la evolución probada en combate del rifle de asalto moderno. Sistema de pistón de carrera corta totalmente ambidiestro y multicalibre. La eleccion preferida de las fuerzas especiales.', 'Hola, me interesa comprar el Fusil SIG MCX Spear.')">
+                                <div class="bg-black/30 rounded-xl h-56 flex items-center justify-center p-2 relative overflow-hidden group">
+                                    <div class="absolute inset-0 bg-accent-primary/10 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                                    <div class="absolute top-3 right-3 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 w-8 h-8 rounded bg-white/10 flex items-center justify-center text-white backdrop-blur-md z-20"><i class='bx bx-zoom-in'></i></div>
                                     <img src="{{ asset('images/rifle.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] group-hover:scale-110 transition-transform duration-500 relative z-10" alt="SIG">
                                 </div>
                                 <div class="p-5 flex flex-col flex-1 relative z-10">
@@ -309,11 +316,11 @@
                                         <div class="text-[10px] text-accent-primary border border-accent-primary/30 bg-accent-primary/10 px-2 py-0.5 rounded font-bold tracking-widest uppercase">Fusil</div>
                                         <div class="text-[10px] text-gray-400 font-mono"><i class='bx bx-refresh'></i> Multi-Sede</div>
                                     </div>
-                                    <h4 class="font-display text-xl font-bold text-white mb-4">SIG MCX Spear</h4>
+                                    <h4 class="font-display text-xl font-bold text-white mb-4 group-hover/card:text-accent-primary transition-colors">SIG MCX Spear</h4>
                                     
                                     <div class="mt-auto flex items-center justify-between">
                                         <p class="text-lg font-bold text-white tracking-wide">Q 28,000.00</p>
-                                        <a href="https://wa.me/50255556666?text=Hola,%20me%20interesa%20comprar%20el%20Fusil%20*SIG%20MCX%20Spear*." target="_blank" class="w-10 h-10 rounded-[10px] btn-whatsapp flex items-center justify-center text-white shadow-lg">
+                                        <a href="https://wa.me/50255556666?text=Hola,%20me%20interesa%20comprar%20el%20Fusil%20*SIG%20MCX%20Spear*." onclick="event.stopPropagation();" target="_blank" class="w-10 h-10 rounded-[10px] btn-whatsapp flex items-center justify-center text-white shadow-lg">
                                             <i class='bx bxl-whatsapp text-2xl'></i>
                                         </a>
                                     </div>
@@ -321,8 +328,10 @@
                             </div>
 
                             <!-- Producto 3: Sniper -->
-                            <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow product-item" data-cat="sniper" data-branch="melchor">
-                                <div class="bg-black/30 rounded-xl h-56 flex items-center justify-center p-6 relative overflow-hidden group">
+                            <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow product-item cursor-pointer group/card" data-cat="sniper" data-branch="melchor" onclick="openProductModal('Accuracy Int. AWM', '{{ asset('images/sniper.png') }}', 'Precisión', 'Melchor de Mencos', 'Q 55,000.00', 'El Arctic Warfare Magnum es la cumbre de los rifles de precisión. Adoptado mundialmente por unidades de francotiradores antiterroristas por su fiabilidad en condiciones extremas y un desempeño balístico imparable hasta distancias de 1.5 Km.', 'Hola, me interesa comprar el Sniper AWM Magnum en Melchor.')">
+                                <div class="bg-black/30 rounded-xl h-56 flex items-center justify-center p-2 relative overflow-hidden group">
+                                    <div class="absolute inset-0 bg-accent-pink/10 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                                    <div class="absolute top-3 right-3 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 w-8 h-8 rounded bg-white/10 flex items-center justify-center text-white backdrop-blur-md z-20"><i class='bx bx-zoom-in'></i></div>
                                     <img src="{{ asset('images/sniper.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] group-hover:scale-110 transition-transform duration-500 relative z-10" alt="AWM">
                                 </div>
                                 <div class="p-5 flex flex-col flex-1 relative z-10">
@@ -330,11 +339,11 @@
                                         <div class="text-[10px] text-accent-pink border border-accent-pink/30 bg-accent-pink/10 px-2 py-0.5 rounded font-bold tracking-widest uppercase">Precisión</div>
                                         <div class="text-[10px] text-gray-400 font-mono"><i class='bx bx-map'></i> Melchor de Mencos</div>
                                     </div>
-                                    <h4 class="font-display text-xl font-bold text-white mb-4">Accuracy Int. AWM</h4>
+                                    <h4 class="font-display text-xl font-bold text-white mb-4 group-hover/card:text-accent-pink transition-colors">Accuracy Int. AWM</h4>
                                     
                                     <div class="mt-auto flex items-center justify-between">
                                         <p class="text-lg font-bold text-white tracking-wide">Q 55,000.00</p>
-                                        <a href="https://wa.me/50255556666?text=Hola,%20me%20interesa%20comprar%20el%20Sniper%20*AWM%20Magnum*%20en%20Melchor." target="_blank" class="w-10 h-10 rounded-[10px] btn-whatsapp flex items-center justify-center text-white shadow-lg">
+                                        <a href="https://wa.me/50255556666?text=Hola,%20me%20interesa%20comprar%20el%20Sniper%20*AWM%20Magnum*%20en%20Melchor." onclick="event.stopPropagation();" target="_blank" class="w-10 h-10 rounded-[10px] btn-whatsapp flex items-center justify-center text-white shadow-lg">
                                             <i class='bx bxl-whatsapp text-2xl'></i>
                                         </a>
                                     </div>
@@ -342,8 +351,10 @@
                             </div>
 
                             <!-- Producto 4: CZ Shadow -->
-                            <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow product-item" data-cat="pistola" data-branch="poptun,melchor">
-                                <div class="bg-black/30 rounded-xl h-56 flex items-center justify-center p-6 relative overflow-hidden group">
+                            <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow product-item cursor-pointer group/card" data-cat="pistola" data-branch="poptun,melchor" onclick="openProductModal('CZ 75 SP-01 Shadow', '{{ asset('images/cz.png') }}', 'Pistola', 'Multi-Sede (Poptún, Melchor)', 'Q 12,000.00', 'Un diseño revolucionario en el circuito del IPSC y tiro dinámico. Su frame pesado absorbe el retroceso como ningún otro, mientras que su gatillo suave proporciona tiempos de disparo y agrumientos inigualables en competición o autodefensa.', 'Hola, quisiera saber si tienen disponible la CZ 75 SP-01 Shadow.')">
+                                <div class="bg-black/30 rounded-xl h-56 flex items-center justify-center p-2 relative overflow-hidden group">
+                                    <div class="absolute inset-0 bg-white/5 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                                    <div class="absolute top-3 right-3 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 w-8 h-8 rounded bg-white/10 flex items-center justify-center text-white backdrop-blur-md z-20"><i class='bx bx-zoom-in'></i></div>
                                     <img src="{{ asset('images/cz.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_20px_20px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-500 relative z-10" alt="CZ Shadow">
                                 </div>
                                 <div class="p-5 flex flex-col flex-1 relative z-10">
@@ -351,11 +362,11 @@
                                         <div class="text-[10px] text-accent-cyan border border-accent-cyan/30 bg-accent-cyan/10 px-2 py-0.5 rounded font-bold tracking-widest uppercase">Pistola</div>
                                         <div class="text-[10px] text-gray-400 font-mono"><i class='bx bx-refresh'></i> Multi-Sede</div>
                                     </div>
-                                    <h4 class="font-display text-xl font-bold text-white mb-4">CZ 75 SP-01 Shadow</h4>
+                                    <h4 class="font-display text-xl font-bold text-white mb-4 group-hover/card:text-accent-cyan transition-colors">CZ 75 SP-01 Shadow</h4>
                                     
                                     <div class="mt-auto flex items-center justify-between">
                                         <p class="text-lg font-bold text-white tracking-wide">Q 12,000.00</p>
-                                        <a href="https://wa.me/50255556666?text=Hola,%20quisiera%20saber%20si%20tienen%20disponible%20la%20*CZ%2075%20SP-01%20Shadow*." target="_blank" class="w-10 h-10 rounded-[10px] btn-whatsapp flex items-center justify-center text-white shadow-lg">
+                                        <a href="https://wa.me/50255556666?text=Hola,%20quisiera%20saber%20si%20tienen%20disponible%20la%20*CZ%2075%20SP-01%20Shadow*." onclick="event.stopPropagation();" target="_blank" class="w-10 h-10 rounded-[10px] btn-whatsapp flex items-center justify-center text-white shadow-lg">
                                             <i class='bx bxl-whatsapp text-2xl'></i>
                                         </a>
                                     </div>
@@ -363,8 +374,10 @@
                             </div>
 
                             <!-- Producto 5: AR15 (Nuevo) -->
-                            <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow product-item" data-cat="fusil" data-branch="poptun">
-                                <div class="bg-black/30 rounded-xl h-56 flex items-center justify-center p-6 relative overflow-hidden group">
+                            <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow product-item cursor-pointer group/card" data-cat="fusil" data-branch="poptun" onclick="openProductModal('AR-15 Tactical Adv.', '{{ asset('images/ar15.png') }}', 'Fusil', 'Sede Poptún', 'Q 22,500.00', 'Modificación Táctica M-LOK Customizada del AR-15 estándar. Sistema de choque liviano, control insuperable y versatilidad gracias a sus monturas para linternas, ópticas y grip frontal asistido.', 'Hola, me interesa el rifle AR-15 en Poptun.')">
+                                <div class="bg-black/30 rounded-xl h-56 flex items-center justify-center p-2 relative overflow-hidden group">
+                                    <div class="absolute inset-0 bg-[#00ff66]/10 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                                    <div class="absolute top-3 right-3 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 w-8 h-8 rounded bg-white/10 flex items-center justify-center text-white backdrop-blur-md z-20"><i class='bx bx-zoom-in'></i></div>
                                     <img src="{{ asset('images/ar15.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_20px_20px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-500 relative z-10" alt="AR15">
                                 </div>
                                 <div class="p-5 flex flex-col flex-1 relative z-10">
@@ -372,11 +385,11 @@
                                         <div class="text-[10px] text-accent-cyan border border-accent-cyan/30 bg-accent-cyan/10 px-2 py-0.5 rounded font-bold tracking-widest uppercase">Fusil</div>
                                         <div class="text-[10px] text-gray-400 font-mono"><i class='bx bx-map'></i> Sede Poptún</div>
                                     </div>
-                                    <h4 class="font-display text-xl font-bold text-white mb-4">AR-15 Tactical Adv.</h4>
+                                    <h4 class="font-display text-xl font-bold text-white mb-4 group-hover/card:text-[#00ff66] transition-colors">AR-15 Tactical Adv.</h4>
                                     
                                     <div class="mt-auto flex items-center justify-between">
                                         <p class="text-lg font-bold text-white tracking-wide">Q 22,500.00</p>
-                                        <a href="https://wa.me/50255556666?text=Hola,%20me%20interesa%20el%20rifle%20*AR-15*%20en%20Poptun." target="_blank" class="w-10 h-10 rounded-[10px] btn-whatsapp flex items-center justify-center text-white shadow-lg">
+                                        <a href="https://wa.me/50255556666?text=Hola,%20me%20interesa%20el%20rifle%20*AR-15*%20en%20Poptun." onclick="event.stopPropagation();" target="_blank" class="w-10 h-10 rounded-[10px] btn-whatsapp flex items-center justify-center text-white shadow-lg">
                                             <i class='bx bxl-whatsapp text-2xl'></i>
                                         </a>
                                     </div>
@@ -390,6 +403,216 @@
                         </div>
 
                     </main>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             1. VIDEOTECA TÁCTICA (VIDEOS)
+        =================================================== -->
+        <section class="py-20 bg-tactical-900 relative z-10 overflow-hidden border-t border-white/5">
+            <div class="max-w-7xl mx-auto px-6 relative z-10">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-12 gsap-reveal gs-fade-up">
+                    <div>
+                        <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-2">Videoteca <span class="text-accent-pink">Táctica</span></h2>
+                        <p class="text-gray-400 font-light text-sm tracking-wide border-l-2 border-accent-pink pl-3 py-1">Reseñas en campo, pruebas de polígono y unboxing de nuestro arsenal.</p>
+                    </div>
+                    <a href="#" class="mt-4 md:mt-0 text-accent-pink text-xs uppercase tracking-[0.2em] font-bold hover:text-white transition-colors flex items-center gap-2">Explorar Archivo <i class='bx bx-right-arrow-alt text-xl'></i></a>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Video 1 -->
+                    <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer mouse-glow relative">
+                        <div class="aspect-video bg-black relative">
+                            <img src="https://images.unsplash.com/photo-1595590424283-b8f1784cb2c8?q=80&w=600" class="w-full h-full object-cover opacity-50 group-hover:opacity-30 transition-opacity duration-300 pointer-events-none">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-16 h-16 rounded-full bg-accent-pink/10 border border-accent-pink/50 text-accent-pink flex items-center justify-center backdrop-blur-md group-hover:bg-accent-pink group-hover:text-white group-hover:border-accent-pink transition-all transform group-hover:scale-110 shadow-[0_0_30px_rgba(255,42,85,0.0)] group-hover:shadow-[0_0_30px_rgba(255,42,85,0.4)]">
+                                    <i class='bx bx-play text-4xl ml-1'></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-5 border-t border-white/5 bg-gradient-to-t from-black/50 to-transparent">
+                            <h4 class="font-display font-bold text-white text-lg mb-1 group-hover:text-accent-pink transition-colors">Prueba de Fuego: Glock 19X</h4>
+                            <p class="text-xs text-gray-400 font-mono">10.5K Vistas • Base de Entrenamiento</p>
+                        </div>
+                    </div>
+                    <!-- Video 2 -->
+                    <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer mouse-glow relative">
+                        <div class="aspect-video bg-black relative">
+                            <img src="https://images.unsplash.com/photo-1584346851458-9635b7192ea6?q=80&w=600" class="w-full h-full object-cover opacity-50 group-hover:opacity-30 transition-opacity duration-300 pointer-events-none">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-16 h-16 rounded-full bg-white/5 border border-white/20 text-white flex items-center justify-center backdrop-blur-md group-hover:bg-white group-hover:text-black group-hover:border-white transition-all transform group-hover:scale-110 shadow-[0_0_30px_rgba(255,255,255,0.0)] group-hover:shadow-[0_0_30px_rgba(255,255,255,0.3)]">
+                                    <i class='bx bx-play text-4xl ml-1'></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-5 border-t border-white/5 bg-gradient-to-t from-black/50 to-transparent">
+                            <h4 class="font-display font-bold text-white text-lg mb-1 group-hover:text-white transition-colors">Review: SIG MCX Spear</h4>
+                            <p class="text-xs text-gray-400 font-mono">8.2K Vistas • Especial Fuerzas Armadas</p>
+                        </div>
+                    </div>
+                    <!-- Video 3 -->
+                    <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer mouse-glow relative hidden md:block">
+                        <div class="aspect-video bg-black relative">
+                            <img src="https://images.unsplash.com/photo-1552554747-0b1e3e7f9175?q=80&w=600" class="w-full h-full object-cover opacity-50 group-hover:opacity-30 transition-opacity duration-300 pointer-events-none">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-16 h-16 rounded-full bg-accent-cyan/10 border border-accent-cyan/50 text-accent-cyan flex items-center justify-center backdrop-blur-md group-hover:bg-accent-cyan group-hover:text-black group-hover:border-accent-cyan transition-all transform group-hover:scale-110 shadow-[0_0_30px_rgba(0,229,255,0.0)] group-hover:shadow-[0_0_30px_rgba(0,229,255,0.4)]">
+                                    <i class='bx bx-play text-4xl ml-1'></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-5 border-t border-white/5 bg-gradient-to-t from-black/50 to-transparent">
+                            <h4 class="font-display font-bold text-white text-lg mb-1 group-hover:text-accent-cyan transition-colors">Técnicas CQB con AR-15</h4>
+                            <p class="text-xs text-gray-400 font-mono">15.1K Vistas • Tácticas Avazadas</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             2. ARSENAL DESTACADO (MÁS VENDIDOS)
+        =================================================== -->
+        <section class="py-20 bg-tactical-950 relative z-10 overflow-hidden border-t border-white/5">
+            <!-- Efecto de luz difusa -->
+            <div class="absolute -top-40 -left-40 w-[600px] h-[600px] bg-accent-cyan/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+            <div class="max-w-7xl mx-auto px-6 relative z-10">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-12 gsap-reveal gs-fade-up">
+                    <div>
+                        <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-2">Arsenal <span class="text-accent-cyan">Destacado</span></h2>
+                        <p class="text-gray-400 font-light text-sm tracking-wide border-l-2 border-accent-cyan pl-3 py-1">El equipamiento top-tier elegido por los operativos con más despliegues.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Top 1 -->
+                    <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow cursor-pointer group/card relative">
+                        <div class="absolute -top-3 -right-3 bg-red-600 text-white text-[10px] font-bold px-3 py-1 rounded-full border border-red-500 shadow-[0_0_15px_rgba(220,38,38,0.5)] z-30 uppercase tracking-widest transform rotate-12 group-hover/card:rotate-0 transition-transform">TOP 1</div>
+                        <div class="bg-black/30 rounded-xl h-48 flex items-center justify-center p-2 relative overflow-hidden group">
+                            <img src="{{ asset('images/glock1.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_20px_20px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-500 relative z-10" alt="Glock">
+                        </div>
+                        <div class="p-4 flex flex-col flex-1">
+                            <h4 class="font-display text-lg font-bold text-white mb-1 group-hover/card:text-accent-cyan transition-colors">Glock 19 Gen 5</h4>
+                            <p class="text-[10px] text-gray-400 font-mono mb-3">Las armas cortas más populares del mercado actual.</p>
+                            <div class="mt-auto flex items-center justify-between">
+                                <p class="text-sm font-bold text-white tracking-wide">Q 8,000.00</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Top 2 -->
+                    <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow cursor-pointer group/card relative">
+                        <div class="absolute -top-3 -right-3 bg-gray-600 text-white text-[10px] font-bold px-3 py-1 rounded-full border border-gray-500 shadow-[0_0_15px_rgba(75,85,99,0.5)] z-30 uppercase tracking-widest transform rotate-12 group-hover/card:rotate-0 transition-transform">TOP 2</div>
+                        <div class="bg-black/30 rounded-xl h-48 flex items-center justify-center p-2 relative overflow-hidden group">
+                            <img src="{{ asset('images/ar15.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_20px_20px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-500 relative z-10" alt="M4">
+                        </div>
+                        <div class="p-4 flex flex-col flex-1">
+                            <h4 class="font-display text-lg font-bold text-white mb-1 group-hover/card:text-accent-cyan transition-colors">Fusil Táctico M4A1</h4>
+                            <p class="text-[10px] text-gray-400 font-mono mb-3">Confiabilidad extrema en sistemas de asalto urbano.</p>
+                            <div class="mt-auto flex items-center justify-between">
+                                <p class="text-sm font-bold text-white tracking-wide">Q 18,500.00</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Top 3 -->
+                    <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow cursor-pointer group/card relative">
+                        <div class="bg-black/30 rounded-xl h-48 flex items-center justify-center p-2 relative overflow-hidden group">
+                            <img src="{{ asset('images/sniper2.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_20px_20px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-500 relative z-10" alt="Remington">
+                        </div>
+                        <div class="p-4 flex flex-col flex-1">
+                            <h4 class="font-display text-lg font-bold text-white mb-1 group-hover/card:text-accent-cyan transition-colors">Remington 700 SPS</h4>
+                            <p class="text-[10px] text-gray-400 font-mono mb-3">Precisión letal para cacería y tiradores deportivos.</p>
+                            <div class="mt-auto flex items-center justify-between">
+                                <p class="text-sm font-bold text-white tracking-wide">Q 15,200.00</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Top 4 -->
+                    <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow cursor-pointer group/card relative">
+                        <div class="absolute -top-3 -left-3 bg-accent-cyan text-black text-[10px] font-bold px-3 py-1 rounded-full border border-accent-cyan shadow-[0_0_15px_rgba(0,229,255,0.5)] z-30 uppercase tracking-widest transform -rotate-12 group-hover/card:rotate-0 transition-transform"><i class='bx bxs-hot'></i> TRENDING</div>
+                        <div class="bg-black/30 rounded-xl h-48 flex items-center justify-center p-2 relative overflow-hidden group">
+                            <img src="{{ asset('images/smg.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_20px_20px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-500 relative z-10" alt="CZ Scorpion">
+                        </div>
+                        <div class="p-4 flex flex-col flex-1">
+                            <h4 class="font-display text-lg font-bold text-white mb-1 group-hover/card:text-accent-cyan transition-colors">CZ Scorpion EVO3</h4>
+                            <p class="text-[10px] text-gray-400 font-mono mb-3">Plataforma PCC (Pistol Caliber Carbine) ultraligera.</p>
+                            <div class="mt-auto flex items-center justify-between">
+                                <p class="text-sm font-bold text-white tracking-wide">Q 12,900.00</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             3. PRÓXIMOS INGRESOS (SOON)
+        =================================================== -->
+        <section class="py-20 bg-tactical-900 relative z-10 overflow-hidden border-t border-b border-white/5">
+            <!-- Efecto radial en el fondo -->
+            <div class="absolute top-1/2 right-1/4 -translate-y-1/2 w-[800px] h-[800px] bg-accent-pink/5 rounded-full blur-[150px] pointer-events-none"></div>
+
+            <div class="max-w-7xl mx-auto px-6 relative z-10">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-12 gsap-reveal gs-fade-up">
+                    <div>
+                        <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-2">Próximos <span class="text-accent-pink">Ingresos</span></h2>
+                        <p class="text-gray-400 font-light text-sm tracking-wide">Asegura tu equipo táctico antes de que pisemos suelo y descarguemos las bóvedas.</p>
+                    </div>
+                    <div class="mt-4 md:mt-0">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-gray-300 font-mono">
+                            <i class='bx bxs-circle text-[8px] text-accent-pink animate-pulse'></i> RESERVAS ACTIVAS
+                        </span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Item Ingreso 1 -->
+                    <div class="glass-card rounded-2xl p-6 flex flex-col sm:flex-row gap-6 items-center border border-accent-pink/20 hover:border-accent-pink/50 transition-all mouse-glow relative overflow-hidden group/inc hover:-translate-y-1">
+                        <!-- Barra de llegada progreso -->
+                        <div class="absolute bottom-0 left-0 h-1 bg-accent-pink/10 w-full"><div class="h-full bg-accent-pink/70 w-[85%] shadow-[0_0_10px_#ff2a55]"></div></div>
+
+                        <!-- Miniatura lockeada -->
+                        <div class="w-full sm:w-1/3 h-32 bg-tactical-950/80 rounded-xl flex items-center justify-center p-4 relative overflow-hidden border border-white/5">
+                            <div class="absolute inset-0 bg-black/40 z-10 flex items-center justify-center rounded-xl backdrop-blur-[2px]">
+                                <i class='bx bx-lock-alt text-4xl text-white/30 group-hover/inc:text-accent-pink transition-colors'></i>
+                            </div>
+                            <img src="{{ asset('images/ar15.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] opacity-30 contrast-125 grayscale" alt="Próximo">
+                        </div>
+
+                        <!-- Detalles -->
+                        <div class="flex-1 w-full text-center sm:text-left pt-2">
+                            <div class="inline-flex items-center gap-1.5 text-[10px] text-accent-pink border border-accent-pink/30 bg-accent-pink/10 px-2 py-[2px] rounded font-bold tracking-widest uppercase mb-3">
+                                <i class='bx bx-ship'></i> Lote ETA: 10 Días
+                            </div>
+                            <h4 class="font-display text-xl sm:text-2xl font-bold text-white mb-2 group-hover/inc:text-accent-pink transition-colors leading-none">IWI Tavor X95</h4>
+                            <p class="text-xs text-gray-400 font-light mb-5 leading-relaxed">El futuro del combate en cuartos cerrados. Diseño Bullpup ultracompacto para Operadores de Fuerzas Especiales.</p>
+                            <button class="text-[10px] bg-white text-black font-black uppercase tracking-[0.2em] py-2.5 px-6 rounded hover:bg-tactical-800 hover:text-white transition-colors border border-transparent hover:border-white/20 w-full sm:w-auto">Pre-ordenar Cupo</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Item Ingreso 2 -->
+                    <div class="glass-card rounded-2xl p-6 flex flex-col sm:flex-row gap-6 items-center border border-accent-cyan/20 hover:border-accent-cyan/50 transition-all mouse-glow relative overflow-hidden group/inc hover:-translate-y-1">
+                        <!-- Barra de llegada progreso -->
+                        <div class="absolute bottom-0 left-0 h-1 bg-accent-cyan/10 w-full"><div class="h-full bg-accent-cyan/70 w-[40%] shadow-[0_0_10px_#00e5ff]"></div></div>
+
+                        <!-- Miniatura lockeada -->
+                        <div class="w-full sm:w-1/3 h-32 bg-tactical-950/80 rounded-xl flex items-center justify-center p-4 relative overflow-hidden border border-white/5">
+                            <div class="absolute inset-0 bg-black/40 z-10 flex items-center justify-center rounded-xl backdrop-blur-[2px]">
+                                <i class='bx bx-lock-alt text-4xl text-white/30 group-hover/inc:text-accent-cyan transition-colors'></i>
+                            </div>
+                            <img src="{{ asset('images/sniper2.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] opacity-30 contrast-125 grayscale" alt="Próximo">
+                        </div>
+
+                        <!-- Detalles -->
+                        <div class="flex-1 w-full text-center sm:text-left pt-2">
+                            <div class="inline-flex items-center gap-1.5 text-[10px] text-accent-cyan border border-accent-cyan/30 bg-accent-cyan/10 px-2 py-[2px] rounded font-bold tracking-widest uppercase mb-3">
+                                <i class='bx bx-paper-plane'></i> Lote ETA: 28 Días
+                            </div>
+                            <h4 class="font-display text-xl sm:text-2xl font-bold text-white mb-2 group-hover/inc:text-accent-cyan transition-colors leading-none">Barrett M82A1 .50 BMG</h4>
+                            <p class="text-xs text-gray-400 font-light mb-5 leading-relaxed">Poder de demolición anti-material. El rifle de francotirador pesado estándar en la élite militar global.</p>
+                            <button class="text-[10px] bg-white text-black font-black uppercase tracking-[0.2em] py-2.5 px-6 rounded hover:bg-tactical-800 hover:text-white transition-colors border border-transparent hover:border-white/20 w-full sm:w-auto">Apartar Sistema</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -838,5 +1061,93 @@
 
 
 
+    <!-- ==========================================
+         MODALES Y LIGHTBOXES
+         ========================================== -->
+    
+    <!-- 1. Modal Detallado de Productos (Catálogo) -->
+    <div id="product-modal" class="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-500 p-4">
+        <!-- Overlay oscuro desenfocado -->
+        <div class="absolute inset-0 bg-tactical-900/90 backdrop-blur-xl" onclick="closeProductModal()"></div>
+        
+        <!-- Tarjeta Central del Modal -->
+        <div id="product-modal-content" class="glass-card w-full max-w-4xl max-h-[90vh] overflow-y-auto overflow-x-hidden rounded-[2rem] border border-accent-cyan/30 shadow-[0_0_50px_rgba(0,240,255,0.15)] relative scale-95 opacity-0 transition-all duration-500 flex flex-col md:flex-row">
+            
+            <!-- Sección Izquierda: Imagen Grande -->
+            <div class="w-full md:w-1/2 p-10 flex items-center justify-center bg-[#05080c] relative group min-h-[300px] border-b md:border-b-0 md:border-r border-white/5">
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,240,255,0.10)_0%,transparent_60%)]"></div>
+                <!-- Botón Cerrar (Solo visible en Móvil sobre la imagen, en desktop pasa a la derecha) -->
+                <button onclick="closeProductModal()" class="md:hidden absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 border border-white/10 flex items-center justify-center text-white hover:bg-accent-pink hover:border-accent-pink transition-all z-50 backdrop-blur-md">
+                    <i class='bx bx-x text-2xl'></i>
+                </button>
+                <img id="modal-img" src="" class="max-w-full max-h-[350px] object-contain filter drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)] relative z-10 transition-transform duration-500 group-hover:scale-110" alt="Vista del Producto">
+            </div>
+            
+            <!-- Sección Derecha: Características -->
+            <div class="w-full md:w-1/2 p-8 md:p-10 flex flex-col justify-center bg-tactical-800/40 relative">
+                <!-- Botón Cerrar Desktop -->
+                <button onclick="closeProductModal()" class="hidden md:flex absolute top-6 right-6 w-10 h-10 rounded-xl bg-white/5 border border-white/10 items-center justify-center text-gray-400 hover:text-white hover:bg-red-500/20 hover:border-red-500/50 transition-all z-50">
+                    <i class='bx bx-x text-2xl'></i>
+                </button>
+
+                <div class="flex flex-wrap gap-3 mb-4">
+                    <span id="modal-category" class="text-[10px] text-accent-cyan border border-accent-cyan/30 bg-accent-cyan/10 px-3 py-1 rounded font-bold tracking-widest uppercase"></span>
+                    <span id="modal-branch" class="text-[10px] text-gray-400 font-mono flex items-center border border-white/10 bg-white/5 px-3 py-1 rounded"></span>
+                </div>
+                
+                <h3 id="modal-title" class="font-display text-3xl md:text-4xl font-black text-white mb-2 leading-tight pr-10"></h3>
+                
+                <p id="modal-desc" class="text-gray-400 text-sm mt-4 font-light leading-relaxed mb-8">
+                </p>
+
+                <div class="mb-8 border-t border-b border-white/5 py-4">
+                    <span class="text-xs text-gray-500 font-mono tracking-widest uppercase block mb-1">Inversión Táctica</span>
+                    <p id="modal-price" class="text-3xl font-display font-bold text-accent-primary"></p>
+                </div>
+                
+                <a id="modal-whatsapp" href="#" target="_blank" class="w-full bg-tactical-950 border border-[#25D366]/30 hover:bg-[#25D366]/10 text-[#25D366] hover:text-white py-4 rounded-xl font-bold tracking-widest transition-all hover:border-[#25D366] shadow-[0_0_15px_rgba(37,211,102,0.05)] hover:shadow-[0_0_25px_rgba(37,211,102,0.2)] flex items-center justify-center gap-3 hover:-translate-y-1">
+                    <i class='bx bxl-whatsapp text-2xl'></i>
+                    SOLICITAR DISPONIBILIDAD
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Simple Image Lightbox (Para el mapa de Sucursales) -->
+    <div id="image-lightbox" class="fixed inset-0 z-[110] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
+        <div class="absolute inset-0 bg-tactical-900/95 backdrop-blur-md" onclick="closeLightbox()"></div>
+        <div class="relative z-10 w-[90%] max-w-5xl flex flex-col items-center">
+            <div class="flex justify-between items-center w-full mb-4">
+                <h3 id="lightbox-title" class="font-display text-white text-xl md:text-2xl font-bold uppercase tracking-widest"></h3>
+                <button onclick="closeLightbox()" class="text-gray-400 hover:text-white transition-colors bg-white/5 w-10 h-10 rounded-full flex items-center justify-center"><i class='bx bx-x text-2xl'></i></button>
+            </div>
+            <img id="lightbox-img" src="" class="max-w-full max-h-[75vh] object-contain rounded-xl border border-white/10 shadow-[0_0_40px_rgba(0,0,0,0.8)]">
+        </div>
+    </div>
+
+    <!-- ============================================================
+         BALAM – CURSOR TÁCTICO + EFECTO RIPPLE/DISTORSIÓN
+         ============================================================ -->
+    <!-- 1. DIVs del cursor -->
+    <div id="hud-h" class="balam-cur"></div>
+    <div id="hud-v" class="balam-cur"></div>
+    <div id="s-rotate" class="balam-cur"></div>
+    <div id="s-outer"  class="balam-cur"></div>
+    <div id="s-gap"    class="balam-cur"></div>
+    <div id="s-ping"   class="balam-cur"></div>
+    <div id="s-dot"    class="balam-cur"></div>
+    <div id="s-arm-t"  class="balam-cur"></div>
+    <div id="s-arm-b"  class="balam-cur"></div>
+    <div id="s-arm-l"  class="balam-cur"></div>
+    <div id="s-arm-r"  class="balam-cur"></div>
+    <div id="s-tl" class="balam-cur"><div class="balam-corner-tick"></div></div>
+    <div id="s-tr" class="balam-cur"><div class="balam-corner-tick"></div></div>
+    <div id="s-bl" class="balam-cur"><div class="balam-corner-tick"></div></div>
+    <div id="s-br" class="balam-cur"><div class="balam-corner-tick"></div></div>
+
+    <!-- Canvas para el efecto de distorsión/ondas -->
+    <canvas id="balam-ripple-canvas"></canvas>
+
+    <!-- 2. Los estilos y scripts fueron movidos a app.css y main.js respectivamente para mantener el orden -->
 </body>
 </html>
