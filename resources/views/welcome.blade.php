@@ -410,14 +410,21 @@
         <!-- ==============================================
              1. VIDEOTECA TÁCTICA (VIDEOS)
         =================================================== -->
-        <section class="py-20 bg-tactical-900 relative z-10 overflow-hidden border-t border-white/5">
-            <div class="max-w-7xl mx-auto px-6 relative z-10">
-                <div class="flex flex-col md:flex-row justify-between items-end mb-12 gsap-reveal gs-fade-up">
-                    <div>
-                        <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-2">Videoteca <span class="text-accent-pink">Táctica</span></h2>
-                        <p class="text-gray-400 font-light text-sm tracking-wide border-l-2 border-accent-pink pl-3 py-1">Reseñas en campo, pruebas de polígono y unboxing de nuestro arsenal.</p>
+        <section class="py-24 bg-tactical-900 relative z-10 overflow-hidden border-t border-white/5">
+            <!-- Patrón de cuadrícula futurista y luz de fondo -->
+            <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] opacity-20 pointer-events-none"></div>
+            <div class="absolute -bottom-40 -right-40 w-[600px] h-[600px] bg-accent-pink/5 rounded-full blur-[100px] pointer-events-none"></div>
+
+            <div class="max-w-7xl mx-auto px-6 relative z-20">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-12 gsap-reveal gs-fade-up relative">
+                    <div class="relative">
+                        <div class="absolute -left-6 top-2 bottom-2 w-1 bg-accent-pink/50 rounded-r-md"></div>
+                        <h2 class="font-display text-4xl md:text-5xl font-black text-white mb-2 tracking-tight">VIDEOTECA <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent-pink to-red-500">TÁCTICA</span></h2>
+                        <p class="text-gray-400 font-mono text-sm tracking-widest uppercase">Reseñas en campo • Pruebas de polígono • Unboxing</p>
                     </div>
-                    <a href="#" class="mt-4 md:mt-0 text-accent-pink text-xs uppercase tracking-[0.2em] font-bold hover:text-white transition-colors flex items-center gap-2">Explorar Archivo <i class='bx bx-right-arrow-alt text-xl'></i></a>
+                    <a href="#" class="mt-6 md:mt-0 text-white bg-white/5 border border-white/10 px-6 py-3 rounded-xl text-xs uppercase tracking-[0.2em] font-bold hover:bg-accent-pink hover:border-accent-pink hover:text-white transition-all flex items-center gap-2 group/btn backdrop-blur-md">
+                        Explorar Archivo <i class='bx bx-right-arrow-alt text-xl group-hover/btn:translate-x-1 transition-transform'></i>
+                    </a>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -473,71 +480,99 @@
         <!-- ==============================================
              2. ARSENAL DESTACADO (MÁS VENDIDOS)
         =================================================== -->
-        <section class="py-20 bg-tactical-950 relative z-10 overflow-hidden border-t border-white/5">
-            <!-- Efecto de luz difusa -->
-            <div class="absolute -top-40 -left-40 w-[600px] h-[600px] bg-accent-cyan/5 rounded-full blur-[120px] pointer-events-none"></div>
+        <section class="py-24 bg-tactical-950 relative z-10 overflow-hidden border-t border-white/5">
+            <!-- Efectos de luz difusa y scanlines -->
+            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 pointer-events-none"></div>
+            <div class="absolute -top-40 -left-40 w-[600px] h-[600px] bg-accent-cyan/10 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
+            <div class="absolute top-1/2 right-0 w-1/3 h-[2px] bg-accent-cyan/20 blur-sm pointer-events-none"></div>
 
-            <div class="max-w-7xl mx-auto px-6 relative z-10">
-                <div class="flex flex-col md:flex-row justify-between items-end mb-12 gsap-reveal gs-fade-up">
-                    <div>
-                        <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-2">Arsenal <span class="text-accent-cyan">Destacado</span></h2>
-                        <p class="text-gray-400 font-light text-sm tracking-wide border-l-2 border-accent-cyan pl-3 py-1">El equipamiento top-tier elegido por los operativos con más despliegues.</p>
+            <div class="max-w-[90rem] mx-auto px-6 relative z-20">
+                <div class="flex flex-col items-center text-center mb-16 gsap-reveal gs-fade-up">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-accent-cyan/10 border border-accent-cyan/30 rounded-full text-accent-cyan font-mono text-xs uppercase tracking-[0.2em] mb-4">
+                        <i class='bx bxs-star'></i> El Top 5 Definitivo
                     </div>
+                    <h2 class="font-display text-4xl md:text-5xl font-black text-white mb-4 tracking-tighter uppercase">Arsenal <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent-cyan to-blue-500">Destacado</span></h2>
+                    <p class="text-gray-300 max-w-2xl text-base md:text-lg font-light leading-relaxed">
+                        Conoce el equipamiento que marca la diferencia. Presentamos nuestro <strong class="text-white">TOP 5 histórico en ventas</strong>: plataformas de combate comprobadas, preferidas y desplegadas por los operativos más letales y exigentes de la región.
+                    </p>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
                     <!-- Top 1 -->
-                    <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow cursor-pointer group/card relative">
-                        <div class="absolute -top-3 -right-3 bg-red-600 text-white text-[10px] font-bold px-3 py-1 rounded-full border border-red-500 shadow-[0_0_15px_rgba(220,38,38,0.5)] z-30 uppercase tracking-widest transform rotate-12 group-hover/card:rotate-0 transition-transform">TOP 1</div>
-                        <div class="bg-black/30 rounded-xl h-48 flex items-center justify-center p-2 relative overflow-hidden group">
-                            <img src="{{ asset('images/glock1.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_20px_20px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-500 relative z-10" alt="Glock">
+                    <div class="glass-card rounded-[1.5rem] p-2 flex flex-col mouse-glow cursor-crosshair group/card relative border border-white/5 hover:border-accent-cyan/30 transition-colors">
+                        <div class="absolute -top-4 -right-2 bg-gradient-to-br from-yellow-400 to-yellow-600 text-black text-xs font-black px-4 py-1.5 rounded border-2 border-yellow-300 shadow-[0_0_20px_rgba(250,204,21,0.5)] z-30 uppercase tracking-widest transform rotate-6 group-hover/card:rotate-[-6deg] group-hover:card:scale-110 transition-transform">TOP 1</div>
+                        <div class="bg-gradient-to-b from-black/60 to-black/20 rounded-[1.2rem] h-48 flex items-center justify-center p-4 relative overflow-hidden group border border-white/5">
+                            <div class="absolute inset-0 bg-accent-cyan/5 opacity-0 group-hover/card:opacity-100 transition-opacity"></div>
+                            <img src="{{ asset('images/glock1.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 relative z-10" alt="Glock">
                         </div>
-                        <div class="p-4 flex flex-col flex-1">
-                            <h4 class="font-display text-lg font-bold text-white mb-1 group-hover/card:text-accent-cyan transition-colors">Glock 19 Gen 5</h4>
-                            <p class="text-[10px] text-gray-400 font-mono mb-3">Las armas cortas más populares del mercado actual.</p>
-                            <div class="mt-auto flex items-center justify-between">
-                                <p class="text-sm font-bold text-white tracking-wide">Q 8,000.00</p>
+                        <div class="p-5 flex flex-col flex-1">
+                            <h4 class="font-display text-lg font-bold text-white mb-2 group-hover/card:text-accent-cyan transition-colors">Glock 19 Gen 5</h4>
+                            <p class="text-[11px] text-gray-400 font-mono mb-4 leading-relaxed">Las armas cortas más vendidas del mercado actual.</p>
+                            <div class="mt-auto flex items-center justify-between border-t border-white/5 pt-3">
+                                <p class="text-sm font-bold text-white tracking-widest font-mono">Q 8,000</p>
+                                <i class='bx bx-plus-circle text-accent-cyan text-xl opacity-50 group-hover/card:opacity-100'></i>
                             </div>
                         </div>
                     </div>
                     <!-- Top 2 -->
-                    <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow cursor-pointer group/card relative">
-                        <div class="absolute -top-3 -right-3 bg-gray-600 text-white text-[10px] font-bold px-3 py-1 rounded-full border border-gray-500 shadow-[0_0_15px_rgba(75,85,99,0.5)] z-30 uppercase tracking-widest transform rotate-12 group-hover/card:rotate-0 transition-transform">TOP 2</div>
-                        <div class="bg-black/30 rounded-xl h-48 flex items-center justify-center p-2 relative overflow-hidden group">
-                            <img src="{{ asset('images/ar15.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_20px_20px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-500 relative z-10" alt="M4">
+                    <div class="glass-card rounded-[1.5rem] p-2 flex flex-col mouse-glow cursor-crosshair group/card relative border border-white/5 hover:border-gray-400/30 transition-colors">
+                        <div class="absolute -top-4 -right-2 bg-gradient-to-br from-gray-300 to-gray-500 text-black text-xs font-black px-4 py-1.5 rounded border-2 border-gray-200 shadow-[0_0_20px_rgba(156,163,175,0.4)] z-30 uppercase tracking-widest transform rotate-3 group-hover/card:rotate-[-3deg] transition-transform">TOP 2</div>
+                        <div class="bg-gradient-to-b from-black/60 to-black/20 rounded-[1.2rem] h-48 flex items-center justify-center p-4 relative overflow-hidden group border border-white/5">
+                            <img src="{{ asset('images/ar15.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 relative z-10" alt="M4">
                         </div>
-                        <div class="p-4 flex flex-col flex-1">
-                            <h4 class="font-display text-lg font-bold text-white mb-1 group-hover/card:text-accent-cyan transition-colors">Fusil Táctico M4A1</h4>
-                            <p class="text-[10px] text-gray-400 font-mono mb-3">Confiabilidad extrema en sistemas de asalto urbano.</p>
-                            <div class="mt-auto flex items-center justify-between">
-                                <p class="text-sm font-bold text-white tracking-wide">Q 18,500.00</p>
+                        <div class="p-5 flex flex-col flex-1">
+                            <h4 class="font-display text-lg font-bold text-white mb-2 group-hover/card:text-gray-300 transition-colors">Fusil Táctico M4A1</h4>
+                            <p class="text-[11px] text-gray-400 font-mono mb-4 leading-relaxed">Confiabilidad extrema en sistemas de asalto urbano.</p>
+                            <div class="mt-auto flex items-center justify-between border-t border-white/5 pt-3">
+                                <p class="text-sm font-bold text-white tracking-widest font-mono">Q 18,500</p>
+                                <i class='bx bx-plus-circle text-gray-400 text-xl opacity-50 group-hover/card:opacity-100'></i>
                             </div>
                         </div>
                     </div>
                     <!-- Top 3 -->
-                    <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow cursor-pointer group/card relative">
-                        <div class="bg-black/30 rounded-xl h-48 flex items-center justify-center p-2 relative overflow-hidden group">
-                            <img src="{{ asset('images/sniper2.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_20px_20px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-500 relative z-10" alt="Remington">
+                    <div class="glass-card rounded-[1.5rem] p-2 flex flex-col mouse-glow cursor-crosshair group/card relative border border-white/5 hover:border-[#cd7f32]/40 transition-colors">
+                        <div class="absolute -top-4 -right-2 bg-gradient-to-br from-[#cd7f32] to-[#8b5a2b] text-white text-xs font-black px-4 py-1.5 rounded border-2 border-[#cd7f32] shadow-[0_0_20px_rgba(205,127,50,0.4)] z-30 uppercase tracking-widest transform rotate-[-4deg] group-hover/card:rotate-[4deg] transition-transform">TOP 3</div>
+                        <div class="bg-gradient-to-b from-black/60 to-black/20 rounded-[1.2rem] h-48 flex items-center justify-center p-4 relative overflow-hidden group border border-white/5">
+                            <img src="{{ asset('images/sniper2.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 relative z-10" alt="Remington">
                         </div>
-                        <div class="p-4 flex flex-col flex-1">
-                            <h4 class="font-display text-lg font-bold text-white mb-1 group-hover/card:text-accent-cyan transition-colors">Remington 700 SPS</h4>
-                            <p class="text-[10px] text-gray-400 font-mono mb-3">Precisión letal para cacería y tiradores deportivos.</p>
-                            <div class="mt-auto flex items-center justify-between">
-                                <p class="text-sm font-bold text-white tracking-wide">Q 15,200.00</p>
+                        <div class="p-5 flex flex-col flex-1">
+                            <h4 class="font-display text-lg font-bold text-white mb-2 group-hover/card:text-[#cd7f32] transition-colors">Remington 700 SPS</h4>
+                            <p class="text-[11px] text-gray-400 font-mono mb-4 leading-relaxed">Precisión letal para cacería y tiradores deportivos.</p>
+                            <div class="mt-auto flex items-center justify-between border-t border-white/5 pt-3">
+                                <p class="text-sm font-bold text-white tracking-widest font-mono">Q 15,200</p>
+                                <i class='bx bx-plus-circle text-[#cd7f32] text-xl opacity-50 group-hover/card:opacity-100'></i>
                             </div>
                         </div>
                     </div>
                     <!-- Top 4 -->
-                    <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow cursor-pointer group/card relative">
-                        <div class="absolute -top-3 -left-3 bg-accent-cyan text-black text-[10px] font-bold px-3 py-1 rounded-full border border-accent-cyan shadow-[0_0_15px_rgba(0,229,255,0.5)] z-30 uppercase tracking-widest transform -rotate-12 group-hover/card:rotate-0 transition-transform"><i class='bx bxs-hot'></i> TRENDING</div>
-                        <div class="bg-black/30 rounded-xl h-48 flex items-center justify-center p-2 relative overflow-hidden group">
-                            <img src="{{ asset('images/smg.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_20px_20px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-500 relative z-10" alt="CZ Scorpion">
+                    <div class="glass-card rounded-[1.5rem] p-2 flex flex-col mouse-glow cursor-crosshair group/card relative border border-white/5 hover:border-red-500/30 transition-colors">
+                        <div class="absolute -top-4 -right-2 bg-gradient-to-br from-tactical-800 to-black text-gray-300 text-xs font-black px-4 py-1.5 rounded border border-gray-600 shadow-xl z-30 uppercase tracking-widest transform rotate-2 group-hover/card:rotate-[-2deg] transition-transform">TOP 4</div>
+                        <div class="bg-gradient-to-b from-black/60 to-black/20 rounded-[1.2rem] h-48 flex items-center justify-center p-4 relative overflow-hidden group border border-white/5">
+                            <div class="absolute inset-0 bg-red-500/5 opacity-0 group-hover/card:opacity-100 transition-opacity"></div>
+                            <img src="{{ asset('images/smg.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 relative z-10" alt="CZ Scorpion">
                         </div>
-                        <div class="p-4 flex flex-col flex-1">
-                            <h4 class="font-display text-lg font-bold text-white mb-1 group-hover/card:text-accent-cyan transition-colors">CZ Scorpion EVO3</h4>
-                            <p class="text-[10px] text-gray-400 font-mono mb-3">Plataforma PCC (Pistol Caliber Carbine) ultraligera.</p>
-                            <div class="mt-auto flex items-center justify-between">
-                                <p class="text-sm font-bold text-white tracking-wide">Q 12,900.00</p>
+                        <div class="p-5 flex flex-col flex-1">
+                            <h4 class="font-display text-lg font-bold text-white mb-2 group-hover/card:text-red-400 transition-colors">CZ Scorpion EVO3</h4>
+                            <p class="text-[11px] text-gray-400 font-mono mb-4 leading-relaxed">Plataforma PCC ultraligera asombrosamente precisa.</p>
+                            <div class="mt-auto flex items-center justify-between border-t border-white/5 pt-3">
+                                <p class="text-sm font-bold text-white tracking-widest font-mono">Q 12,900</p>
+                                <i class='bx bx-plus-circle text-red-500 text-xl opacity-50 group-hover/card:opacity-100'></i>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Top 5 (Nuevo) -->
+                    <div class="glass-card rounded-[1.5rem] p-2 flex flex-col mouse-glow cursor-crosshair group/card relative border border-white/5 hover:border-accent-pink/30 transition-colors">
+                        <div class="absolute -top-4 -right-2 bg-gradient-to-br from-tactical-800 to-black text-gray-300 text-xs font-black px-4 py-1.5 rounded border border-gray-600 shadow-xl z-30 uppercase tracking-widest transform rotate-[-3deg] group-hover/card:rotate-[3deg] transition-transform">TOP 5</div>
+                        <div class="bg-gradient-to-b from-black/60 to-black/20 rounded-[1.2rem] h-48 flex items-center justify-center p-4 relative overflow-hidden group border border-white/5">
+                            <div class="absolute inset-0 bg-accent-pink/5 opacity-0 group-hover/card:opacity-100 transition-opacity"></div>
+                            <img src="{{ asset('images/shootgun.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 relative z-10" alt="Mossberg">
+                        </div>
+                        <div class="p-5 flex flex-col flex-1">
+                            <h4 class="font-display text-lg font-bold text-white mb-2 group-hover/card:text-accent-pink transition-colors">Mossberg 590 Tact</h4>
+                            <p class="text-[11px] text-gray-400 font-mono mb-4 leading-relaxed">Escopeta de bombeo legendaria, protección total del hogar.</p>
+                            <div class="mt-auto flex items-center justify-between border-t border-white/5 pt-3">
+                                <p class="text-sm font-bold text-white tracking-widest font-mono">Q 6,500</p>
+                                <i class='bx bx-plus-circle text-accent-pink text-xl opacity-50 group-hover/card:opacity-100'></i>
                             </div>
                         </div>
                     </div>
@@ -548,69 +583,83 @@
         <!-- ==============================================
              3. PRÓXIMOS INGRESOS (SOON)
         =================================================== -->
-        <section class="py-20 bg-tactical-900 relative z-10 overflow-hidden border-t border-b border-white/5">
-            <!-- Efecto radial en el fondo -->
-            <div class="absolute top-1/2 right-1/4 -translate-y-1/2 w-[800px] h-[800px] bg-accent-pink/5 rounded-full blur-[150px] pointer-events-none"></div>
+        <section class="py-24 bg-tactical-900 relative z-10 overflow-hidden border-t border-b border-white/5">
+            <!-- Background con efecto radar/escaneo -->
+            <div class="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.8)),url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] pointer-events-none"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-white/5 rounded-full pointer-events-none"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-white/5 rounded-full pointer-events-none"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-accent-cyan/5 border border-accent-cyan/20 rounded-full blur-[80px] pointer-events-none animate-pulse"></div>
+            <div class="absolute top-0 bottom-0 left-1/2 w-[1px] bg-white/5 pointer-events-none"></div>
 
-            <div class="max-w-7xl mx-auto px-6 relative z-10">
-                <div class="flex flex-col md:flex-row justify-between items-end mb-12 gsap-reveal gs-fade-up">
-                    <div>
-                        <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-2">Próximos <span class="text-accent-pink">Ingresos</span></h2>
-                        <p class="text-gray-400 font-light text-sm tracking-wide">Asegura tu equipo táctico antes de que pisemos suelo y descarguemos las bóvedas.</p>
-                    </div>
-                    <div class="mt-4 md:mt-0">
-                        <span class="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-gray-300 font-mono">
-                            <i class='bx bxs-circle text-[8px] text-accent-pink animate-pulse'></i> RESERVAS ACTIVAS
-                        </span>
-                    </div>
+            <div class="max-w-7xl mx-auto px-6 relative z-20">
+                <div class="flex flex-col text-center items-center mb-16 gsap-reveal gs-fade-up">
+                    <span class="text-accent-cyan font-bold tracking-[0.4em] uppercase text-[10px] md:text-sm mb-4 block">Radar de Importaciones</span>
+                    <h2 class="font-display text-4xl md:text-5xl font-black text-white mb-6 uppercase tracking-tight">Próximos <span class="text-transparent bg-clip-text bg-gradient-to-r from-gray-400 to-white">Ingresos</span></h2>
+                    <p class="text-gray-400 text-base md:text-lg max-w-2xl font-light">
+                        Asegura tu equipo táctico antes de que pise suelo y llegue a nuestras bóvedas. Evita el <span class="text-white border-b border-white border-dashed">Sold Out</span>.
+                    </p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <!-- Item Ingreso 1 -->
-                    <div class="glass-card rounded-2xl p-6 flex flex-col sm:flex-row gap-6 items-center border border-accent-pink/20 hover:border-accent-pink/50 transition-all mouse-glow relative overflow-hidden group/inc hover:-translate-y-1">
+                    <div class="glass-card rounded-[2rem] p-6 flex flex-col sm:flex-row gap-8 items-center border border-white/5 bg-black/40 hover:bg-black/60 hover:border-accent-pink/50 transition-all duration-500 mouse-glow relative overflow-hidden group/inc hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.8)]">
                         <!-- Barra de llegada progreso -->
-                        <div class="absolute bottom-0 left-0 h-1 bg-accent-pink/10 w-full"><div class="h-full bg-accent-pink/70 w-[85%] shadow-[0_0_10px_#ff2a55]"></div></div>
+                        <div class="absolute bottom-0 left-0 h-1.5 bg-tactical-800 w-full"><div class="h-full bg-gradient-to-r from-red-600 to-accent-pink w-[85%] shadow-[0_0_15px_#ff2a55]"></div></div>
+                        <div class="absolute top-4 right-6 text-accent-pink text-[10px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-accent-pink animate-ping"></span> 85% Tránsito
+                        </div>
 
                         <!-- Miniatura lockeada -->
-                        <div class="w-full sm:w-1/3 h-32 bg-tactical-950/80 rounded-xl flex items-center justify-center p-4 relative overflow-hidden border border-white/5">
-                            <div class="absolute inset-0 bg-black/40 z-10 flex items-center justify-center rounded-xl backdrop-blur-[2px]">
-                                <i class='bx bx-lock-alt text-4xl text-white/30 group-hover/inc:text-accent-pink transition-colors'></i>
+                        <div class="w-full md:w-40 xl:w-48 h-32 md:h-full bg-tactical-950/80 rounded-2xl flex items-center justify-center p-4 relative overflow-hidden border border-white/5 shrink-0">
+                            <div class="absolute inset-0 bg-black/60 z-10 flex items-center justify-center rounded-2xl backdrop-blur-sm group-hover/inc:backdrop-blur-[1px] transition-all">
+                                <div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center bg-black/50 group-hover/inc:border-accent-pink/50 group-hover/inc:shadow-[0_0_20px_rgba(255,42,85,0.3)] transition-all">
+                                    <i class='bx bx-lock-alt text-2xl text-white/50 group-hover/inc:text-accent-pink'></i>
+                                </div>
                             </div>
-                            <img src="{{ asset('images/ar15.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] opacity-30 contrast-125 grayscale" alt="Próximo">
+                            <img src="{{ asset('images/ar15.png') }}" class="h-full w-full object-contain filter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] opacity-30 group-hover/inc:opacity-50 contrast-125 grayscale group-hover/inc:grayscale-0 transition-all duration-700" alt="Próximo">
                         </div>
 
                         <!-- Detalles -->
-                        <div class="flex-1 w-full text-center sm:text-left pt-2">
-                            <div class="inline-flex items-center gap-1.5 text-[10px] text-accent-pink border border-accent-pink/30 bg-accent-pink/10 px-2 py-[2px] rounded font-bold tracking-widest uppercase mb-3">
+                        <div class="flex-1 w-full text-center sm:text-left py-4">
+                            <div class="inline-flex items-center gap-1.5 text-[10px] text-gray-400 border border-white/10 bg-white/5 px-3 py-1 rounded-full font-bold tracking-widest uppercase mb-4">
                                 <i class='bx bx-ship'></i> Lote ETA: 10 Días
                             </div>
-                            <h4 class="font-display text-xl sm:text-2xl font-bold text-white mb-2 group-hover/inc:text-accent-pink transition-colors leading-none">IWI Tavor X95</h4>
-                            <p class="text-xs text-gray-400 font-light mb-5 leading-relaxed">El futuro del combate en cuartos cerrados. Diseño Bullpup ultracompacto para Operadores de Fuerzas Especiales.</p>
-                            <button class="text-[10px] bg-white text-black font-black uppercase tracking-[0.2em] py-2.5 px-6 rounded hover:bg-tactical-800 hover:text-white transition-colors border border-transparent hover:border-white/20 w-full sm:w-auto">Pre-ordenar Cupo</button>
+                            <h4 class="font-display text-2xl font-black text-white mb-2 group-hover/inc:text-accent-pink transition-colors leading-none tracking-tight">IWI Tavor X95</h4>
+                            <p class="text-sm text-gray-400 font-light mb-6 leading-relaxed">El futuro del combate CQC. Diseño Bullpup ultracompacto para Operadores de Fuerzas Especiales.</p>
+                            <button class="bg-white/10 text-white font-bold uppercase tracking-[0.15em] py-3 px-8 rounded-xl hover:bg-accent-pink hover:text-white transition-all border border-white/20 hover:border-transparent hover:shadow-[0_0_20px_rgba(255,42,85,0.4)] w-full sm:w-auto text-xs">
+                                Pre-ordenar Cupo
+                            </button>
                         </div>
                     </div>
                     
                     <!-- Item Ingreso 2 -->
-                    <div class="glass-card rounded-2xl p-6 flex flex-col sm:flex-row gap-6 items-center border border-accent-cyan/20 hover:border-accent-cyan/50 transition-all mouse-glow relative overflow-hidden group/inc hover:-translate-y-1">
+                    <div class="glass-card rounded-[2rem] p-6 flex flex-col sm:flex-row gap-8 items-center border border-white/5 bg-black/40 hover:bg-black/60 hover:border-accent-cyan/50 transition-all duration-500 mouse-glow relative overflow-hidden group/inc hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.8)]">
                         <!-- Barra de llegada progreso -->
-                        <div class="absolute bottom-0 left-0 h-1 bg-accent-cyan/10 w-full"><div class="h-full bg-accent-cyan/70 w-[40%] shadow-[0_0_10px_#00e5ff]"></div></div>
+                        <div class="absolute bottom-0 left-0 h-1.5 bg-tactical-800 w-full"><div class="h-full bg-gradient-to-r from-blue-600 to-accent-cyan w-[40%] shadow-[0_0_15px_#00e5ff]"></div></div>
+                        <div class="absolute top-4 right-6 text-accent-cyan text-[10px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-ping"></span> 40% Tránsito
+                        </div>
 
                         <!-- Miniatura lockeada -->
-                        <div class="w-full sm:w-1/3 h-32 bg-tactical-950/80 rounded-xl flex items-center justify-center p-4 relative overflow-hidden border border-white/5">
-                            <div class="absolute inset-0 bg-black/40 z-10 flex items-center justify-center rounded-xl backdrop-blur-[2px]">
-                                <i class='bx bx-lock-alt text-4xl text-white/30 group-hover/inc:text-accent-cyan transition-colors'></i>
+                        <div class="w-full md:w-40 xl:w-48 h-32 md:h-full bg-tactical-950/80 rounded-2xl flex items-center justify-center p-4 relative overflow-hidden border border-white/5 shrink-0">
+                            <div class="absolute inset-0 bg-black/60 z-10 flex items-center justify-center rounded-2xl backdrop-blur-sm group-hover/inc:backdrop-blur-[1px] transition-all">
+                                <div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center bg-black/50 group-hover/inc:border-accent-cyan/50 group-hover/inc:shadow-[0_0_20px_rgba(0,229,255,0.3)] transition-all">
+                                    <i class='bx bx-lock-alt text-2xl text-white/50 group-hover/inc:text-accent-cyan'></i>
+                                </div>
                             </div>
-                            <img src="{{ asset('images/sniper2.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] opacity-30 contrast-125 grayscale" alt="Próximo">
+                            <img src="{{ asset('images/sniper2.png') }}" class="h-full w-full object-contain filter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] opacity-30 group-hover/inc:opacity-50 contrast-125 grayscale group-hover/inc:grayscale-0 transition-all duration-700" alt="Próximo">
                         </div>
 
                         <!-- Detalles -->
-                        <div class="flex-1 w-full text-center sm:text-left pt-2">
-                            <div class="inline-flex items-center gap-1.5 text-[10px] text-accent-cyan border border-accent-cyan/30 bg-accent-cyan/10 px-2 py-[2px] rounded font-bold tracking-widest uppercase mb-3">
-                                <i class='bx bx-paper-plane'></i> Lote ETA: 28 Días
+                        <div class="flex-1 w-full text-center sm:text-left py-4">
+                            <div class="inline-flex items-center gap-1.5 text-[10px] text-gray-400 border border-white/10 bg-white/5 px-3 py-1 rounded-full font-bold tracking-widest uppercase mb-4">
+                                <i class='bx bx-plane-alt'></i> Lote ETA: 28 Días
                             </div>
-                            <h4 class="font-display text-xl sm:text-2xl font-bold text-white mb-2 group-hover/inc:text-accent-cyan transition-colors leading-none">Barrett M82A1 .50 BMG</h4>
-                            <p class="text-xs text-gray-400 font-light mb-5 leading-relaxed">Poder de demolición anti-material. El rifle de francotirador pesado estándar en la élite militar global.</p>
-                            <button class="text-[10px] bg-white text-black font-black uppercase tracking-[0.2em] py-2.5 px-6 rounded hover:bg-tactical-800 hover:text-white transition-colors border border-transparent hover:border-white/20 w-full sm:w-auto">Apartar Sistema</button>
+                            <h4 class="font-display text-2xl font-black text-white mb-2 group-hover/inc:text-accent-cyan transition-colors leading-none tracking-tight">Barrett M82A1</h4>
+                            <p class="text-sm text-gray-400 font-light mb-6 leading-relaxed">Poder de demolición anti-material. El rifle .50 BMG de francotirador pesado estándar a nivel global.</p>
+                            <button class="bg-white/10 text-white font-bold uppercase tracking-[0.15em] py-3 px-8 rounded-xl hover:bg-accent-cyan hover:text-black transition-all border border-white/20 hover:border-transparent hover:shadow-[0_0_20px_rgba(0,229,255,0.4)] w-full sm:w-auto text-xs">
+                                Apartar Sistema
+                            </button>
                         </div>
                     </div>
                 </div>
