@@ -13,7 +13,45 @@
 </head>
 <body class="font-sans antialiased text-gray-200 selection:bg-accent-primary selection:text-black">
 
-    <div data-scroll-container id="scroll-wrapper">
+    <!-- ==========================================
+         INTRO ANIMATION (SPLASH SCREEN)
+         ========================================== -->
+    <div id="intro-screen" class="fixed inset-0 z-[99999] flex flex-col items-center justify-center overflow-hidden bg-tactical-900 pointer-events-auto">
+        <!-- Cortinas (Efecto 4D / Profundidad con box-shadows masivos y texturas) -->
+        <div class="intro-curtain left-curtain absolute top-0 left-0 w-[51%] h-full bg-tactical-900 z-10 border-r border-white/5 shadow-[20px_0_50px_rgba(0,0,0,0.9)] origin-left flex items-center justify-end overflow-hidden">
+             <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-30 pointer-events-none"></div>
+             <div class="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-black/80 to-transparent"></div>
+        </div>
+        <div class="intro-curtain right-curtain absolute top-0 right-0 w-[51%] h-full bg-tactical-900 z-10 border-l border-white/5 shadow-[-20px_0_50px_rgba(0,0,0,0.9)] origin-right flex items-center justify-start overflow-hidden">
+             <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-30 pointer-events-none"></div>
+             <div class="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-black/80 to-transparent"></div>
+        </div>
+        
+        <!-- Partículas y ambiente detrás del logo pero delante de las cortinas -->
+        <div class="intro-ambient absolute inset-0 z-[15] bg-[radial-gradient(circle_at_center,rgba(230,126,34,0.15)_0%,transparent_60%)] opacity-0 pointer-events-none"></div>
+        
+        <!-- Contenedor del contenido central -->
+        <div class="intro-content relative z-[20] flex flex-col items-center justify-center transform perspective-[1000px] w-full px-4">
+            <!-- 1. Logo -->
+            <div class="intro-logo-container opacity-0 transform translate-y-10 scale-90 md:w-56 md:h-56 w-40 h-40 rounded-full border-4 border-[#e67e22] bg-white p-1 mb-10 shadow-[0_0_60px_rgba(230,126,34,0.5)] relative overflow-hidden pointer-events-none">
+                <img src="{{ asset('images/logo.jpg') }}" alt="Balam Logo" class="w-full h-full object-cover mix-blend-multiply scale-[1.12]">
+            </div>
+            
+            <!-- 2. Armeria Balam -->
+            <h1 class="intro-title opacity-0 transform translate-y-10 text-4xl md:text-6xl lg:text-7xl font-display font-black text-white uppercase tracking-widest drop-shadow-[0_0_25px_rgba(255,255,255,0.4)] mb-4 text-center leading-tight">
+                Armería <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#f39c12] to-[#e67e22] drop-shadow-[0_0_15px_rgba(230,126,34,0.5)]">Balam</span>
+            </h1>
+            
+            <!-- 3. Armas y Municiones -->
+            <h2 class="intro-subtitle opacity-0 transform translate-y-5 text-gray-400 font-mono tracking-[0.4em] md:tracking-[0.6em] text-[10px] md:text-xl uppercase flex items-center justify-center gap-2 md:gap-4 drop-shadow-xl text-center w-full mt-2">
+                <span class="w-6 md:w-16 h-[1px] bg-[#e67e22]/50"></span>
+                Armas Y Municiones
+                <span class="w-6 md:w-16 h-[1px] bg-[#e67e22]/50"></span>
+            </h2>
+        </div>
+    </div>
+
+    <div data-scroll-container id="scroll-wrapper" style="opacity: 0; visibility: hidden;">
         
         <!-- Navbar -->
         <nav class="fixed w-full z-50 transition-all duration-300 backdrop-blur-md bg-tactical-900/60 border-b border-white/5 top-0" id="navbar">

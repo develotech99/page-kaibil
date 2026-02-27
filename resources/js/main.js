@@ -226,22 +226,24 @@ const runAssemblyGSAP = (slideEl) => {
         .to(slideEl.querySelectorAll('.assembly-card'), { opacity: 1, y: 0, rotationX: 0, duration: 0.7, ease: "power3.out" }, "-=0.3");
 };
 
-const assemblySwiper = new Swiper('.assembly-slider', {
-    loop: true,
-    autoplay: { delay: 5000, disableOnInteraction: false },
-    navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-    on: {
-        init: function () {
-            // Trigger en cuanto se inicialice porque esta en el top hero visile siempre
-            setTimeout(() => {
+let assemblySwiper;
+const initSwiper = () => {
+    assemblySwiper = new Swiper('.assembly-slider', {
+        loop: true,
+        autoplay: { delay: 5000, disableOnInteraction: false },
+        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+        on: {
+            init: function () {
+                setTimeout(() => {
+                    runAssemblyGSAP(this.slides[this.activeIndex]);
+                }, 300);
+            },
+            slideChangeTransitionStart: function () {
                 runAssemblyGSAP(this.slides[this.activeIndex]);
-            }, 300);
-        },
-        slideChangeTransitionStart: function () {
-            runAssemblyGSAP(this.slides[this.activeIndex]);
+            }
         }
-    }
-});
+    });
+};
 
 // ==========================================
 // LÓGICA DE FILTRADO DE CATÁLOGO (BÚSQUEDA + RADIOS)
@@ -293,6 +295,55 @@ document.addEventListener('DOMContentLoaded', () => {
     if (searchInput) searchInput.addEventListener('input', filterProducts);
     catRadios.forEach(radio => radio.addEventListener('change', filterProducts));
     branchRadios.forEach(radio => radio.addEventListener('change', filterProducts));
+});
+
+// ==========================================
+// INTRO ANIMATION (SPLASH SCREEN 4D)
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    const introScreen = document.getElementById('intro-screen');
+    if (!introScreen) return;
+
+    // Bloquear scroll inicial mientras ocurre la animación
+    document.body.style.overflow = 'hidden';
+    document.body.style.maxHeight = '100vh';
+
+    const tl = gsap.timeline({
+        onComplete: () => {
+            // Desbloquear scroll
+            document.body.style.overflow = '';
+            document.body.style.maxHeight = '';
+            // Remover la pantalla de intro del DOM
+            introScreen.remove();
+        }
+    });
+
+    // 1. Mostrar iluminación/ambiente de fondo
+    tl.to('.intro-ambient', { opacity: 1, duration: 1.5, ease: 'power2.out' })
+        // 2. Mostrar logo desde abajo
+        .to('.intro-logo-container', { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: 'back.out(1.5)' }, "-=1.0")
+        // 3. Mostrar título de Armería Balam
+        .to('.intro-title', { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, "-=0.4")
+        // 4. Mostrar "Armas y Municiones"
+        .to('.intro-subtitle', { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, "-=0.5")
+        // Pausa dramática para que lo vea el usuario
+        .to({}, { duration: 1.5 })
+        // 5. Efecto CORTINA 4D y Desvanecimiento simultáneo
+        // Separar cortinas simulando abrir una puerta profunda
+        .to('.left-curtain', { x: '-100%', rotationY: -15, duration: 1.8, ease: 'power4.inOut' }, "reveal")
+        .to('.right-curtain', { x: '100%', rotationY: 15, duration: 1.8, ease: 'power4.inOut' }, "reveal")
+        // Mostrar la página de atrás con un fade de entrada
+        .to('#scroll-wrapper', { autoAlpha: 1, duration: 1.5, ease: 'power2.inOut' }, "reveal+=0.3")
+        // Aumentar la escala de todo al frente para dar sensación de inmersión 3D
+        .to('.intro-content', { scale: 1.3, opacity: 0, duration: 1.5, ease: 'power3.inOut' }, "reveal+=0.1")
+        .to('.intro-ambient', { opacity: 0, duration: 1.2, ease: 'power2.inOut' }, "reveal+=0.3")
+        // Desvanecer el screen container superior final
+        .to(introScreen, {
+            opacity: 0, duration: 0.5, onComplete: () => {
+                // Iniciar el carrusel una vez que la pantalla principal y slider sean visibles
+                if (typeof initSwiper === 'function') initSwiper();
+            }
+        }, "-=0.2");
 });
 
 // ============================================================
