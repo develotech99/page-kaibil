@@ -49,16 +49,43 @@ window.addEventListener('scroll', () => {
 });
 
 // 5. EFECTO DINÁMICO DE RATÓN (CRISTAL QUE SIGUE AL CURSOR)
-// Aplicable a todas las cards con la clase mouse-glow
-document.body.onmousemove = e => {
-    for (const card of document.getElementsByClassName("mouse-glow")) {
-        const rect = card.getBoundingClientRect(),
-            x = e.clientX - rect.left,
-            y = e.clientY - rect.top;
-        card.style.setProperty("--mouse-x", `${x}px`);
-        card.style.setProperty("--mouse-y", `${y}px`);
+// Optimizado masivamente con requestAnimationFrame y cálculo de visibilidad
+let glowCards = [];
+let cursorX = 0, cursorY = 0;
+let isGlowTicking = false;
+
+document.addEventListener('DOMContentLoaded', () => {
+    glowCards = Array.from(document.getElementsByClassName("mouse-glow"));
+    
+    // Si se cargan nuevos elementos mas adelante (ej: un modal), se debe refrescar este array
+    const observer = new MutationObserver(() => {
+        glowCards = Array.from(document.getElementsByClassName("mouse-glow"));
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+});
+
+document.addEventListener('mousemove', e => {
+    cursorX = e.clientX;
+    cursorY = e.clientY;
+    
+    if (!isGlowTicking) {
+        requestAnimationFrame(() => {
+            const h = window.innerHeight;
+            glowCards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                // Solo renderiza si la tarjeta está dentro del viewport visible del usuario
+                if (rect.top < h && rect.bottom > 0) {
+                    const x = cursorX - rect.left;
+                    const y = cursorY - rect.top;
+                    card.style.setProperty("--mouse-x", `${x}px`);
+                    card.style.setProperty("--mouse-y", `${y}px`);
+                }
+            });
+            isGlowTicking = false;
+        });
+        isGlowTicking = true;
     }
-}
+});
 
 // 6. LÓGICA DE FILTROS EN JAVASCRIPT
 const filterCatRadios = document.querySelectorAll('input[name="cat"]');
@@ -226,7 +253,7 @@ const runAssemblyGSAP = (slideEl) => {
         .to(slideEl.querySelectorAll('.assembly-card'), { opacity: 1, y: 0, rotationX: 0, duration: 0.7, ease: "power3.out" }, "-=0.3");
 };
 
-let assemblySwiper;
+let assemblySwiper, videotecaSwiper, arsenalSwiper;
 const initSwiper = () => {
     assemblySwiper = new Swiper('.assembly-slider', {
         loop: true,
@@ -241,6 +268,47 @@ const initSwiper = () => {
             slideChangeTransitionStart: function () {
                 runAssemblyGSAP(this.slides[this.activeIndex]);
             }
+        }
+    });
+
+    videotecaSwiper = new Swiper('.videoteca-slider', {
+        slidesPerView: 1,
+        spaceBetween: 20,
+        autoplay: { delay: 4000, disableOnInteraction: false },
+        pagination: { el: '.videoteca-pagination', clickable: true },
+        // Esta configuración centra dinámicamente el contenido horizontalmente
+        // Y desactiva el arrastre si las tarjetas caben en pantalla
+        centerInsufficientSlides: true,
+        watchOverflow: true,
+        breakpoints: {
+            768: { slidesPerView: 2, spaceBetween: 24 },
+            1024: { 
+                slidesPerView: 3, 
+                spaceBetween: 30 
+            }
+        },
+        navigation: {
+            nextEl: '.videoteca-next',
+            prevEl: '.videoteca-prev'
+        }
+    });
+
+    arsenalSwiper = new Swiper('.arsenal-slider', {
+        slidesPerView: 1,
+        spaceBetween: 20,
+        autoplay: { delay: 3500, disableOnInteraction: false },
+        pagination: { el: '.arsenal-pagination', clickable: true },
+        centerInsufficientSlides: true,
+        watchOverflow: true,
+        breakpoints: {
+            640: { slidesPerView: 2, spaceBetween: 20 },
+            768: { slidesPerView: 3, spaceBetween: 24 },
+            1024: { slidesPerView: 4, spaceBetween: 24 },
+            1280: { slidesPerView: 5, spaceBetween: 30 }
+        },
+        navigation: {
+            nextEl: '.arsenal-next',
+            prevEl: '.arsenal-prev'
         }
     });
 };
