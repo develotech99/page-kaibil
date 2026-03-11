@@ -805,7 +805,7 @@
                 </div>
             </div>
         </section>
-
+ 
         <!-- Empresa: Quienes Somos (Rediseño Moderno) -->
         <section id="empresa" class="relative min-h-[90vh] flex flex-col items-center justify-center bg-tactical-900 overflow-hidden">
             <!-- Background Image con Overlay Cinematográfico -->
@@ -1137,7 +1137,7 @@
     </section>
 
     <!-- Footer Completo -->
-    <footer class="bg-[#05080c] pt-20 relative z-10 border-t border-accent-primary/20">
+    <footer class="bg-[#05080c] pt-20 pb-20 relative z-10 border-t border-accent-primary/20">
         <!-- Decoration light -->
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-accent-primary/50 to-transparent"></div>
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[200px] h-[50px] bg-accent-primary/20 blur-[50px]"></div>
@@ -1223,24 +1223,24 @@
             
         </div>
 
-        <!-- Bottom Footer (Copyright y Develotech) -->
-        <div class="bg-[#030406] py-5 border-t border-white/5">
-            <div class="max-w-[95%] mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
-                <div class="text-gray-600 text-[10px] sm:text-xs font-mono tracking-widest uppercase">
-                    &copy; 2026 BALAM ARMERÍA. RESERVADOS TODOS LOS DERECHOS.
+        <!-- Bottom Footer (Copyright y Develotech) - FIXED -->
+        <div class="fixed bottom-0 left-0 w-full z-[100] bg-[#030406]/90 backdrop-blur-xl py-4 border-t border-white/5 shadow-[0_-10px_30px_rgba(0,0,0,0.8)]">
+            <div class="max-w-[95%] mx-auto px-4 flex flex-col items-center justify-center text-center gap-1">
+                <div class="text-gray-400 text-[9px] sm:text-[11px] font-mono tracking-[0.2em] uppercase leading-relaxed">
+                    &copy; 2026 EL ARSENAL. Todos los derechos reservados. Guatemala, C.A.
                 </div>
                 
-                <a href="https://develotechgt.com/" target="_blank" rel="noopener noreferrer" class="group flex items-center gap-2.5 bg-tactical-900 border border-white/5 shadow-lg px-5 py-2.5 rounded-xl hover:border-accent-primary hover:bg-tactical-800 transition-all">
-                    <i class='bx bx-code-alt text-gray-500 group-hover:text-accent-primary transition-colors text-xl'></i>
-                    <span class="text-[10px] font-bold tracking-widest text-gray-500 group-hover:text-accent-primary transition-colors uppercase">
-                        HECHO POR DEVELOTECH GT
+                <a href="https://develotechgt.com/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 group cursor-pointer">
+                    <span class="text-accent-primary font-mono text-[10px]">&lt;/&gt;</span>
+                    <span class="text-[9px] sm:text-[10px] font-black tracking-[0.25em] text-gray-500 group-hover:text-accent-primary transition-colors uppercase">
+                        hecho por develotch
                     </span>
                 </a>
             </div>
         </div>
 
         <!-- Legal Disclaimer Bar -->
-        <div class="bg-accent-primary text-tactical-900 py-3 px-4 relative z-20">
+        <div class="bg-accent-primary text-tactical-900 py-3 px-4 relative z-20 mb-16 md:mb-12">
             <p class="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 max-w-[95%] mx-auto text-center opacity-80">
                 <i class='bx bx-error-circle text-sm sm:text-base hidden sm:block'></i>
                 <span>Aviso legal: La comercialización y venta de armas y municiones están estrictamente reguladas de acuerdo a la ley de armas y municiones en Guatemala y supervisadas por DIGECAM.</span>
