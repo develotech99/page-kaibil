@@ -175,7 +175,7 @@ window.closeLightbox = function () {
 };
 
 // 9. LÓGICA MODAL CATÁLOGO PRODUCTOS
-window.openProductModal = function (title, imgSrc, category, branch, price, description, wsText) {
+window.openProductModal = function (title, imgSrc, category, branch, description, wsText) {
     const modal = document.getElementById('product-modal');
     const content = document.getElementById('product-modal-content');
 
@@ -184,7 +184,6 @@ window.openProductModal = function (title, imgSrc, category, branch, price, desc
     document.getElementById('modal-img').src = imgSrc;
     document.getElementById('modal-category').innerText = category;
     document.getElementById('modal-branch').innerHTML = `<i class='bx bx-map mr-1'></i> ${branch}`;
-    document.getElementById('modal-price').innerText = price;
     document.getElementById('modal-desc').innerText = description;
 
     // Enlace de WhatsApp codificado
