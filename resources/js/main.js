@@ -227,11 +227,14 @@ const runAssemblyGSAP = (slideEl) => {
 };
 
 let assemblySwiper;
+let videoSwiper;
 const initSwiper = () => {
     assemblySwiper = new Swiper('.assembly-slider', {
         loop: true,
         autoplay: { delay: 5000, disableOnInteraction: false },
         navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+        observer: true,
+        observeParents: true,
         on: {
             init: function () {
                 setTimeout(() => {
@@ -243,7 +246,37 @@ const initSwiper = () => {
             }
         }
     });
+
+    // Inicializar Carrusel de Videoteca
+    videoSwiper = new Swiper('.video-slider', {
+        slidesPerView: 1,
+        spaceBetween: 20,
+        rewind: true,
+        speed: 800,
+        autoplay: {
+            delay: 2500,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
+        },
+        pagination: {
+            el: '.swiper-pagination-video',
+            clickable: true,
+        },
+        navigation: {
+            nextEl: '.swiper-button-next-video',
+            prevEl: '.swiper-button-prev-video',
+        },
+        observer: true,
+        observeParents: true,
+        breakpoints: {
+            640: { slidesPerView: 1, spaceBetween: 20 },
+            768: { slidesPerView: 2, spaceBetween: 30 },
+            1024: { slidesPerView: 3, spaceBetween: 30 },
+        },
+    });
 };
+
+// Initialization will be performed after the entry animation completes.
 
 // ==========================================
 // LÓGICA DE FILTRADO DE CATÁLOGO (BÚSQUEDA + RADIOS)
@@ -340,8 +373,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Desvanecer el screen container superior final
         .to(introScreen, {
             opacity: 0, duration: 0.5, onComplete: () => {
-                // Iniciar el carrusel una vez que la pantalla principal y slider sean visibles
-                if (typeof initSwiper === 'function') initSwiper();
+                // Instanciar carruseles después de que el DOM esté completamente estabilizado (0.5s)
+                if (typeof initSwiper === 'function') {
+                    setTimeout(() => {
+                        initSwiper();
+                    }, 500);
+                }
             }
         }, "-=0.2");
 });

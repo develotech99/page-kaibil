@@ -465,51 +465,232 @@
                     </a>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Video 1 -->
-                    <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer mouse-glow relative">
-                        <div class="aspect-video bg-black relative">
-                            <img src="https://images.unsplash.com/photo-1595590424283-b8f1784cb2c8?q=80&w=600" class="w-full h-full object-cover opacity-50 group-hover:opacity-30 transition-opacity duration-300 pointer-events-none">
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <div class="w-16 h-16 rounded-full bg-accent-pink/10 border border-accent-pink/50 text-accent-pink flex items-center justify-center backdrop-blur-md group-hover:bg-accent-pink group-hover:text-white group-hover:border-accent-pink transition-all transform group-hover:scale-110 shadow-[0_0_30px_rgba(255,42,85,0.0)] group-hover:shadow-[0_0_30px_rgba(255,42,85,0.4)]">
-                                    <i class='bx bx-play text-4xl ml-1'></i>
+                <!-- Modern Swiper Carousel for Videos -->
+                <div class="relative w-full mt-10" id="video-carousel-container">
+                    <!-- Glowing Backdrops for the Carousel -->
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[50%] bg-gradient-to-r from-accent-pink/5 via-accent-cyan/10 to-accent-pink/5 blur-[80px] rounded-full pointer-events-none"></div>
+                    
+                    <div class="swiper video-slider w-full py-8 !overflow-visible">
+                        <div class="swiper-wrapper">
+                            <!-- Video Slide 1 -->
+                            <div class="swiper-slide group">
+                                <div class="glass-card rounded-2xl overflow-hidden cursor-crosshair mouse-glow relative border border-white/5 hover:border-accent-pink/30 transition-all h-full flex flex-col transform group-hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(255,42,85,0.15)]">
+                                    <div class="aspect-video bg-black relative overflow-hidden">
+                                        <div class="absolute inset-0 bg-accent-pink/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
+                                        <img src="https://images.unsplash.com/photo-1595590424283-b8f1784cb2c8?q=80&w=800" class="w-full h-full object-cover opacity-50 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700 pointer-events-none">
+                                        
+                                        <!-- Interactive Play Button -->
+                                        <div class="absolute inset-0 flex items-center justify-center z-20">
+                                            <div class="w-16 h-16 rounded-full bg-tactical-900/80 border border-accent-pink/40 text-accent-pink flex items-center justify-center backdrop-blur-md group-hover:bg-accent-pink group-hover:text-white group-hover:border-accent-pink group-hover:shadow-[0_0_30px_rgba(255,42,85,0.6)] transition-all duration-300 transform group-hover:scale-110">
+                                                <i class='bx bx-play text-4xl ml-1 group-hover:animate-pulse'></i>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Duration/Badge -->
+                                        <div class="absolute bottom-3 right-3 z-20 bg-black/70 backdrop-blur-md border border-white/10 px-2 py-1 rounded text-[10px] text-white font-mono tracking-widest flex items-center gap-1 group-hover:border-accent-pink/50 transition-colors">
+                                           <i class='bx bx-time'></i> 12:45
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="p-6 border-t border-white/5 bg-gradient-to-t from-tactical-950 to-tactical-900 flex-1 relative z-20">
+                                        <div class="flex items-center gap-2 mb-3">
+                                            <span class="text-[9px] font-bold tracking-widest text-accent-pink uppercase border border-accent-pink/30 px-2 py-0.5 rounded bg-accent-pink/10 shadow-[0_0_10px_rgba(255,42,85,0.2)]">Trending</span>
+                                            <span class="text-[9px] text-gray-500 font-mono tracking-widest uppercase">Pruebas Campo</span>
+                                        </div>
+                                        <h4 class="font-display font-bold text-white text-xl md:text-2xl mb-2 group-hover:text-accent-pink transition-colors leading-tight">Prueba de Fuego: Glock 19X</h4>
+                                        <p class="text-sm text-gray-400 font-light line-clamp-2 leading-relaxed mb-4">Análisis exhaustivo del desempeño de la Glock en condiciones extremas de lodo y agua. Fiabilidad sin compromisos.</p>
+                                        <div class="flex justify-between items-center mt-auto border-t border-white/5 pt-4">
+                                            <span class="text-[10px] text-gray-400 font-mono tracking-widest"><i class='bx bx-show text-accent-pink mr-1'></i> 10.5K Vistas</span>
+                                            <span class="text-[10px] font-bold text-white bg-white/5 px-2 py-1 rounded border border-white/10 group-hover:bg-accent-pink/10 group-hover:text-accent-pink transition-colors cursor-pointer uppercase tracking-widest">Ver Video</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="p-5 border-t border-white/5 bg-gradient-to-t from-black/50 to-transparent">
-                            <h4 class="font-display font-bold text-white text-lg mb-1 group-hover:text-accent-pink transition-colors">Prueba de Fuego: Glock 19X</h4>
-                            <p class="text-xs text-gray-400 font-mono">10.5K Vistas • Base de Entrenamiento</p>
-                        </div>
-                    </div>
-                    <!-- Video 2 -->
-                    <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer mouse-glow relative">
-                        <div class="aspect-video bg-black relative">
-                            <img src="https://images.unsplash.com/photo-1584346851458-9635b7192ea6?q=80&w=600" class="w-full h-full object-cover opacity-50 group-hover:opacity-30 transition-opacity duration-300 pointer-events-none">
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <div class="w-16 h-16 rounded-full bg-white/5 border border-white/20 text-white flex items-center justify-center backdrop-blur-md group-hover:bg-white group-hover:text-black group-hover:border-white transition-all transform group-hover:scale-110 shadow-[0_0_30px_rgba(255,255,255,0.0)] group-hover:shadow-[0_0_30px_rgba(255,255,255,0.3)]">
-                                    <i class='bx bx-play text-4xl ml-1'></i>
+                            
+                            <!-- Video Slide 2 -->
+                            <div class="swiper-slide group">
+                                <div class="glass-card rounded-2xl overflow-hidden cursor-crosshair mouse-glow relative border border-white/5 hover:border-white/30 transition-all h-full flex flex-col transform group-hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(255,255,255,0.1)]">
+                                    <div class="aspect-video bg-black relative overflow-hidden">
+                                        <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
+                                        <img src="https://images.unsplash.com/photo-1584346851458-9635b7192ea6?q=80&w=800" class="w-full h-full object-cover opacity-50 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700 pointer-events-none">
+                                        
+                                        <!-- Interactive Play Button -->
+                                        <div class="absolute inset-0 flex items-center justify-center z-20">
+                                            <div class="w-16 h-16 rounded-full bg-tactical-900/80 border border-white/40 text-white flex items-center justify-center backdrop-blur-md group-hover:bg-white group-hover:text-black group-hover:border-white group-hover:shadow-[0_0_30px_rgba(255,255,255,0.6)] transition-all duration-300 transform group-hover:scale-110">
+                                                <i class='bx bx-play text-4xl ml-1 group-hover:animate-pulse'></i>
+                                            </div>
+                                        </div>
+
+                                        <div class="absolute bottom-3 right-3 z-20 bg-black/70 backdrop-blur-md border border-white/10 px-2 py-1 rounded text-[10px] text-white font-mono tracking-widest flex items-center gap-1 group-hover:border-white/50 transition-colors">
+                                           <i class='bx bx-time'></i> 18:20
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="p-6 border-t border-white/5 bg-gradient-to-t from-tactical-950 to-tactical-900 flex-1 relative z-20">
+                                        <div class="flex items-center gap-2 mb-3">
+                                            <span class="text-[9px] font-bold tracking-widest text-tactical-900 uppercase border border-white px-2 py-0.5 rounded bg-white shadow-[0_0_10px_rgba(255,255,255,0.4)]">Exclusivo</span>
+                                            <span class="text-[9px] text-gray-500 font-mono tracking-widest uppercase">Unboxing</span>
+                                        </div>
+                                        <h4 class="font-display font-bold text-white text-xl md:text-2xl mb-2 group-hover:text-white transition-colors leading-tight">Review: SIG MCX Spear</h4>
+                                        <p class="text-sm text-gray-400 font-light line-clamp-2 leading-relaxed mb-4">El salto generacional en fusiles de asalto. Conociendo el nuevo estandar de la armada a detalle.</p>
+                                        <div class="flex justify-between items-center mt-auto border-t border-white/5 pt-4">
+                                            <span class="text-[10px] text-gray-400 font-mono tracking-widest"><i class='bx bx-show text-white mr-1'></i> 8.2K Vistas</span>
+                                            <span class="text-[10px] font-bold text-white bg-white/5 px-2 py-1 rounded border border-white/10 group-hover:bg-white group-hover:text-tactical-900 transition-colors cursor-pointer uppercase tracking-widest">Ver Video</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="p-5 border-t border-white/5 bg-gradient-to-t from-black/50 to-transparent">
-                            <h4 class="font-display font-bold text-white text-lg mb-1 group-hover:text-white transition-colors">Review: SIG MCX Spear</h4>
-                            <p class="text-xs text-gray-400 font-mono">8.2K Vistas • Especial Fuerzas Armadas</p>
-                        </div>
-                    </div>
-                    <!-- Video 3 -->
-                    <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer mouse-glow relative hidden md:block">
-                        <div class="aspect-video bg-black relative">
-                            <img src="https://images.unsplash.com/photo-1552554747-0b1e3e7f9175?q=80&w=600" class="w-full h-full object-cover opacity-50 group-hover:opacity-30 transition-opacity duration-300 pointer-events-none">
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <div class="w-16 h-16 rounded-full bg-accent-cyan/10 border border-accent-cyan/50 text-accent-cyan flex items-center justify-center backdrop-blur-md group-hover:bg-accent-cyan group-hover:text-black group-hover:border-accent-cyan transition-all transform group-hover:scale-110 shadow-[0_0_30px_rgba(0,229,255,0.0)] group-hover:shadow-[0_0_30px_rgba(0,229,255,0.4)]">
-                                    <i class='bx bx-play text-4xl ml-1'></i>
+                            
+                            <!-- Video Slide 3 -->
+                            <div class="swiper-slide group">
+                                <div class="glass-card rounded-2xl overflow-hidden cursor-crosshair mouse-glow relative border border-white/5 hover:border-accent-cyan/30 transition-all h-full flex flex-col transform group-hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,240,255,0.15)]">
+                                    <div class="aspect-video bg-black relative overflow-hidden">
+                                        <div class="absolute inset-0 bg-accent-cyan/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
+                                        <img src="https://images.unsplash.com/photo-1552554747-0b1e3e7f9175?q=80&w=800" class="w-full h-full object-cover opacity-50 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700 pointer-events-none">
+                                        
+                                        <!-- Interactive Play Button -->
+                                        <div class="absolute inset-0 flex items-center justify-center z-20">
+                                            <div class="w-16 h-16 rounded-full bg-tactical-900/80 border border-accent-cyan/40 text-accent-cyan flex items-center justify-center backdrop-blur-md group-hover:bg-accent-cyan group-hover:text-black group-hover:border-accent-cyan group-hover:shadow-[0_0_30px_rgba(0,240,255,0.6)] transition-all duration-300 transform group-hover:scale-110">
+                                                <i class='bx bx-play text-4xl ml-1 group-hover:animate-pulse'></i>
+                                            </div>
+                                        </div>
+
+                                        <div class="absolute bottom-3 right-3 z-20 bg-black/70 backdrop-blur-md border border-white/10 px-2 py-1 rounded text-[10px] text-white font-mono tracking-widest flex items-center gap-1 group-hover:border-accent-cyan/50 transition-colors">
+                                           <i class='bx bx-time'></i> 45:10
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="p-6 border-t border-white/5 bg-gradient-to-t from-tactical-950 to-tactical-900 flex-1 relative z-20">
+                                        <div class="flex items-center gap-2 mb-3">
+                                            <span class="text-[9px] font-bold tracking-widest text-accent-cyan uppercase border border-accent-cyan/30 px-2 py-0.5 rounded bg-accent-cyan/10 shadow-[0_0_10px_rgba(0,240,255,0.2)]">Academia</span>
+                                            <span class="text-[9px] text-gray-500 font-mono tracking-widest uppercase">Desarrollo Táctico</span>
+                                        </div>
+                                        <h4 class="font-display font-bold text-white text-xl md:text-2xl mb-2 group-hover:text-accent-cyan transition-colors leading-tight">Técnicas CQB con AR-15</h4>
+                                        <p class="text-sm text-gray-400 font-light line-clamp-2 leading-relaxed mb-4">Masterclass de ingreso a cuartos estrechos. Ángulos, posicionamiento e identificación positiva de amenazas.</p>
+                                        <div class="flex justify-between items-center mt-auto border-t border-white/5 pt-4">
+                                            <span class="text-[10px] text-gray-400 font-mono tracking-widest"><i class='bx bx-show text-accent-cyan mr-1'></i> 15.1K Vistas</span>
+                                            <span class="text-[10px] font-bold text-white bg-white/5 px-2 py-1 rounded border border-white/10 group-hover:bg-accent-cyan/10 group-hover:text-accent-cyan transition-colors cursor-pointer uppercase tracking-widest">Ver Video</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            
+                            <!-- Video Slide 4 (Simulate dynamic growth) -->
+                            <div class="swiper-slide group">
+                                <div class="glass-card rounded-2xl overflow-hidden cursor-crosshair mouse-glow relative border border-white/5 hover:border-accent-primary/30 transition-all h-full flex flex-col transform group-hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(234,179,8,0.15)]">
+                                    <div class="aspect-video bg-black relative overflow-hidden">
+                                        <div class="absolute inset-0 bg-accent-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
+                                        <img src="https://images.unsplash.com/photo-1542281286-9e0a16bb7366?q=80&w=800" class="w-full h-full object-cover opacity-50 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700 pointer-events-none filter sepia-[0.3]">
+                                        
+                                        <!-- Interactive Play Button -->
+                                        <div class="absolute inset-0 flex items-center justify-center z-20">
+                                            <div class="w-16 h-16 rounded-full bg-tactical-900/80 border border-accent-primary/40 text-accent-primary flex items-center justify-center backdrop-blur-md group-hover:bg-accent-primary group-hover:text-tactical-900 group-hover:border-accent-primary group-hover:shadow-[0_0_30px_rgba(234,179,8,0.6)] transition-all duration-300 transform group-hover:scale-110">
+                                                <i class='bx bx-play text-4xl ml-1 group-hover:animate-pulse'></i>
+                                            </div>
+                                        </div>
+
+                                        <div class="absolute bottom-3 right-3 z-20 bg-black/70 backdrop-blur-md border border-white/10 px-2 py-1 rounded text-[10px] text-white font-mono tracking-widest flex items-center gap-1 group-hover:border-accent-primary/50 transition-colors">
+                                           <i class='bx bx-time'></i> 08:32
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="p-6 border-t border-white/5 bg-gradient-to-t from-tactical-950 to-tactical-900 flex-1 relative z-20">
+                                        <div class="flex items-center gap-2 mb-3">
+                                            <span class="text-[9px] font-bold tracking-widest text-accent-primary uppercase border border-accent-primary/30 px-2 py-0.5 rounded bg-accent-primary/10 shadow-[0_0_10px_rgba(234,179,8,0.2)]">Revisión Polígono</span>
+                                            <span class="text-[9px] text-gray-500 font-mono tracking-widest uppercase">Precisión</span>
+                                        </div>
+                                        <h4 class="font-display font-bold text-white text-xl md:text-2xl mb-2 group-hover:text-accent-primary transition-colors leading-tight">Sight-in: Optics Especiales</h4>
+                                        <p class="text-sm text-gray-400 font-light line-clamp-2 leading-relaxed mb-4">Calibrando miras térmicas a distancias extremas bajo condiciones adversas de iluminación.</p>
+                                        <div class="flex justify-between items-center mt-auto border-t border-white/5 pt-4">
+                                            <span class="text-[10px] text-gray-400 font-mono tracking-widest"><i class='bx bx-show text-accent-primary mr-1'></i> 5.1K Vistas</span>
+                                            <span class="text-[10px] font-bold text-white bg-white/5 px-2 py-1 rounded border border-white/10 group-hover:bg-accent-primary/10 group-hover:text-accent-primary transition-colors cursor-pointer uppercase tracking-widest">Ver Video</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Video Slide 5 -->
+                            <div class="swiper-slide group">
+                                <div class="glass-card rounded-2xl overflow-hidden cursor-crosshair mouse-glow relative border border-white/5 hover:border-green-500/30 transition-all h-full flex flex-col transform group-hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,255,102,0.15)]">
+                                    <div class="aspect-video bg-black relative overflow-hidden">
+                                        <div class="absolute inset-0 bg-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
+                                        <img src="https://images.unsplash.com/photo-1542302321-4f114ad11e4f?q=80&w=800" class="w-full h-full object-cover opacity-50 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700 pointer-events-none filter brightness-75">
+                                        
+                                        <!-- Interactive Play Button -->
+                                        <div class="absolute inset-0 flex items-center justify-center z-20">
+                                            <div class="w-16 h-16 rounded-full bg-tactical-900/80 border border-green-500/40 text-green-500 flex items-center justify-center backdrop-blur-md group-hover:bg-green-500 group-hover:text-tactical-900 group-hover:border-green-500 group-hover:shadow-[0_0_30px_rgba(0,255,102,0.6)] transition-all duration-300 transform group-hover:scale-110">
+                                                <i class='bx bx-play text-4xl ml-1 group-hover:animate-pulse'></i>
+                                            </div>
+                                        </div>
+
+                                        <div class="absolute bottom-3 right-3 z-20 bg-black/70 backdrop-blur-md border border-white/10 px-2 py-1 rounded text-[10px] text-white font-mono tracking-widest flex items-center gap-1 group-hover:border-green-500/50 transition-colors">
+                                           <i class='bx bx-time'></i> 24:15
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="p-6 border-t border-white/5 bg-gradient-to-t from-tactical-950 to-tactical-900 flex-1 relative z-20">
+                                        <div class="flex items-center gap-2 mb-3">
+                                            <span class="text-[9px] font-bold tracking-widest text-green-500 uppercase border border-green-500/30 px-2 py-0.5 rounded bg-green-500/10 shadow-[0_0_10px_rgba(0,255,102,0.2)]">Supervivencia</span>
+                                            <span class="text-[9px] text-gray-500 font-mono tracking-widest uppercase">Camuflaje</span>
+                                        </div>
+                                        <h4 class="font-display font-bold text-white text-xl md:text-2xl mb-2 group-hover:text-green-500 transition-colors leading-tight">Despliegue Sigiloso Nocturno</h4>
+                                        <p class="text-sm text-gray-400 font-light line-clamp-2 leading-relaxed mb-4">Ejercicios de infiltración empleando tecnología Night-Vision y supresores sónicos avanzados.</p>
+                                        <div class="flex justify-between items-center mt-auto border-t border-white/5 pt-4">
+                                            <span class="text-[10px] text-gray-400 font-mono tracking-widest"><i class='bx bx-show text-green-500 mr-1'></i> 22.8K Vistas</span>
+                                            <span class="text-[10px] font-bold text-white bg-white/5 px-2 py-1 rounded border border-white/10 group-hover:bg-green-500/10 group-hover:text-green-500 transition-colors cursor-pointer uppercase tracking-widest">Ver Video</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Video Slide 6 -->
+                            <div class="swiper-slide group">
+                                <div class="glass-card rounded-2xl overflow-hidden cursor-crosshair mouse-glow relative border border-white/5 hover:border-purple-500/30 transition-all h-full flex flex-col transform group-hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(168,85,247,0.15)]">
+                                    <div class="aspect-video bg-black relative overflow-hidden">
+                                        <div class="absolute inset-0 bg-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
+                                        <img src="https://images.unsplash.com/photo-1595185966453-15be9dc5aa84?q=80&w=800" class="w-full h-full object-cover opacity-50 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700 pointer-events-none filter contrast-125">
+                                        
+                                        <!-- Interactive Play Button -->
+                                        <div class="absolute inset-0 flex items-center justify-center z-20">
+                                            <div class="w-16 h-16 rounded-full bg-tactical-900/80 border border-purple-500/40 text-purple-500 flex items-center justify-center backdrop-blur-md group-hover:bg-purple-500 group-hover:text-tactical-900 group-hover:border-purple-500 group-hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] transition-all duration-300 transform group-hover:scale-110">
+                                                <i class='bx bx-play text-4xl ml-1 group-hover:animate-pulse'></i>
+                                            </div>
+                                        </div>
+
+                                        <div class="absolute bottom-3 right-3 z-20 bg-black/70 backdrop-blur-md border border-white/10 px-2 py-1 rounded text-[10px] text-white font-mono tracking-widest flex items-center gap-1 group-hover:border-purple-500/50 transition-colors">
+                                           <i class='bx bx-time'></i> 05:50
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="p-6 border-t border-white/5 bg-gradient-to-t from-tactical-950 to-tactical-900 flex-1 relative z-20">
+                                        <div class="flex items-center gap-2 mb-3">
+                                            <span class="text-[9px] font-bold tracking-widest text-purple-500 uppercase border border-purple-500/30 px-2 py-0.5 rounded bg-purple-500/10 shadow-[0_0_10px_rgba(168,85,247,0.2)]">Entrevista</span>
+                                            <span class="text-[9px] text-gray-500 font-mono tracking-widest uppercase">Podcast</span>
+                                        </div>
+                                        <h4 class="font-display font-bold text-white text-xl md:text-2xl mb-2 group-hover:text-purple-500 transition-colors leading-tight">Mente del Operador</h4>
+                                        <p class="text-sm text-gray-400 font-light line-clamp-2 leading-relaxed mb-4">Charlamos con instructores SWAT sobre la preparación psicológica en situaciones de alto estrés.</p>
+                                        <div class="flex justify-between items-center mt-auto border-t border-white/5 pt-4">
+                                            <span class="text-[10px] text-gray-400 font-mono tracking-widest"><i class='bx bx-show text-purple-500 mr-1'></i> 9.3K Vistas</span>
+                                            <span class="text-[10px] font-bold text-white bg-white/5 px-2 py-1 rounded border border-white/10 group-hover:bg-purple-500/10 group-hover:text-purple-500 transition-colors cursor-pointer uppercase tracking-widest">Ver Video</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
-                        <div class="p-5 border-t border-white/5 bg-gradient-to-t from-black/50 to-transparent">
-                            <h4 class="font-display font-bold text-white text-lg mb-1 group-hover:text-accent-cyan transition-colors">Técnicas CQB con AR-15</h4>
-                            <p class="text-xs text-gray-400 font-mono">15.1K Vistas • Tácticas Avazadas</p>
+
+                        <!-- Custom Navigation Controls outside the overflow hidden box if needed, but inside container for absolute positioning -->
+                        <div class="flex items-center justify-between w-full absolute top-[40%] left-0 z-30 pointer-events-none px-2 lg:-mx-12 lg:w-[calc(100%+6rem)]">
+                            <div class="w-12 h-12 rounded-full glass-card border flex items-center justify-center text-white cursor-pointer hover:border-accent-pink hover:text-accent-pink transition-all shadow-xl swiper-button-prev-video pointer-events-auto backdrop-blur-xl">
+                                <i class='bx bx-chevron-left text-3xl'></i>
+                            </div>
+                            <div class="w-12 h-12 rounded-full glass-card border flex items-center justify-center text-white cursor-pointer hover:border-accent-pink hover:text-accent-pink transition-all shadow-xl swiper-button-next-video pointer-events-auto backdrop-blur-xl">
+                                <i class='bx bx-chevron-right text-3xl'></i>
+                            </div>
                         </div>
+                        
+                        <!-- Premium Pagination -->
+                        <div class="swiper-pagination-video mt-10 w-full flex justify-center gap-3"></div>
                     </div>
                 </div>
             </div>
