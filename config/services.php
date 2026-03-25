@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'armeria' => [
+        'url' => env('ARMERIA_API_URL'),
+        'key' => env('ARMERIA_API_KEY'),
+    ],
+
 ];

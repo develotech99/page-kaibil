@@ -319,115 +319,46 @@
                     <main class="flex-1 w-full">
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="product-grid">
 
-                            <!-- Producto 1: Pistola -->
-                            <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow product-item cursor-pointer group/card" data-cat="pistola" data-branch="poptun" onclick="openProductModal('Glock 19X Custom', '{{ asset('images/pistol.png') }}', 'Pistola', 'Sede Poptún', 'Pistola diseñada para uso táctico y militar. Combina el cañón compacto de la Glock 19 con el frame completo de la Glock 17, ofreciendo la mejor ergonomía y capacidad posibles. Acabado especial Coyote texturizado.', 'Hola, me interesa comprar la Glock 19X Custom en Poptun.')">
-                                <div class="bg-black/30 rounded-xl h-56 flex items-center justify-center p-2 relative overflow-hidden group">
-                                    <div class="absolute inset-0 bg-cyan-500/10 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                                    <div class="absolute top-3 right-3 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 w-8 h-8 rounded bg-white/10 flex items-center justify-center text-white backdrop-blur-md z-20"><i class='bx bx-zoom-in'></i></div>
-                                    <img src="{{ asset('images/pistol.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500 relative z-10" alt="Glock">
-                                </div>
-                                <div class="p-5 flex flex-col flex-1 relative z-10">
-                                    <div class="flex justify-between items-start mb-2">
-                                        <div class="text-[10px] text-accent-cyan border border-accent-cyan/30 bg-accent-cyan/10 px-2 py-0.5 rounded font-bold tracking-widest uppercase">Pistola</div>
-                                        <div class="text-[10px] text-gray-400 font-mono"><i class='bx bx-map'></i> Sede Poptún</div>
+                            @forelse($productos as $producto)
+                                @php
+                                    $imgUrl = (isset($producto['imagenes']) && count($producto['imagenes']) > 0) 
+                                        ? rtrim(config('services.armeria.url'), '/') . '/storage/' . $producto['imagenes'][0] 
+                                        : asset('images/logo.jpg');
+                                    $catName = $producto['categoria'] ?? 'General';
+                                    $branchName = $producto['sucursal'] ?? 'Multi-Sede';
+                                @endphp
+                                <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow product-item cursor-pointer group/card" 
+                                     data-cat="{{ strtolower($catName) }}" 
+                                     data-branch="{{ strtolower($branchName) }}" 
+                                     onclick="openProductModal('{{ addslashes($producto['nombre']) }}', '{{ $imgUrl }}', '{{ addslashes($catName) }}', '{{ addslashes($branchName) }}', '{{ addslashes($producto['descripcion'] ?? '') }}', 'Hola, me interesa comprar {{ addslashes($producto['nombre']) }}')">
+                                    <div class="bg-black/30 rounded-xl h-56 flex items-center justify-center p-2 relative overflow-hidden group">
+                                        <div class="absolute inset-0 bg-cyan-500/10 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                                        <div class="absolute top-3 right-3 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 w-8 h-8 rounded bg-white/10 flex items-center justify-center text-white backdrop-blur-md z-20"><i class='bx bx-zoom-in'></i></div>
+                                        <img src="{{ $imgUrl }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500 relative z-10" alt="{{ $producto['nombre'] }}">
                                     </div>
-                                    <h4 class="font-display text-xl font-bold text-white mb-4 group-hover/card:text-accent-cyan transition-colors">Glock 19X Custom</h4>
-                                    
-                                    <div class="mt-auto flex items-center justify-end">
-                                        <a href="https://wa.me/50255556666?text=Hola,%20me%20interesa%20comprar%20la%20*Glock%2019X%20Custom*%20en%20Poptun." onclick="event.stopPropagation();" target="_blank" class="w-10 h-10 rounded-[10px] btn-whatsapp flex items-center justify-center text-white shadow-lg" title="Preguntar por WhatsApp">
-                                            <i class='bx bxl-whatsapp text-2xl'></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Producto 2: Rifle Asalto -->
-                            <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow product-item cursor-pointer group/card" data-cat="fusil" data-branch="poptun,sanluis" onclick="openProductModal('SIG MCX Spear', '{{ asset('images/rifle.png') }}', 'Fusil', 'Multi-Sede (Poptún, San Luis)', 'El SIG MCX Spear es la evolución probada en combate del rifle de asalto moderno. Sistema de pistón de carrera corta totalmente ambidiestro y multicalibre. La eleccion preferida de las fuerzas especiales.', 'Hola, me interesa comprar el Fusil SIG MCX Spear.')">
-                                <div class="bg-black/30 rounded-xl h-56 flex items-center justify-center p-2 relative overflow-hidden group">
-                                    <div class="absolute inset-0 bg-accent-primary/10 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                                    <div class="absolute top-3 right-3 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 w-8 h-8 rounded bg-white/10 flex items-center justify-center text-white backdrop-blur-md z-20"><i class='bx bx-zoom-in'></i></div>
-                                    <img src="{{ asset('images/rifle.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] group-hover:scale-110 transition-transform duration-500 relative z-10" alt="SIG">
-                                </div>
-                                <div class="p-5 flex flex-col flex-1 relative z-10">
-                                    <div class="flex justify-between items-start mb-2">
-                                        <div class="text-[10px] text-accent-primary border border-accent-primary/30 bg-accent-primary/10 px-2 py-0.5 rounded font-bold tracking-widest uppercase">Fusil</div>
-                                        <div class="text-[10px] text-gray-400 font-mono"><i class='bx bx-refresh'></i> Multi-Sede</div>
-                                    </div>
-                                    <h4 class="font-display text-xl font-bold text-white mb-4 group-hover/card:text-accent-primary transition-colors">SIG MCX Spear</h4>
-                                    
-                                    <div class="mt-auto flex items-center justify-end">
-                                        <a href="https://wa.me/50255556666?text=Hola,%20me%20interesa%20comprar%20el%20Fusil%20*SIG%20MCX%20Spear*." onclick="event.stopPropagation();" target="_blank" class="w-10 h-10 rounded-[10px] btn-whatsapp flex items-center justify-center text-white shadow-lg">
-                                            <i class='bx bxl-whatsapp text-2xl'></i>
-                                        </a>
+                                    <div class="p-5 flex flex-col flex-1 relative z-10">
+                                        <div class="flex justify-between items-start mb-2 gap-2">
+                                            <div class="text-[10px] text-accent-cyan border border-accent-cyan/30 bg-accent-cyan/10 px-2 py-0.5 rounded font-bold tracking-widest uppercase">{{ $catName }}</div>
+                                            <div class="text-[10px] text-gray-400 font-mono text-right"><i class='bx bx-map'></i> {{ $branchName }}</div>
+                                        </div>
+                                        <h4 class="font-display text-xl font-bold text-white mb-2 group-hover/card:text-accent-cyan transition-colors">{{ $producto['nombre'] }}</h4>
+                                        
+                                        @if(isset($producto['precio']))
+                                        <div class="text-accent-cyan font-bold text-sm mb-4">Q{{ number_format($producto['precio'], 2) }}</div>
+                                        @endif
+                                        
+                                        <div class="mt-auto flex items-center justify-end">
+                                            <a href="https://wa.me/50255556666?text={{ urlencode('Hola, me interesa comprar ' . $producto['nombre']) }}" onclick="event.stopPropagation();" target="_blank" class="w-10 h-10 rounded-[10px] btn-whatsapp flex items-center justify-center text-white shadow-lg" title="Preguntar por WhatsApp">
+                                                <i class='bx bxl-whatsapp text-2xl'></i>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <!-- Producto 3: Sniper -->
-                            <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow product-item cursor-pointer group/card" data-cat="sniper" data-branch="melchor" onclick="openProductModal('Accuracy Int. AWM', '{{ asset('images/sniper.png') }}', 'Precisión', 'Melchor de Mencos', 'El Arctic Warfare Magnum es la cumbre de los rifles de precisión. Adoptado mundialmente por unidades de francotiradores antiterroristas por su fiabilidad en condiciones extremas y un desempeño balístico imparable hasta distancias de 1.5 Km.', 'Hola, me interesa comprar el Sniper AWM Magnum en Melchor.')">
-                                <div class="bg-black/30 rounded-xl h-56 flex items-center justify-center p-2 relative overflow-hidden group">
-                                    <div class="absolute inset-0 bg-accent-pink/10 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                                    <div class="absolute top-3 right-3 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 w-8 h-8 rounded bg-white/10 flex items-center justify-center text-white backdrop-blur-md z-20"><i class='bx bx-zoom-in'></i></div>
-                                    <img src="{{ asset('images/sniper.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] group-hover:scale-110 transition-transform duration-500 relative z-10" alt="AWM">
+                            @empty
+                                <div class="col-span-full text-center py-12 text-gray-500 font-mono text-sm border border-dashed border-gray-700 rounded-2xl bg-white/5 mt-6 mouse-glow">
+                                    // ERROR_API: NO SE PUDO CONECTAR CON LA BASE DE DATOS GLOBAL O NO HAY INVENTARIO.
                                 </div>
-                                <div class="p-5 flex flex-col flex-1 relative z-10">
-                                    <div class="flex justify-between items-start mb-2">
-                                        <div class="text-[10px] text-accent-pink border border-accent-pink/30 bg-accent-pink/10 px-2 py-0.5 rounded font-bold tracking-widest uppercase">Precisión</div>
-                                        <div class="text-[10px] text-gray-400 font-mono"><i class='bx bx-map'></i> Melchor de Mencos</div>
-                                    </div>
-                                    <h4 class="font-display text-xl font-bold text-white mb-4 group-hover/card:text-accent-pink transition-colors">Accuracy Int. AWM</h4>
-                                    
-                                    <div class="mt-auto flex items-center justify-end">
-                                        <a href="https://wa.me/50255556666?text=Hola,%20me%20interesa%20comprar%20el%20Sniper%20*AWM%20Magnum*%20en%20Melchor." onclick="event.stopPropagation();" target="_blank" class="w-10 h-10 rounded-[10px] btn-whatsapp flex items-center justify-center text-white shadow-lg">
-                                            <i class='bx bxl-whatsapp text-2xl'></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Producto 4: CZ Shadow -->
-                            <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow product-item cursor-pointer group/card" data-cat="pistola" data-branch="poptun,melchor" onclick="openProductModal('CZ 75 SP-01 Shadow', '{{ asset('images/cz.png') }}', 'Pistola', 'Multi-Sede (Poptún, Melchor)', 'Un diseño revolucionario en el circuito del IPSC y tiro dinámico. Su frame pesado absorbe el retroceso como ningún otro, mientras que su gatillo suave proporciona tiempos de disparo y agrumientos inigualables en competición o autodefensa.', 'Hola, quisiera saber si tienen disponible la CZ 75 SP-01 Shadow.')">
-                                <div class="bg-black/30 rounded-xl h-56 flex items-center justify-center p-2 relative overflow-hidden group">
-                                    <div class="absolute inset-0 bg-white/5 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                                    <div class="absolute top-3 right-3 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 w-8 h-8 rounded bg-white/10 flex items-center justify-center text-white backdrop-blur-md z-20"><i class='bx bx-zoom-in'></i></div>
-                                    <img src="{{ asset('images/cz.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_20px_20px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-500 relative z-10" alt="CZ Shadow">
-                                </div>
-                                <div class="p-5 flex flex-col flex-1 relative z-10">
-                                    <div class="flex justify-between items-start mb-2">
-                                        <div class="text-[10px] text-accent-cyan border border-accent-cyan/30 bg-accent-cyan/10 px-2 py-0.5 rounded font-bold tracking-widest uppercase">Pistola</div>
-                                        <div class="text-[10px] text-gray-400 font-mono"><i class='bx bx-refresh'></i> Multi-Sede</div>
-                                    </div>
-                                    <h4 class="font-display text-xl font-bold text-white mb-4 group-hover/card:text-accent-cyan transition-colors">CZ 75 SP-01 Shadow</h4>
-                                    
-                                    <div class="mt-auto flex items-center justify-end">
-                                        <a href="https://wa.me/50255556666?text=Hola,%20quisiera%20saber%20si%20tienen%20disponible%20la%20*CZ%2075%20SP-01%20Shadow*." onclick="event.stopPropagation();" target="_blank" class="w-10 h-10 rounded-[10px] btn-whatsapp flex items-center justify-center text-white shadow-lg">
-                                            <i class='bx bxl-whatsapp text-2xl'></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Producto 5: AR15 (Nuevo) -->
-                            <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow product-item cursor-pointer group/card" data-cat="fusil" data-branch="poptun" onclick="openProductModal('AR-15 Tactical Adv.', '{{ asset('images/ar15.png') }}', 'Fusil', 'Sede Poptún', 'Modificación Táctica M-LOK Customizada del AR-15 estándar. Sistema de choque liviano, control insuperable y versatilidad gracias a sus monturas para linternas, ópticas y grip frontal asistido.', 'Hola, me interesa el rifle AR-15 en Poptun.')">
-                                <div class="bg-black/30 rounded-xl h-56 flex items-center justify-center p-2 relative overflow-hidden group">
-                                    <div class="absolute inset-0 bg-[#00ff66]/10 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                                    <div class="absolute top-3 right-3 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 w-8 h-8 rounded bg-white/10 flex items-center justify-center text-white backdrop-blur-md z-20"><i class='bx bx-zoom-in'></i></div>
-                                    <img src="{{ asset('images/ar15.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_20px_20px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-500 relative z-10" alt="AR15">
-                                </div>
-                                <div class="p-5 flex flex-col flex-1 relative z-10">
-                                    <div class="flex justify-between items-start mb-2">
-                                        <div class="text-[10px] text-accent-cyan border border-accent-cyan/30 bg-accent-cyan/10 px-2 py-0.5 rounded font-bold tracking-widest uppercase">Fusil</div>
-                                        <div class="text-[10px] text-gray-400 font-mono"><i class='bx bx-map'></i> Sede Poptún</div>
-                                    </div>
-                                    <h4 class="font-display text-xl font-bold text-white mb-4 group-hover/card:text-[#00ff66] transition-colors">AR-15 Tactical Adv.</h4>
-                                    
-                                    <div class="mt-auto flex items-center justify-end">
-                                        <a href="https://wa.me/50255556666?text=Hola,%20me%20interesa%20el%20rifle%20*AR-15*%20en%20Poptun." onclick="event.stopPropagation();" target="_blank" class="w-10 h-10 rounded-[10px] btn-whatsapp flex items-center justify-center text-white shadow-lg">
-                                            <i class='bx bxl-whatsapp text-2xl'></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                            @endforelse
 
                         </div>
                         
