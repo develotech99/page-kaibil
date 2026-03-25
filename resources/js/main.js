@@ -49,16 +49,43 @@ window.addEventListener('scroll', () => {
 });
 
 // 5. EFECTO DINÁMICO DE RATÓN (CRISTAL QUE SIGUE AL CURSOR)
-// Aplicable a todas las cards con la clase mouse-glow
-document.body.onmousemove = e => {
-    for (const card of document.getElementsByClassName("mouse-glow")) {
-        const rect = card.getBoundingClientRect(),
-            x = e.clientX - rect.left,
-            y = e.clientY - rect.top;
-        card.style.setProperty("--mouse-x", `${x}px`);
-        card.style.setProperty("--mouse-y", `${y}px`);
+// Optimizado masivamente con requestAnimationFrame y cálculo de visibilidad
+let glowCards = [];
+let cursorX = 0, cursorY = 0;
+let isGlowTicking = false;
+
+document.addEventListener('DOMContentLoaded', () => {
+    glowCards = Array.from(document.getElementsByClassName("mouse-glow"));
+    
+    // Si se cargan nuevos elementos mas adelante (ej: un modal), se debe refrescar este array
+    const observer = new MutationObserver(() => {
+        glowCards = Array.from(document.getElementsByClassName("mouse-glow"));
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+});
+
+document.addEventListener('mousemove', e => {
+    cursorX = e.clientX;
+    cursorY = e.clientY;
+    
+    if (!isGlowTicking) {
+        requestAnimationFrame(() => {
+            const h = window.innerHeight;
+            glowCards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                // Solo renderiza si la tarjeta está dentro del viewport visible del usuario
+                if (rect.top < h && rect.bottom > 0) {
+                    const x = cursorX - rect.left;
+                    const y = cursorY - rect.top;
+                    card.style.setProperty("--mouse-x", `${x}px`);
+                    card.style.setProperty("--mouse-y", `${y}px`);
+                }
+            });
+            isGlowTicking = false;
+        });
+        isGlowTicking = true;
     }
-}
+});
 
 // 6. LÓGICA DE FILTROS EN JAVASCRIPT
 const filterCatRadios = document.querySelectorAll('input[name="cat"]');
@@ -148,7 +175,7 @@ window.closeLightbox = function () {
 };
 
 // 9. LÓGICA MODAL CATÁLOGO PRODUCTOS
-window.openProductModal = function (title, imgSrc, category, branch, price, description, wsText) {
+window.openProductModal = function (title, imgSrc, category, branch, description, wsText) {
     const modal = document.getElementById('product-modal');
     const content = document.getElementById('product-modal-content');
 
@@ -157,7 +184,6 @@ window.openProductModal = function (title, imgSrc, category, branch, price, desc
     document.getElementById('modal-img').src = imgSrc;
     document.getElementById('modal-category').innerText = category;
     document.getElementById('modal-branch').innerHTML = `<i class='bx bx-map mr-1'></i> ${branch}`;
-    document.getElementById('modal-price').innerText = price;
     document.getElementById('modal-desc').innerText = description;
 
     // Enlace de WhatsApp codificado
@@ -226,8 +252,7 @@ const runAssemblyGSAP = (slideEl) => {
         .to(slideEl.querySelectorAll('.assembly-card'), { opacity: 1, y: 0, rotationX: 0, duration: 0.7, ease: "power3.out" }, "-=0.3");
 };
 
-let assemblySwiper;
-let videoSwiper;
+let assemblySwiper, videoSwiper, arsenalSwiper;
 const initSwiper = () => {
     assemblySwiper = new Swiper('.assembly-slider', {
         loop: true,
@@ -247,14 +272,14 @@ const initSwiper = () => {
         }
     });
 
-    // Inicializar Carrusel de Videoteca
+    // Inicializar Carrusel de Videoteca (Premium)
     videoSwiper = new Swiper('.video-slider', {
         slidesPerView: 1,
         spaceBetween: 20,
         rewind: true,
         speed: 800,
         autoplay: {
-            delay: 2500,
+            delay: 4000,
             disableOnInteraction: false,
             pauseOnMouseEnter: true,
         },
@@ -268,11 +293,33 @@ const initSwiper = () => {
         },
         observer: true,
         observeParents: true,
+        centerInsufficientSlides: true,
+        watchOverflow: true,
         breakpoints: {
             640: { slidesPerView: 1, spaceBetween: 20 },
             768: { slidesPerView: 2, spaceBetween: 30 },
             1024: { slidesPerView: 3, spaceBetween: 30 },
         },
+    });
+
+    // Inicializar Carrusel de Arsenal Destacado
+    arsenalSwiper = new Swiper('.arsenal-slider', {
+        slidesPerView: 1,
+        spaceBetween: 20,
+        autoplay: { delay: 3500, disableOnInteraction: false },
+        pagination: { el: '.arsenal-pagination', clickable: true },
+        centerInsufficientSlides: true,
+        watchOverflow: true,
+        breakpoints: {
+            640: { slidesPerView: 2, spaceBetween: 20 },
+            768: { slidesPerView: 3, spaceBetween: 24 },
+            1024: { slidesPerView: 4, spaceBetween: 24 },
+            1280: { slidesPerView: 5, spaceBetween: 30 }
+        },
+        navigation: {
+            nextEl: '.arsenal-next',
+            prevEl: '.arsenal-prev'
+        }
     });
 };
 

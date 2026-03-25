@@ -128,9 +128,16 @@
         /* Evita que clicks peguen en slides ocultas */
     }
 
-    .swiper-slide-active {
+    .swiper-slide-active,
+    .videoteca-slider .swiper-slide,
+    .arsenal-slider .swiper-slide {
         opacity: 1 !important;
         pointer-events: auto;
+    }
+
+    /* Ocultar el paginador extra en videoteca cuando hay pocos slides */
+    .swiper-pagination-lock {
+        display: none !important;
     }
 
     /* Texturas & Gradientes */
