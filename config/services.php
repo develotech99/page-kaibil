@@ -35,4 +35,25 @@ return [
         ],
     ],
 
+    'armeria' => [
+        'key' => env('ARMERIA_API_KEY'),
+        'sucursales' => [
+            [
+                'nombre' => env('ARMERIA_SUCURSAL_1_NOMBRE'),
+                'slug' => env('ARMERIA_SUCURSAL_1_SLUG'),
+                'url' => env('ARMERIA_SUCURSAL_1_URL'),
+            ],
+            [
+                'nombre' => env('ARMERIA_SUCURSAL_2_NOMBRE'),
+                'slug' => env('ARMERIA_SUCURSAL_2_SLUG'),
+                'url' => env('ARMERIA_SUCURSAL_2_URL'),
+            ],
+            [
+                'nombre' => env('ARMERIA_SUCURSAL_3_NOMBRE'),
+                'slug' => env('ARMERIA_SUCURSAL_3_SLUG'),
+                'url' => env('ARMERIA_SUCURSAL_3_URL'),
+            ],
+        ],
+    ],
+
 ];
