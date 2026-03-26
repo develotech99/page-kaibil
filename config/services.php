@@ -36,6 +36,7 @@ return [
     ],
 
     'armeria' => [
+<<<<<<< HEAD
         'key' => env('ARMERIA_API_KEY'),
         'sucursales' => [
             [
@@ -54,6 +55,10 @@ return [
                 'url' => env('ARMERIA_SUCURSAL_3_URL'),
             ],
         ],
+=======
+        'url' => env('ARMERIA_API_URL'),
+        'key' => env('ARMERIA_API_KEY'),
+>>>>>>> 90cd85b2ed5c307254edf69931f1cf84e6b42b8f
     ],
 
 ];

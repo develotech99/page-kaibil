@@ -252,12 +252,14 @@ const runAssemblyGSAP = (slideEl) => {
         .to(slideEl.querySelectorAll('.assembly-card'), { opacity: 1, y: 0, rotationX: 0, duration: 0.7, ease: "power3.out" }, "-=0.3");
 };
 
-let assemblySwiper, videotecaSwiper, arsenalSwiper;
+let assemblySwiper, videoSwiper, arsenalSwiper;
 const initSwiper = () => {
     assemblySwiper = new Swiper('.assembly-slider', {
         loop: true,
         autoplay: { delay: 5000, disableOnInteraction: false },
         navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+        observer: true,
+        observeParents: true,
         on: {
             init: function () {
                 setTimeout(() => {
@@ -270,28 +272,37 @@ const initSwiper = () => {
         }
     });
 
-    videotecaSwiper = new Swiper('.videoteca-slider', {
+    // Inicializar Carrusel de Videoteca (Premium)
+    videoSwiper = new Swiper('.video-slider', {
         slidesPerView: 1,
         spaceBetween: 20,
-        autoplay: { delay: 4000, disableOnInteraction: false },
-        pagination: { el: '.videoteca-pagination', clickable: true },
-        // Esta configuración centra dinámicamente el contenido horizontalmente
-        // Y desactiva el arrastre si las tarjetas caben en pantalla
+        rewind: true,
+        speed: 800,
+        autoplay: {
+            delay: 4000,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
+        },
+        pagination: {
+            el: '.swiper-pagination-video',
+            clickable: true,
+        },
+        navigation: {
+            nextEl: '.swiper-button-next-video',
+            prevEl: '.swiper-button-prev-video',
+        },
+        observer: true,
+        observeParents: true,
         centerInsufficientSlides: true,
         watchOverflow: true,
         breakpoints: {
-            768: { slidesPerView: 2, spaceBetween: 24 },
-            1024: { 
-                slidesPerView: 3, 
-                spaceBetween: 30 
-            }
+            640: { slidesPerView: 1, spaceBetween: 20 },
+            768: { slidesPerView: 2, spaceBetween: 30 },
+            1024: { slidesPerView: 3, spaceBetween: 30 },
         },
-        navigation: {
-            nextEl: '.videoteca-next',
-            prevEl: '.videoteca-prev'
-        }
     });
 
+    // Inicializar Carrusel de Arsenal Destacado
     arsenalSwiper = new Swiper('.arsenal-slider', {
         slidesPerView: 1,
         spaceBetween: 20,
@@ -311,6 +322,8 @@ const initSwiper = () => {
         }
     });
 };
+
+// Initialization will be performed after the entry animation completes.
 
 // ==========================================
 // LÓGICA DE FILTRADO DE CATÁLOGO (BÚSQUEDA + RADIOS)
@@ -407,8 +420,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Desvanecer el screen container superior final
         .to(introScreen, {
             opacity: 0, duration: 0.5, onComplete: () => {
-                // Iniciar el carrusel una vez que la pantalla principal y slider sean visibles
-                if (typeof initSwiper === 'function') initSwiper();
+                // Instanciar carruseles después de que el DOM esté completamente estabilizado (0.5s)
+                if (typeof initSwiper === 'function') {
+                    setTimeout(() => {
+                        initSwiper();
+                    }, 500);
+                }
             }
         }, "-=0.2");
 });

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+<<<<<<< HEAD
 use App\Services\CatalogoArmeriaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -31,5 +32,21 @@ class CatalogoController extends Controller
             'sucursalSeleccionada' => $sucursalSeleccionada,
             'erroresSucursales' => $this->catalogoArmeriaService->getErroresSucursales(),
         ]);
+=======
+use Illuminate\Http\Request;
+use App\Services\CatalogoArmeriaService;
+
+class CatalogoController extends Controller
+{
+    public function index(CatalogoArmeriaService $catalogo)
+    {
+        $productos = $catalogo->getCatalogo();
+        
+        // Descomenta esta linea para ver todo el JSON crudo en pantalla:
+        dd($productos);
+        
+        // Pass the products to the existing welcome blade view instead of catalogo.index
+        return view('welcome', compact('productos'));
+>>>>>>> 90cd85b2ed5c307254edf69931f1cf84e6b42b8f
     }
 }
