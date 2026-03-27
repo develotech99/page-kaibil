@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\CatalogoArmeriaService;
+use Illuminate\Http\Request;
 
 class CatalogoController extends Controller
 {
@@ -13,10 +13,10 @@ class CatalogoController extends Controller
 
     public function index(Request $request)
     {
-        // Filtro opcional: ?sucursal=poptun (filtro de servidor)
+        // Filtro opcional: ?sucursal=poptun
         $sucursalSeleccionada = $request->query('sucursal');
 
-        // Obtener catálogo unificado (o filtrado) + errores por sucursal
+        // Obtener catálogo unificado + errores por sucursal
         $resultado = $this->catalogo->getCatalogoCompleto(
             $sucursalSeleccionada ?: null
         );
@@ -35,6 +35,7 @@ class CatalogoController extends Controller
                 'slug'   => strtolower(trim($cat))
             ]);
 
+        // Retornar a la vista welcome (nuestra interfaz principal)
         return view('welcome', compact(
             'productos',
             'sucursales',
