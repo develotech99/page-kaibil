@@ -7,14 +7,40 @@ use App\Services\CatalogoArmeriaService;
 
 class CatalogoController extends Controller
 {
-    public function index(CatalogoArmeriaService $catalogo)
+    public function __construct(
+        private readonly CatalogoArmeriaService $catalogo
+    ) {}
+
+    public function index(Request $request)
     {
-        $productos = $catalogo->getCatalogo();
-        
-        // Descomenta esta linea para ver todo el JSON crudo en pantalla:
-        dd($productos);
-        
-        // Pass the products to the existing welcome blade view instead of catalogo.index
-        return view('welcome', compact('productos'));
+        // Filtro opcional: ?sucursal=poptun (filtro de servidor)
+        $sucursalSeleccionada = $request->query('sucursal');
+
+        // Obtener catálogo unificado (o filtrado) + errores por sucursal
+        $resultado = $this->catalogo->getCatalogoCompleto(
+            $sucursalSeleccionada ?: null
+        );
+
+        $productos            = $resultado['productos'];
+        $erroresSucursales    = $resultado['errores'];
+        $sucursales           = $this->catalogo->getSucursalesDisponibles();
+
+        // Extraer categorías dinámicas de los productos obtenidos
+        $categorias = collect($productos)
+            ->pluck('categoria')
+            ->unique()
+            ->values()
+            ->map(fn($cat) => [
+                'nombre' => $cat,
+                'slug'   => strtolower(trim($cat))
+            ]);
+
+        return view('welcome', compact(
+            'productos',
+            'sucursales',
+            'categorias',
+            'sucursalSeleccionada',
+            'erroresSucursales'
+        ));
     }
 }

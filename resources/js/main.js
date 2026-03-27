@@ -175,24 +175,45 @@ window.closeLightbox = function () {
 };
 
 // 9. LÓGICA MODAL CATÁLOGO PRODUCTOS
-window.openProductModal = function (title, imgSrc, category, branch, description, wsText) {
+window.openProductModal = function (title, imgSrc, category, branch, description, wsText, tech = {}) {
     const modal = document.getElementById('product-modal');
     const content = document.getElementById('product-modal-content');
 
-    // Poblar datos dinámicamente
+    // Poblar datos básicos
     document.getElementById('modal-title').innerText = title;
     document.getElementById('modal-img').src = imgSrc;
     document.getElementById('modal-category').innerText = category;
     document.getElementById('modal-branch').innerHTML = `<i class='bx bx-map mr-1'></i> ${branch}`;
     document.getElementById('modal-desc').innerText = description;
 
+    // Poblar Especificaciones Técnicas (Dinámico)
+    const specsContainer = document.getElementById('modal-specs');
+    if (specsContainer) {
+        specsContainer.innerHTML = '';
+        const fields = [
+            { label: 'MARCA', value: tech.marca },
+            { label: 'MODELO', value: tech.modelo },
+            { label: 'CALIBRE', value: tech.calibre },
+            { label: 'ORIGEN', value: tech.pais },
+        ];
+
+        fields.forEach(f => {
+            if (f.value && f.value.trim() !== '') {
+                specsContainer.innerHTML += `
+                    <div class="flex flex-col border-l border-accent-cyan/20 pl-3">
+                        <span class="text-gray-500 text-[9px] uppercase tracking-tighter">${f.label}</span>
+                        <span class="text-white text-xs font-bold uppercase">${f.value}</span>
+                    </div>
+                `;
+            }
+        });
+    }
+
     // Enlace de WhatsApp codificado
     document.getElementById('modal-whatsapp').href = `https://wa.me/50255556666?text=${encodeURIComponent(wsText)}`;
 
-    // Mostrar modal (quitar opacidad y pointer-events)
+    // Mostrar modal
     modal.classList.remove('opacity-0', 'pointer-events-none');
-
-    // Animar la entrada con GSAP
     gsap.fromTo(content,
         { scale: 0.9, opacity: 0, y: 30 },
         { scale: 1, opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.2)" }

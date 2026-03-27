@@ -262,24 +262,14 @@
                                             <span class="text-gray-300 group-hover:text-white">Ver Todo</span>
                                         </label>
                                     </li>
+                                    @foreach($categorias as $cat)
                                     <li>
                                         <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-1 rounded transition-colors">
-                                            <input type="radio" name="cat" value="pistola" class="accent-accent-cyan w-4 h-4 cursor-pointer">
-                                            <span class="text-gray-300 group-hover:text-white">Armas Cortas (Pistolas)</span>
+                                            <input type="radio" name="cat" value="{{ $cat['slug'] }}" class="accent-accent-cyan w-4 h-4 cursor-pointer">
+                                            <span class="text-gray-300 group-hover:text-white">{{ $cat['nombre'] }}</span>
                                         </label>
                                     </li>
-                                    <li>
-                                        <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-1 rounded transition-colors">
-                                            <input type="radio" name="cat" value="fusil" class="accent-accent-cyan w-4 h-4 cursor-pointer">
-                                            <span class="text-gray-300 group-hover:text-white">Fusiles Automáticos</span>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-1 rounded transition-colors">
-                                            <input type="radio" name="cat" value="sniper" class="accent-accent-cyan w-4 h-4 cursor-pointer">
-                                            <span class="text-gray-300 group-hover:text-white">Precisión Táctica (Sniper)</span>
-                                        </label>
-                                    </li>
+                                    @endforeach
                                 </ul>
                             </div>
 
@@ -293,24 +283,14 @@
                                             <span class="text-gray-300 group-hover:text-white">Todas las Sedes</span>
                                         </label>
                                     </li>
+                                    @foreach($sucursales as $suc)
                                     <li>
                                         <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-1 rounded transition-colors">
-                                            <input type="radio" name="branch" value="poptun" class="accent-accent-pink w-4 h-4 cursor-pointer">
-                                            <span class="text-gray-300 group-hover:text-white">Sede Poptún</span>
+                                            <input type="radio" name="branch" value="{{ $suc['slug'] }}" class="accent-accent-pink w-4 h-4 cursor-pointer">
+                                            <span class="text-gray-300 group-hover:text-white">Sede {{ $suc['nombre'] }}</span>
                                         </label>
                                     </li>
-                                    <li>
-                                        <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-1 rounded transition-colors">
-                                            <input type="radio" name="branch" value="sanluis" class="accent-accent-pink w-4 h-4 cursor-pointer">
-                                            <span class="text-gray-300 group-hover:text-white">Sede San Luis</span>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-1 rounded transition-colors">
-                                            <input type="radio" name="branch" value="melchor" class="accent-accent-pink w-4 h-4 cursor-pointer">
-                                            <span class="text-gray-300 group-hover:text-white">Sede Melchor de Mencos</span>
-                                        </label>
-                                    </li>
+                                    @endforeach
                                 </ul>
                             </div>
                     </aside>
@@ -321,16 +301,21 @@
 
                             @forelse($productos as $producto)
                                 @php
-                                    $imgUrl = (isset($producto['imagenes']) && count($producto['imagenes']) > 0) 
-                                        ? rtrim(config('services.armeria.url'), '/') . '/storage/' . $producto['imagenes'][0] 
+                                    // Construir URL de imagen con el dominio PROPIO de cada sucursal
+                                    $imagenes   = $producto['imagenes'] ?? [];
+                                    $storageUrl = rtrim($producto['storage_url'] ?? '', '/');
+                                    $imgUrl     = count($imagenes) > 0
+                                        ? $storageUrl . '/' . ltrim($imagenes[0], '/')
                                         : asset('images/logo.jpg');
-                                    $catName = $producto['categoria'] ?? 'General';
+
+                                    $catName    = $producto['categoria'] ?? 'General';
                                     $branchName = $producto['sucursal'] ?? 'Multi-Sede';
+                                    $branchSlug = $producto['sucursal_slug'] ?? '';
                                 @endphp
-                                <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow product-item cursor-pointer group/card" 
-                                     data-cat="{{ strtolower($catName) }}" 
-                                     data-branch="{{ strtolower($branchName) }}" 
-                                     onclick="openProductModal('{{ addslashes($producto['nombre']) }}', '{{ $imgUrl }}', '{{ addslashes($catName) }}', '{{ addslashes($branchName) }}', '{{ addslashes($producto['descripcion'] ?? '') }}', 'Hola, me interesa comprar {{ addslashes($producto['nombre']) }}')">
+                                <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow product-item cursor-pointer group/card"
+                                     data-cat="{{ strtolower(trim($catName)) }}"
+                                     data-branch="{{ strtolower(trim($branchSlug)) }}"
+                                     onclick="openProductModal('{{ addslashes($producto['nombre']) }}', '{{ $imgUrl }}', '{{ addslashes($catName) }}', '{{ addslashes($branchName) }}', '{{ addslashes($producto['descripcion'] ?? '') }}', 'Hola, me interesa comprar {{ addslashes($producto['nombre']) }}', { marca: '{{ addslashes($producto['marca'] ?? '') }}', modelo: '{{ addslashes($producto['modelo'] ?? '') }}', calibre: '{{ addslashes($producto['calibre'] ?? '') }}', pais: '{{ addslashes($producto['pais_fabricacion'] ?? '') }}' })">
                                     <div class="bg-black/30 rounded-xl h-56 flex items-center justify-center p-2 relative overflow-hidden group">
                                         <div class="absolute inset-0 bg-cyan-500/10 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                                         <div class="absolute top-3 right-3 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 w-8 h-8 rounded bg-white/10 flex items-center justify-center text-white backdrop-blur-md z-20"><i class='bx bx-zoom-in'></i></div>
@@ -355,9 +340,15 @@
                                     </div>
                                 </div>
                             @empty
-                                <div class="col-span-full text-center py-12 text-gray-500 font-mono text-sm border border-dashed border-gray-700 rounded-2xl bg-white/5 mt-6 mouse-glow">
-                                    // ERROR_API: NO SE PUDO CONECTAR CON LA BASE DE DATOS GLOBAL O NO HAY INVENTARIO.
-                                </div>
+                                @if(!empty($erroresSucursales ?? []))
+                                    <div class="col-span-full text-center py-12 text-yellow-400 font-mono text-sm border border-dashed border-yellow-700 rounded-2xl bg-yellow-500/5 mt-6 mouse-glow">
+                                        ⚠ ALGUNAS SUCURSALES NO RESPONDIERON. REVISA LOS LOGS DEL SISTEMA.
+                                    </div>
+                                @else
+                                    <div class="col-span-full text-center py-12 text-gray-500 font-mono text-sm border border-dashed border-gray-700 rounded-2xl bg-white/5 mt-6 mouse-glow">
+                                        // ERROR_API: NO SE PUDO CONECTAR CON LA BASE DE DATOS GLOBAL O NO HAY INVENTARIO.
+                                    </div>
+                                @endif
                             @endforelse
 
                         </div>
@@ -665,7 +656,7 @@
                                 <div class="absolute -top-3 -right-2 bg-gradient-to-br from-yellow-400 to-yellow-600 text-black text-[10px] font-black px-3 py-1 rounded border border-yellow-300 shadow-[0_0_15px_rgba(250,204,21,0.4)] z-30 uppercase tracking-widest transform rotate-3 group-hover/card:rotate-0 transition-transform">BEST SELLER</div>
                                 <div class="bg-gradient-to-b from-black/60 to-black/20 rounded-[1.2rem] h-48 flex items-center justify-center p-4 relative overflow-hidden group border border-white/5">
                                     <div class="absolute inset-0 bg-accent-cyan/5 opacity-0 group-hover/card:opacity-100 transition-opacity"></div>
-                                    <img src="{{ asset('images/glock1.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 relative z-10" alt="Glock">
+                                    <img src="{{ asset('images/pistol.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 relative z-10" alt="Glock">
                                 </div>
                                 <div class="p-5 flex flex-col flex-1">
                                     <h4 class="font-display text-lg font-bold text-white mb-2 group-hover/card:text-accent-cyan transition-colors">Glock 19 Gen 5</h4>
@@ -697,7 +688,7 @@
                             <div class="glass-card rounded-[1.5rem] p-2 flex flex-col mouse-glow cursor-crosshair group/card relative border border-white/5 hover:border-[#cd7f32]/40 transition-colors h-full">
                                 <div class="absolute -top-3 -right-2 bg-gradient-to-br from-[#cd7f32] to-[#8b5a2b] text-white text-[10px] font-black px-3 py-1 rounded border border-[#cd7f32] shadow-[0_0_15px_rgba(205,127,50,0.4)] z-30 uppercase tracking-widest transform rotate-[2deg] group-hover/card:rotate-0 transition-transform">Favorito</div>
                                 <div class="bg-gradient-to-b from-black/60 to-black/20 rounded-[1.2rem] h-48 flex items-center justify-center p-4 relative overflow-hidden group border border-white/5">
-                                    <img src="{{ asset('images/sniper2.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 relative z-10" alt="Remington">
+                                    <img src="{{ asset('images/sniper.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 relative z-10" alt="Remington">
                                 </div>
                                 <div class="p-5 flex flex-col flex-1">
                                     <h4 class="font-display text-lg font-bold text-white mb-2 group-hover/card:text-[#cd7f32] transition-colors">Remington 700 SPS</h4>
@@ -713,7 +704,7 @@
                             <div class="glass-card rounded-[1.5rem] p-2 flex flex-col mouse-glow cursor-crosshair group/card relative border border-white/5 hover:border-red-500/30 transition-colors h-full">
                                 <div class="bg-gradient-to-b from-black/60 to-black/20 rounded-[1.2rem] h-48 flex items-center justify-center p-4 relative overflow-hidden group border border-white/5">
                                     <div class="absolute inset-0 bg-red-500/5 opacity-0 group-hover/card:opacity-100 transition-opacity"></div>
-                                    <img src="{{ asset('images/smg.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 relative z-10" alt="CZ Scorpion">
+                                    <img src="{{ asset('images/rifle.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 relative z-10" alt="CZ Scorpion">
                                 </div>
                                 <div class="p-5 flex flex-col flex-1">
                                     <h4 class="font-display text-lg font-bold text-white mb-2 group-hover/card:text-red-400 transition-colors">CZ Scorpion EVO3</h4>
@@ -729,7 +720,7 @@
                             <div class="glass-card rounded-[1.5rem] p-2 flex flex-col mouse-glow cursor-crosshair group/card relative border border-white/5 hover:border-accent-pink/30 transition-colors h-full">
                                 <div class="bg-gradient-to-b from-black/60 to-black/20 rounded-[1.2rem] h-48 flex items-center justify-center p-4 relative overflow-hidden group border border-white/5">
                                     <div class="absolute inset-0 bg-accent-pink/5 opacity-0 group-hover/card:opacity-100 transition-opacity"></div>
-                                    <img src="{{ asset('images/shootgun.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 relative z-10" alt="Mossberg">
+                                    <img src="{{ asset('images/beretta.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 relative z-10" alt="Mossberg">
                                 </div>
                                 <div class="p-5 flex flex-col flex-1">
                                     <h4 class="font-display text-lg font-bold text-white mb-2 group-hover/card:text-accent-pink transition-colors">Mossberg 590 Tact</h4>
@@ -745,7 +736,7 @@
                             <div class="glass-card rounded-[1.5rem] p-2 flex flex-col mouse-glow cursor-crosshair group/card relative border border-white/5 hover:border-red-500/30 transition-colors h-full">
                                 <div class="bg-gradient-to-b from-black/60 to-black/20 rounded-[1.2rem] h-48 flex items-center justify-center p-4 relative overflow-hidden group border border-white/5">
                                     <div class="absolute inset-0 bg-red-500/5 opacity-0 group-hover/card:opacity-100 transition-opacity"></div>
-                                    <img src="{{ asset('images/smg.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 relative z-10" alt="CZ Scorpion">
+                                    <img src="{{ asset('images/cz.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 relative z-10" alt="CZ Scorpion">
                                 </div>
                                 <div class="p-5 flex flex-col flex-1">
                                     <h4 class="font-display text-lg font-bold text-white mb-2 group-hover/card:text-red-400 transition-colors">Micro Roni Gen 4</h4>
@@ -761,7 +752,7 @@
                             <div class="glass-card rounded-[1.5rem] p-2 flex flex-col mouse-glow cursor-crosshair group/card relative border border-white/5 hover:border-accent-cyan/30 transition-colors h-full">
                                 <div class="bg-gradient-to-b from-black/60 to-black/20 rounded-[1.2rem] h-48 flex items-center justify-center p-4 relative overflow-hidden group border border-white/5">
                                     <div class="absolute inset-0 bg-accent-cyan/5 opacity-0 group-hover/card:opacity-100 transition-opacity"></div>
-                                    <img src="{{ asset('images/glock1.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 relative z-10" alt="Glock">
+                                    <img src="{{ asset('images/pistol.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 relative z-10" alt="Glock">
                                 </div>
                                 <div class="p-5 flex flex-col flex-1">
                                     <h4 class="font-display text-lg font-bold text-white mb-2 group-hover/card:text-accent-cyan transition-colors">Colt 1911 .45 ACP</h4>
@@ -1353,9 +1344,13 @@
                 <p id="modal-desc" class="text-gray-400 text-sm mt-4 font-light leading-relaxed mb-8">
                 </p>
 
-                <div class="mb-8 border-t border-b border-white/5 py-4">
+                <div id="modal-specs" class="grid grid-cols-2 gap-y-6 gap-x-4 mb-10">
+                    <!-- Dinámico desde JS: MARCA, MODELO, CALIBRE, ORIGEN -->
+                </div>
+
+                <div class="mb-8 border-t border-white/5 py-4">
                     <span class="text-xs text-gray-500 font-mono tracking-widest uppercase block mb-1">Inversión Táctica</span>
-                    <!-- Eliminado el precio -->
+                    <!-- Precio oculto -->
                 </div>
                 
                 <a id="modal-whatsapp" href="#" target="_blank" class="w-full bg-tactical-950 border border-[#25D366]/30 hover:bg-[#25D366]/10 text-[#25D366] hover:text-white py-4 rounded-xl font-bold tracking-widest transition-all hover:border-[#25D366] shadow-[0_0_15px_rgba(37,211,102,0.05)] hover:shadow-[0_0_25px_rgba(37,211,102,0.2)] flex items-center justify-center gap-3 hover:-translate-y-1">
