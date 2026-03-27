@@ -36,7 +36,8 @@ return [
     ],
 
     'armeria' => [
-        'key' => env('ARMERIA_API_KEY'),
+        // admitir variable legado CATALOGO_API_KEY para compatibilidad con el middleware de armerias.
+        'key' => env('ARMERIA_API_KEY', env('CATALOGO_API_KEY', '')),
         'sucursales' => [
             [
                 'nombre' => env('ARMERIA_SUCURSAL_1_NOMBRE', 'Melchor de Mencos'),

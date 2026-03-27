@@ -40,6 +40,16 @@ class CatalogoArmeriaService
     public function getCatalogoCompleto(?string $slug = null): array
     {
         $this->erroresSucursales = [];
+
+        if (empty($this->apiKey)) {
+            $msg = 'CatalogoArmeriaService: API key no configurada (ARMERIA_API_KEY / CATALOGO_API_KEY).';
+            Log::error($msg);
+            return [
+                'productos' => [],
+                'errores' => ['general' => $msg],
+            ];
+        }
+
         $productos = [];
         $pendientes = [];
 
@@ -98,6 +108,12 @@ class CatalogoArmeriaService
                 }
             }
         }
+
+        // Eliminar productos duplicados por id+almacén (puede ocurrir cuando el mismo SKU existe en varias sucursales).
+        $productos = collect($productos)
+            ->unique(fn($p) => trim((string)($p['id'] ?? ''))."_".trim((string)($p['sucursal_slug'] ?? '')))
+            ->values()
+            ->all();
 
         return [
             'productos' => $productos,
