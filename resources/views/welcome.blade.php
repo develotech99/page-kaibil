@@ -262,14 +262,16 @@
                                             <span class="text-gray-300 group-hover:text-white">Ver Todo</span>
                                         </label>
                                     </li>
-                                    @foreach($categorias as $cat)
-                                    <li>
-                                        <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-1 rounded transition-colors">
-                                            <input type="radio" name="cat" value="{{ $cat['slug'] }}" class="accent-accent-cyan w-4 h-4 cursor-pointer">
-                                            <span class="text-gray-300 group-hover:text-white">{{ $cat['nombre'] }}</span>
-                                        </label>
-                                    </li>
-                                    @endforeach
+                                    @if(isset($categorias))
+                                        @foreach($categorias as $cat)
+                                        <li>
+                                            <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-1 rounded transition-colors">
+                                                <input type="radio" name="cat" value="{{ $cat['slug'] }}" class="accent-accent-cyan w-4 h-4 cursor-pointer">
+                                                <span class="text-gray-300 group-hover:text-white">{{ $cat['nombre'] }}</span>
+                                            </label>
+                                        </li>
+                                        @endforeach
+                                    @endif
                                 </ul>
                             </div>
 
@@ -283,14 +285,16 @@
                                             <span class="text-gray-300 group-hover:text-white">Todas las Sedes</span>
                                         </label>
                                     </li>
-                                    @foreach($sucursales as $suc)
-                                    <li>
-                                        <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-1 rounded transition-colors">
-                                            <input type="radio" name="branch" value="{{ $suc['slug'] }}" class="accent-accent-pink w-4 h-4 cursor-pointer">
-                                            <span class="text-gray-300 group-hover:text-white">Sede {{ $suc['nombre'] }}</span>
-                                        </label>
-                                    </li>
-                                    @endforeach
+                                    @if(isset($sucursales))
+                                        @foreach($sucursales as $suc)
+                                        <li>
+                                            <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-1 rounded transition-colors">
+                                                <input type="radio" name="branch" value="{{ $suc['slug'] }}" class="accent-accent-pink w-4 h-4 cursor-pointer">
+                                                <span class="text-gray-300 group-hover:text-white">Sede {{ $suc['nombre'] }}</span>
+                                            </label>
+                                        </li>
+                                        @endforeach
+                                    @endif
                                 </ul>
                             </div>
                     </aside>
