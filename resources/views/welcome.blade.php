@@ -303,7 +303,8 @@
                     <main class="flex-1 w-full">
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="product-grid">
 
-                            @forelse($productos as $producto)
+                            @if(isset($productos))
+                                @forelse($productos as $producto)
                                 @php
                                     // Construir URL de imagen con el dominio PROPIO de cada sucursal
                                     $imagenes   = $producto['imagenes'] ?? [];
@@ -354,6 +355,7 @@
                                     </div>
                                 @endif
                             @endforelse
+                            @endif
 
                         </div>
                         
