@@ -175,24 +175,45 @@ window.closeLightbox = function () {
 };
 
 // 9. LÓGICA MODAL CATÁLOGO PRODUCTOS
-window.openProductModal = function (title, imgSrc, category, branch, description, wsText) {
+window.openProductModal = function (title, imgSrc, category, branch, description, wsText, tech = {}) {
     const modal = document.getElementById('product-modal');
     const content = document.getElementById('product-modal-content');
 
-    // Poblar datos dinámicamente
+    // Poblar datos básicos
     document.getElementById('modal-title').innerText = title;
     document.getElementById('modal-img').src = imgSrc;
     document.getElementById('modal-category').innerText = category;
     document.getElementById('modal-branch').innerHTML = `<i class='bx bx-map mr-1'></i> ${branch}`;
     document.getElementById('modal-desc').innerText = description;
 
+    // Poblar Especificaciones Técnicas (Dinámico)
+    const specsContainer = document.getElementById('modal-specs');
+    if (specsContainer) {
+        specsContainer.innerHTML = '';
+        const fields = [
+            { label: 'MARCA', value: tech.marca },
+            { label: 'MODELO', value: tech.modelo },
+            { label: 'CALIBRE', value: tech.calibre },
+            { label: 'ORIGEN', value: tech.pais },
+        ];
+
+        fields.forEach(f => {
+            if (f.value && f.value.trim() !== '') {
+                specsContainer.innerHTML += `
+                    <div class="flex flex-col border-l border-accent-cyan/20 pl-3">
+                        <span class="text-gray-500 text-[9px] uppercase tracking-tighter">${f.label}</span>
+                        <span class="text-white text-xs font-bold uppercase">${f.value}</span>
+                    </div>
+                `;
+            }
+        });
+    }
+
     // Enlace de WhatsApp codificado
     document.getElementById('modal-whatsapp').href = `https://wa.me/50255556666?text=${encodeURIComponent(wsText)}`;
 
-    // Mostrar modal (quitar opacidad y pointer-events)
+    // Mostrar modal
     modal.classList.remove('opacity-0', 'pointer-events-none');
-
-    // Animar la entrada con GSAP
     gsap.fromTo(content,
         { scale: 0.9, opacity: 0, y: 30 },
         { scale: 1, opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.2)" }
@@ -252,12 +273,14 @@ const runAssemblyGSAP = (slideEl) => {
         .to(slideEl.querySelectorAll('.assembly-card'), { opacity: 1, y: 0, rotationX: 0, duration: 0.7, ease: "power3.out" }, "-=0.3");
 };
 
-let assemblySwiper, videotecaSwiper, arsenalSwiper;
+let assemblySwiper, videoSwiper, arsenalSwiper;
 const initSwiper = () => {
     assemblySwiper = new Swiper('.assembly-slider', {
         loop: true,
         autoplay: { delay: 5000, disableOnInteraction: false },
         navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+        observer: true,
+        observeParents: true,
         on: {
             init: function () {
                 setTimeout(() => {
@@ -270,28 +293,37 @@ const initSwiper = () => {
         }
     });
 
-    videotecaSwiper = new Swiper('.videoteca-slider', {
+    // Inicializar Carrusel de Videoteca (Premium)
+    videoSwiper = new Swiper('.video-slider', {
         slidesPerView: 1,
         spaceBetween: 20,
-        autoplay: { delay: 4000, disableOnInteraction: false },
-        pagination: { el: '.videoteca-pagination', clickable: true },
-        // Esta configuración centra dinámicamente el contenido horizontalmente
-        // Y desactiva el arrastre si las tarjetas caben en pantalla
+        rewind: true,
+        speed: 800,
+        autoplay: {
+            delay: 4000,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
+        },
+        pagination: {
+            el: '.swiper-pagination-video',
+            clickable: true,
+        },
+        navigation: {
+            nextEl: '.swiper-button-next-video',
+            prevEl: '.swiper-button-prev-video',
+        },
+        observer: true,
+        observeParents: true,
         centerInsufficientSlides: true,
         watchOverflow: true,
         breakpoints: {
-            768: { slidesPerView: 2, spaceBetween: 24 },
-            1024: { 
-                slidesPerView: 3, 
-                spaceBetween: 30 
-            }
+            640: { slidesPerView: 1, spaceBetween: 20 },
+            768: { slidesPerView: 2, spaceBetween: 30 },
+            1024: { slidesPerView: 3, spaceBetween: 30 },
         },
-        navigation: {
-            nextEl: '.videoteca-next',
-            prevEl: '.videoteca-prev'
-        }
     });
 
+    // Inicializar Carrusel de Arsenal Destacado
     arsenalSwiper = new Swiper('.arsenal-slider', {
         slidesPerView: 1,
         spaceBetween: 20,
@@ -311,6 +343,8 @@ const initSwiper = () => {
         }
     });
 };
+
+// Initialization will be performed after the entry animation completes.
 
 // ==========================================
 // LÓGICA DE FILTRADO DE CATÁLOGO (BÚSQUEDA + RADIOS)
@@ -407,8 +441,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Desvanecer el screen container superior final
         .to(introScreen, {
             opacity: 0, duration: 0.5, onComplete: () => {
-                // Iniciar el carrusel una vez que la pantalla principal y slider sean visibles
-                if (typeof initSwiper === 'function') initSwiper();
+                // Instanciar carruseles después de que el DOM esté completamente estabilizado (0.5s)
+                if (typeof initSwiper === 'function') {
+                    setTimeout(() => {
+                        initSwiper();
+                    }, 500);
+                }
             }
         }, "-=0.2");
 });
