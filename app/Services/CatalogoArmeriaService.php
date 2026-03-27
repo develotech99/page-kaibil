@@ -99,12 +99,6 @@ class CatalogoArmeriaService
             }
         }
 
-        // 3. Fallback Demo si está todo vacío
-        if (empty($productos)) {
-            $productos = $this->getDatosDemo();
-            $this->erroresSucursales = [];
-        }
-
         return [
             'productos' => $productos,
             'errores'   => $this->erroresSucursales
@@ -189,26 +183,5 @@ class CatalogoArmeriaService
     public function getErroresSucursales(): array
     {
         return $this->erroresSucursales;
-    }
-
-    private function getDatosDemo(): array
-    {
-        $sucursalesDemo = [
-            ['nombre' => 'Melchor de Mencos', 'slug' => 'melchor', 'url' => 'https://melchordemencos.armeriabalam.com'],
-            ['nombre' => 'Poptun',            'slug' => 'poptun',  'url' => 'https://poptun.armeriabalam.com'],
-            ['nombre' => 'San Luis',          'slug' => 'sanluis', 'url' => 'https://sanluis.armeriabalam.com'],
-        ];
-
-        $productosDemo = [
-            ['nombre' => 'Glock 19 Gen 5',    'descripcion' => 'Pistola táctica calibre 9mm.', 'categoria' => 'Armas Cortas', 'marca' => 'Glock', 'calibre' => '9mm'],
-            ['nombre' => 'Fusil Táctico M4A1','descripcion' => 'Rifle de asalto.',             'categoria' => 'Fusiles',      'marca' => 'Colt',  'calibre' => '5.56mm'],
-        ];
-
-        $res = [];
-        foreach ($productosDemo as $i => $p) {
-            $sucursal = $sucursalesDemo[$i % count($sucursalesDemo)];
-            $res[] = $this->normalizarProducto($p, $sucursal);
-        }
-        return $res;
     }
 }
