@@ -25,21 +25,37 @@ class CatalogoController extends Controller
         $erroresSucursales    = $resultado['errores'];
         $sucursales           = $this->catalogo->getSucursalesDisponibles();
 
-        // Extraer categorías dinámicas de los productos obtenidos
-        $categorias = collect($productos)
-            ->pluck('categoria')
-            ->unique()
-            ->values()
-            ->map(fn($cat) => [
-                'nombre' => $cat,
-                'slug'   => strtolower(trim($cat))
-            ]);
+        // Crear estructura jerárquica: Categoría -> [Subcategorías]
+        $menuCategorias = collect($productos)
+            ->groupBy('categoria')
+            ->map(function ($items, $catName) {
+                return [
+                    'nombre' => $catName,
+                    'slug'   => strtolower(trim($catName)),
+                    'subcategorias' => $items->pluck('subcategoria')
+                        ->filter()
+                        ->unique()
+                        ->values()
+                        ->map(fn($sub) => ['nombre' => $sub, 'slug' => strtolower(trim($sub))])
+                        ->all()
+                ];
+            })->values();
 
-        // Retornar a la vista welcome (nuestra interfaz principal)
+        // Extraer marcas únicas
+        $marcas = collect($productos)
+            ->pluck('marca')
+            ->filter()
+            ->unique()
+            ->sort()
+            ->values()
+            ->map(fn($m) => ['nombre' => $m, 'slug' => strtolower(trim($m))]);
+
+        // Retornar a la vista welcome
         return view('welcome', compact(
             'productos',
             'sucursales',
-            'categorias',
+            'menuCategorias',
+            'marcas',
             'sucursalSeleccionada',
             'erroresSucursales'
         ));

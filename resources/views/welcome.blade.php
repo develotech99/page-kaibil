@@ -10,6 +10,52 @@
          ========================================== -->
     <!-- Vite empaqueta TODO y lo hace local: Tailwind CSS v4, animaciones GSAP, íconos Boxicons, fuentes de Google (Space Grotesk e Inter) y Swiper.js. Nada dependerá de servidores externos. -->
     @vite(['resources/css/app.css', 'resources/js/main.js'])
+
+    <style>
+        /* Forzar esquema oscuro para controles del sistema (como dropdowns de select) */
+        :root, html, body {
+            color-scheme: dark !important;
+            background-color: #0c0c0c;
+        }
+
+        /* Estilo ultra-agresivo para evitar destellos blancos en selects nativos */
+        select {
+            appearance: none;
+            background-color: #050505 !important;
+            color: #ffffff !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            cursor: pointer;
+            outline: none !important;
+            box-shadow: none !important;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1rem;
+            padding-right: 2.5rem !important;
+        }
+
+        /* Forzar que el popup de opciones herede el fondo oscuro en Chrome/Edge */
+        select option {
+            background-color: #111111 !important;
+            color: #ffffff !important;
+            border: none;
+            padding: 12px !important;
+        }
+
+        /* Evitar el resaltado azul/blanco de Windows/Chrome al hacer clic */
+        select:focus, select:active {
+            background-color: #050505 !important;
+            color: #ffffff !important;
+            outline: none !important;
+            box-shadow: 0 0 0 2px rgba(0, 240, 255, 0.2) !important;
+        }
+
+        /* Corregir hover en el select */
+        select:hover {
+            border-color: rgba(0, 240, 255, 0.4) !important;
+            background-color: #0a0a0a !important;
+        }
+    </style>
 </head>
 <body class="font-sans antialiased text-gray-200 selection:bg-accent-primary selection:text-black">
 
@@ -233,75 +279,112 @@
                 
                 <div class="flex flex-col md:flex-row justify-between items-end mb-16 gsap-reveal gs-fade-up">
                     <div>
-                        <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-2">Catálogo <span class="text-accent-cyan text-gradient-cyan">Global</span></h2>
-                        <p class="text-gray-400 font-light">Escanéa toda la base de datos de las 3 agencias conectadas.</p>
+                        <h2 class="font-display text-4xl md:text-5xl font-black text-white mb-2 uppercase tracking-tighter">Explora Todo <span class="text-accent-cyan text-gradient-cyan border-b-2 border-accent-cyan/30">Nuestro Arsenal</span></h2>
+                        <p class="text-gray-400 font-light font-mono text-[10px] md:text-xs tracking-[0.3em] uppercase mt-2">
+                            Descubre todo el equipo disponible de nuestras sucursales a nivel nacional.
+                        </p>
                     </div>
                 </div>
 
                 <div class="flex flex-col lg:flex-row gap-8 lg:gap-10 items-start relative">
                     <!-- Sidebar de Filtros (Izquierda) -->
-                    <aside class="w-full lg:w-1/4 xl:w-1/5 shrink-0 glass-card rounded-2xl p-5 sticky top-28 mouse-glow z-20 lg:-mt-[22px]">
-                        <div class="flex items-center gap-3 mb-6 pb-6 border-b border-white/5">
-                                <i class='bx bx-radar text-2xl text-accent-cyan'></i>
-                                <h3 class="font-display text-xl font-bold text-white">Consola Filtros</h3>
-                            </div>
+                    <aside class="w-full lg:w-1/4 xl:w-1/5 shrink-0 sticky top-[100px] z-20 pb-10">
+                        <div class="mb-10 px-4 pt-6">
+                            <h3 class="font-display text-4xl font-black text-white uppercase tracking-tighter mb-8 border-b-4 border-accent-cyan pb-2 w-max">
+                                Catálogo
+                            </h3>
                             
-                            <!-- Buscador Inteligente -->
-                            <div class="mb-8 relative group">
-                                <input type="text" id="filter-search" placeholder="Búsqueda táctica (Ej. Glock)..." class="w-full bg-tactical-800/50 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white text-sm focus:outline-none focus:border-accent-cyan/50 focus:ring-1 focus:ring-accent-cyan/50 transition-all font-mono placeholder:text-gray-500">
-                                <i class='bx bx-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg group-focus-within:text-accent-cyan transition-colors'></i>
-                            </div>
-                            
-                            <!-- Filtro Categorias -->
-                            <div class="mb-8">
-                                <h4 class="text-sm font-bold text-white tracking-wider mb-4 border-l-2 border-accent-cyan pl-2">Por Categoría</h4>
-                                <ul class="space-y-3" id="filter-category">
-                                    <li>
-                                        <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-1 rounded transition-colors">
-                                            <input type="radio" name="cat" value="all" class="accent-accent-cyan w-4 h-4 cursor-pointer" checked>
-                                            <span class="text-gray-300 group-hover:text-white">Ver Todo</span>
-                                        </label>
+                            <ul class="flex flex-col border-t border-white/5" id="nav-accordion">
+                                <li>
+                                    <a href="#catalogo" onclick="updateProductsByFilter('all')" class="flex items-center justify-between py-5 border-b border-white/5 group transition-all">
+                                        <span class="font-display text-xl font-bold text-white group-hover:text-accent-cyan tracking-widest uppercase">TODOS NUESTROS PRODUCTOS</span>
+                                    </a>
+                                </li>
+                                @if(isset($menuCategorias))
+                                    @foreach($menuCategorias as $cat)
+                                    <li class="border-b border-white/5">
+                                        <div class="flex items-center justify-between py-5 cursor-pointer group transition-all" onclick="toggleAccordion('cat-{{ $cat['slug'] }}')">
+                                            <span class="font-display text-xl font-bold text-white group-hover:text-accent-cyan tracking-widest uppercase">{{ $cat['nombre'] }}</span>
+                                            <i class='bx bx-plus text-2xl text-gray-500 group-hover:text-accent-cyan transition-transform' id="icon-cat-{{ $cat['slug'] }}"></i>
+                                        </div>
+                                        <ul id="cat-{{ $cat['slug'] }}" class="hidden flex flex-col pl-4 pb-4 animate-fade-down">
+                                            <li>
+                                                <a href="#catalogo" onclick="updateProductsByFilter('{{ $cat['slug'] }}', 'cat')" class="block py-2 text-sm text-gray-400 hover:text-white transition-colors uppercase font-mono tracking-widest">
+                                                    Ver Todo de {{ $cat['nombre'] }}
+                                                </a>
+                                            </li>
+                                            @foreach($cat['subcategorias'] as $sub)
+                                            <li>
+                                                <a href="#catalogo" onclick="updateProductsByFilter('{{ $sub['slug'] }}', 'subcat')" class="block py-2 text-sm text-gray-500 hover:text-white transition-colors uppercase font-mono tracking-widest">
+                                                    {{ $sub['nombre'] }}
+                                                </a>
+                                            </li>
+                                            @endforeach
+                                        </ul>
                                     </li>
-                                    @if(isset($categorias))
-                                        @foreach($categorias as $cat)
-                                        <li>
-                                            <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-1 rounded transition-colors">
-                                                <input type="radio" name="cat" value="{{ $cat['slug'] }}" class="accent-accent-cyan w-4 h-4 cursor-pointer">
-                                                <span class="text-gray-300 group-hover:text-white">{{ $cat['nombre'] }}</span>
-                                            </label>
-                                        </li>
-                                        @endforeach
-                                    @endif
-                                </ul>
-                            </div>
-
-                            <!-- Filtro Sucursales -->
-                            <div>
-                                <h4 class="text-sm font-bold text-white tracking-wider mb-4 border-l-2 border-accent-pink pl-2">Por Sucursal (Nodo)</h4>
-                                <ul class="space-y-3" id="filter-branch">
-                                    <li>
-                                        <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-1 rounded transition-colors">
-                                            <input type="radio" name="branch" value="all" class="accent-accent-pink w-4 h-4 cursor-pointer" checked>
-                                            <span class="text-gray-300 group-hover:text-white">Todas las Sedes</span>
-                                        </label>
-                                    </li>
-                                    @if(isset($sucursales))
-                                        @foreach($sucursales as $suc)
-                                        <li>
-                                            <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-1 rounded transition-colors">
-                                                <input type="radio" name="branch" value="{{ $suc['slug'] }}" class="accent-accent-pink w-4 h-4 cursor-pointer">
-                                                <span class="text-gray-300 group-hover:text-white">Sede {{ $suc['nombre'] }}</span>
-                                            </label>
-                                        </li>
-                                        @endforeach
-                                    @endif
-                                </ul>
-                            </div>
+                                    @endforeach
+                                @endif
+                            </ul>
+                        </div>
                     </aside>
 
                     <!-- Grilla de Productos (Derecha) -->
                     <main class="flex-1 w-full">
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="product-grid">
+                        <!-- Barra de Herramientas Superior / Top Bar Filtros -->
+                        <!-- Barra de Herramientas Superior / Top Bar Filtros (Fija al Scroll) -->
+                        <div class="sticky top-[100px] z-40 bg-tactical-900/95 backdrop-blur-2xl -mx-6 px-6 py-6 mb-8 border-b border-white/10 transition-all duration-300 flex flex-col gap-6 shadow-2xl" id="catalogo-top-bar">
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                                <h2 id="current-filter-title" class="font-display text-4xl font-black text-white uppercase tracking-tighter">
+                                    ARSENAL DISPONIBLE
+                                </h2>
+
+                                <!-- Buscador Inteligente Centrado/Derecha -->
+                                <div class="relative group w-full md:max-w-md">
+                                    <input type="text" id="filter-search" oninput="applyFilters()" placeholder="BUSCA TU EQUIPO TÁCTICO AQUÍ..." class="w-full bg-white/5 border border-white/10 rounded-full py-4 pl-12 pr-6 text-white text-xs font-bold tracking-widest focus:outline-none focus:border-accent-cyan/50 focus:ring-1 focus:ring-accent-cyan/20 transition-all placeholder:text-gray-600">
+                                    <i class='bx bx-search absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-xl group-focus-within:text-accent-cyan transition-colors'></i>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap gap-6 items-end">
+                                <!-- Filtrar por Marca -->
+                                <div class="flex flex-col gap-2 min-w-[160px]">
+                                    <span class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] pl-1">Filtrar por Marca</span>
+                                    <select id="top-filter-brand" onchange="applyFilters()" class="bg-tactical-950/80 border border-white/10 rounded-xl py-3 px-4 text-white text-[11px] font-bold uppercase tracking-wider transition-all focus:outline-none focus:border-accent-cyan/50 cursor-pointer hover:bg-white/5">
+                                        <option value="all">TODAS LAS MARCAS</option>
+                                        @if(isset($marcas))
+                                            @foreach($marcas as $marca)
+                                                <option value="{{ $marca['slug'] }}">{{ $marca['nombre'] }}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+
+                                <!-- Filtrar por Sucursal -->
+                                <div class="flex flex-col gap-2 min-w-[160px]">
+                                    <span class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] pl-1">Por Sucursal</span>
+                                    <select id="top-filter-branch" onchange="applyFilters()" class="bg-tactical-950/80 border border-white/10 rounded-xl py-3 px-4 text-white text-[11px] font-bold uppercase tracking-wider transition-all focus:outline-none focus:border-accent-cyan/50 cursor-pointer hover:bg-white/5">
+                                        <option value="all">TODAS LAS SEDES</option>
+                                        @if(isset($sucursales))
+                                            @foreach($sucursales as $suc)
+                                                <option value="{{ $suc['slug'] }}">{{ $suc['nombre'] }}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+
+                                <!-- Ordenar Por -->
+                                <div class="flex flex-col gap-2 min-w-[140px] ml-auto">
+                                    <span class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] pl-1">Ordenar Por</span>
+                                    <select id="top-sort-order" onchange="applySorting()" class="bg-tactical-950/80 border border-white/10 rounded-xl py-3 px-4 text-white text-[11px] font-bold uppercase tracking-wider transition-all focus:outline-none focus:border-accent-cyan/50 cursor-pointer hover:bg-white/5">
+                                        <option value="default">RELEVANCIA</option>
+                                        <option value="az">ALFABÉTICO A - Z</option>
+                                        <option value="za">ALFABÉTICO Z - A</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-0 sm:gap-6 border-t border-l border-white/5 md:border-none" id="product-grid">
 
                             @if(isset($productos))
                                 @forelse($productos as $producto)
@@ -309,18 +392,27 @@
                                     // Construir URL de imagen con el dominio PROPIO de cada sucursal
                                     $imagenes   = $producto['imagenes'] ?? [];
                                     $storageUrl = rtrim($producto['storage_url'] ?? '', '/');
-                                    $imgUrl     = count($imagenes) > 0
-                                        ? $storageUrl . '/' . ltrim($imagenes[0], '/')
-                                        : asset('images/logo.jpg');
+                                    $allImages  = [];
+                                    foreach($imagenes as $img) {
+                                        $allImages[] = $storageUrl . '/' . ltrim($img, '/');
+                                    }
+                                    if(empty($allImages)) $allImages[] = asset('images/logo.jpg');
+                                    
+                                    $imgUrl = $allImages[0];
+                                    $allImagesJson = json_encode($allImages);
 
                                     $catName    = $producto['categoria'] ?? 'General';
                                     $branchName = $producto['sucursal'] ?? 'Multi-Sede';
                                     $branchSlug = $producto['sucursal_slug'] ?? '';
                                 @endphp
-                                <div class="glass-card rounded-2xl p-2 flex flex-col mouse-glow product-item cursor-pointer group/card"
+                                <div class="glass-card rounded-none md:rounded-2xl p-2 flex flex-col mouse-glow product-item cursor-pointer group/card border-r border-b border-white/5 md:border-none"
+                                     data-name="{{ strtolower(trim($producto['nombre'])) }}"
                                      data-cat="{{ strtolower(trim($catName)) }}"
+                                     data-subcat="{{ strtolower(trim($producto['subcategoria'] ?? '')) }}"
+                                     data-marca="{{ strtolower(trim($producto['marca'] ?? '')) }}"
+                                     data-modelo="{{ strtolower(trim($producto['modelo'] ?? '')) }}"
                                      data-branch="{{ strtolower(trim($branchSlug)) }}"
-                                     onclick="openProductModal('{{ addslashes($producto['nombre']) }}', '{{ $imgUrl }}', '{{ addslashes($catName) }}', '{{ addslashes($branchName) }}', '{{ addslashes($producto['descripcion'] ?? '') }}', 'Hola, me interesa comprar {{ addslashes($producto['nombre']) }}', { marca: '{{ addslashes($producto['marca'] ?? '') }}', modelo: '{{ addslashes($producto['modelo'] ?? '') }}', calibre: '{{ addslashes($producto['calibre'] ?? '') }}', pais: '{{ addslashes($producto['pais_fabricacion'] ?? '') }}' })">
+                                     onclick="openProductModal('{{ addslashes($producto['nombre']) }}', {{ $allImagesJson }}, '{{ addslashes($catName) }}', '{{ addslashes($branchName) }}', '{{ addslashes($producto['descripcion'] ?? '') }}', 'Hola, me interesa comprar {{ addslashes($producto['nombre']) }}', { marca: '{{ addslashes($producto['marca'] ?? '') }}', modelo: '{{ addslashes($producto['modelo'] ?? '') }}', calibre: '{{ addslashes($producto['calibre'] ?? '') }}', pais: '{{ addslashes($producto['pais_fabricacion'] ?? '') }}' })">
                                     <div class="bg-black/30 rounded-xl h-56 flex items-center justify-center p-2 relative overflow-hidden group">
                                         <div class="absolute inset-0 bg-cyan-500/10 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                                         <div class="absolute top-3 right-3 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 w-8 h-8 rounded bg-white/10 flex items-center justify-center text-white backdrop-blur-md z-20"><i class='bx bx-zoom-in'></i></div>
@@ -334,12 +426,25 @@
                                         <h4 class="font-display text-xl font-bold text-white mb-2 group-hover/card:text-accent-cyan transition-colors">{{ $producto['nombre'] }}</h4>
                                         
                                         @if(isset($producto['precio']))
-                                        <div class="text-accent-cyan font-bold text-sm mb-4">Q{{ number_format($producto['precio'], 2) }}</div>
+                                        <div class="text-accent-cyan font-bold text-lg mb-6">Q{{ number_format($producto['precio'], 2) }}</div>
                                         @endif
                                         
-                                        <div class="mt-auto flex items-center justify-end">
-                                            <a href="https://wa.me/50255556666?text={{ urlencode('Hola, me interesa comprar ' . $producto['nombre']) }}" onclick="event.stopPropagation();" target="_blank" class="w-10 h-10 rounded-[10px] btn-whatsapp flex items-center justify-center text-white shadow-lg" title="Preguntar por WhatsApp">
+                                        <div class="mt-auto flex items-center justify-between pt-4 border-t border-white/10">
+                                            <!-- Enlace Estético Ver Detalle -->
+                                            <button onclick="event.stopPropagation(); openProductModal('{{ addslashes($producto['nombre']) }}', {{ $allImagesJson }}, '{{ addslashes($catName) }}', '{{ addslashes($branchName) }}', '{{ addslashes($producto['descripcion'] ?? '') }}', 'Hola, me interesa comprar {{ addslashes($producto['nombre']) }}', { marca: '{{ addslashes($producto['marca'] ?? '') }}', modelo: '{{ addslashes($producto['modelo'] ?? '') }}', calibre: '{{ addslashes($producto['calibre'] ?? '') }}', pais: '{{ addslashes($producto['pais_fabricacion'] ?? '') }}' })" 
+                                                    class="text-white/60 hover:text-accent-cyan text-[9px] font-bold uppercase tracking-[0.2em] transition-all flex items-center gap-2 group">
+                                                <i class='bx bx-plus-circle text-sm group-hover:rotate-90 transition-transform'></i>
+                                                VER DETALLE
+                                            </button>
+
+                                            <!-- Botón Circular WhatsApp Táctico con Color Original -->
+                                            <a href="https://wa.me/50244445555?text={{ urlencode('Hola, me interesa comprar ' . $producto['nombre']) }}" 
+                                               onclick="event.stopPropagation();" 
+                                               target="_blank" 
+                                               class="w-10 h-10 bg-[#25D366]/10 border border-[#25D366]/30 text-[#25D366] rounded-full flex items-center justify-center hover:bg-[#25D366] hover:text-white transition-all shadow-[0_0_15px_rgba(37,211,102,0.2)] hover:shadow-[0_0_20px_rgba(37,211,102,0.4)] active:scale-95 relative" 
+                                               title="Consultar por WhatsApp">
                                                 <i class='bx bxl-whatsapp text-2xl'></i>
+                                                <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-[#25D366] rounded-full border-2 border-tactical-950 animate-pulse"></span>
                                             </a>
                                         </div>
                                     </div>
@@ -359,8 +464,18 @@
 
                         </div>
                         
-                        <div id="no-products-msg" class="hidden text-center py-12 text-gray-500 font-mono text-sm border border-dashed border-gray-700 rounded-2xl bg-white/5 mt-6 mouse-glow">
-                            // ERROR_404: NO HAY ARMAMENTO QUE COINCIDA CON LOS PARÁMETROS.
+                        <!-- Nuevo Estado Vacío Estilo Legion -->
+                        <div id="no-products-msg" class="hidden py-32 px-6 flex flex-col items-center justify-center text-center animate-fade-in">
+                            <div class="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mb-8 border border-white/10">
+                                <i class='bx bx-search text-5xl text-gray-600'></i>
+                            </div>
+                            <h3 class="font-display text-2xl font-bold text-white uppercase tracking-widest mb-4">No se encontraron productos</h3>
+                            <p class="text-gray-500 font-mono text-sm max-w-sm mb-10 leading-relaxed uppercase tracking-tighter">
+                                Intenta ajustar tus filtros o busca algo diferente para encontrar el equipo que necesitas.
+                            </p>
+                            <button onclick="updateProductsByFilter('all')" class="bg-accent-cyan/20 border border-accent-cyan/40 text-accent-cyan px-10 py-4 rounded-full text-xs font-black uppercase tracking-[0.25em] hover:bg-accent-cyan hover:text-black transition-all shadow-[0_0_30px_rgba(34,211,238,0.2)]">
+                                Ver todo el inventario
+                            </button>
                         </div>
 
                     </main>
@@ -1323,14 +1438,22 @@
         <!-- Tarjeta Central del Modal -->
         <div id="product-modal-content" class="glass-card w-full max-w-4xl max-h-[90vh] overflow-y-auto overflow-x-hidden rounded-[2rem] border border-accent-cyan/30 shadow-[0_0_50px_rgba(0,240,255,0.15)] relative scale-95 opacity-0 transition-all duration-500 flex flex-col md:flex-row">
             
-            <!-- Sección Izquierda: Imagen Grande -->
-            <div class="w-full md:w-1/2 p-10 flex items-center justify-center bg-[#05080c] relative group min-h-[300px] border-b md:border-b-0 md:border-r border-white/5">
+            <!-- Sección Izquierda: Imagen Grande + Galeria -->
+            <div class="w-full md:w-1/2 p-6 md:p-10 flex flex-col items-center justify-center bg-[#05080c] relative group min-h-[400px] border-b md:border-b-0 md:border-r border-white/5">
                 <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,240,255,0.10)_0%,transparent_60%)]"></div>
                 <!-- Botón Cerrar (Solo visible en Móvil sobre la imagen, en desktop pasa a la derecha) -->
                 <button onclick="closeProductModal()" class="md:hidden absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 border border-white/10 flex items-center justify-center text-white hover:bg-accent-pink hover:border-accent-pink transition-all z-50 backdrop-blur-md">
                     <i class='bx bx-x text-2xl'></i>
                 </button>
-                <img id="modal-img" src="" class="max-w-full max-h-[350px] object-contain filter drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)] relative z-10 transition-transform duration-500 group-hover:scale-110" alt="Vista del Producto">
+
+                <div class="relative w-full flex items-center justify-center flex-1">
+                    <img id="modal-img" src="" class="max-w-full max-h-[380px] object-contain filter drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)] relative z-10 transition-transform duration-500 group-hover:scale-110" alt="Vista del Producto">
+                </div>
+
+                <!-- Galería de Miniaturas (Dinámica) -->
+                <div id="modal-thumbnails" class="flex flex-wrap justify-center gap-2 mt-6 relative z-20">
+                    <!-- Inyectado por JS -->
+                </div>
             </div>
             
             <!-- Sección Derecha: Características -->
