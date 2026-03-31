@@ -440,9 +440,7 @@
                                         </div>
                                         <h4 class="font-display text-xl font-bold text-white mb-2 group-hover/card:text-accent-cyan transition-colors">{{ $producto['nombre'] }}</h4>
                                         
-                                        @if(isset($producto['precio']))
-                                        <div class="text-accent-cyan font-bold text-lg mb-6">Q{{ number_format($producto['precio'], 2) }}</div>
-                                        @endif
+
                                         
                                         <div class="mt-auto flex items-center justify-between pt-4 border-t border-white/10">
                                             <!-- Enlace Estético Ver Detalle -->

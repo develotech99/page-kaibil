@@ -209,6 +209,15 @@ window.applyFilters = function () {
     const searchInput = document.getElementById('filter-search');
     const search = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
+    // Si hay algún filtro activo, desbloqueamos automáticamente todo el catálogo
+    const isFiltering = window.activeFilters.cat !== 'all' || window.activeFilters.subcat !== 'all' || brand !== 'all' || branch !== 'all' || search !== '';
+    if (isFiltering) {
+        window.isShowingAll = true;
+        const btnContainer = document.getElementById('show-all-container');
+        if (btnContainer) btnContainer.classList.add('hidden');
+    }
+
+
     const products = Array.from(document.querySelectorAll('.product-item'));
     const noMsg = document.getElementById('no-products-msg');
     
@@ -691,6 +700,12 @@ window.updateProductsByFilter = function (value, type = 'all') {
     if (section) {
         section.scrollIntoView({ behavior: 'smooth' });
     }
+
+    // Limpiar select de marca y sucursal al cambiar de categoría o subcategoría
+    const brandSel = document.getElementById('top-filter-brand');
+    const branchSel = document.getElementById('top-filter-branch');
+    if (brandSel) brandSel.value = 'all';
+    if (branchSel) branchSel.value = 'all';
 
     // Actualizar marcas y aplicar
     window.updateBrandDropdown();
