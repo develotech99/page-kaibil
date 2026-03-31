@@ -13,6 +13,9 @@
          ========================================== -->
     <!-- Vite empaqueta TODO y lo hace local: Tailwind CSS v4, animaciones GSAP, íconos Boxicons, fuentes de Google (Space Grotesk e Inter) y Swiper.js. Nada dependerá de servidores externos. -->
     @vite(['resources/css/app.css', 'resources/js/main.js'])
+    <script>
+        window.categoriesData = @json($menuCategorias);
+    </script>
 
     <style>
         /* Forzar esquema oscuro para controles del sistema (como dropdowns de select) */
@@ -396,6 +399,11 @@
                                     </select>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Grilla de Subcategorías (Dinámica) -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 hidden mb-16" id="subcategory-grid">
+                            <!-- Inyectado por JS -->
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 border-t border-l border-white/5 md:border-none" id="product-grid">

@@ -221,6 +221,38 @@ window.applyFilters = function () {
     const products = Array.from(document.querySelectorAll('.product-item'));
     const noMsg = document.getElementById('no-products-msg');
     
+    // -- LÓGICA DE SUBCATEGORÍAS EN GRID --
+    const subContainer = document.getElementById('subcategory-grid');
+    const prodContainer = document.getElementById('product-grid');
+    const paginationContainer = document.getElementById('p-pagination');
+
+    const shouldShowSubcategories = 
+        window.activeFilters.cat !== 'all' && 
+        window.activeFilters.subcat === 'all' && 
+        brand === 'all' && 
+        branch === 'all' && 
+        search === '';
+        
+    const categoryData = window.activeFilters.cat !== 'all' ? 
+        (window.categoriesData || []).find(c => c.slug === window.activeFilters.cat) : null;
+    
+    const hasSubcategories = categoryData && categoryData.subcategorias && categoryData.subcategorias.length > 0;
+
+    if (shouldShowSubcategories && hasSubcategories) {
+        if (subContainer) {
+            window.renderSubcategoryCards(window.activeFilters.cat);
+            subContainer.classList.remove('hidden');
+        }
+        if (prodContainer) prodContainer.classList.add('hidden');
+        if (noMsg) noMsg.classList.add('hidden');
+        if (paginationContainer) paginationContainer.innerHTML = '';
+        return; // Detenemos aquí, no mostramos productos si mostramos subcategorías
+    } else {
+        if (subContainer) subContainer.classList.add('hidden');
+        if (prodContainer) prodContainer.classList.remove('hidden');
+    }
+    // -- FIN LÓGICA SUBCATEGORÍAS --
+
     let filteredList = [];
     products.forEach(p => {
         const pCat = p.getAttribute('data-cat') || '';
@@ -671,7 +703,57 @@ window.toggleAccordion = function (id) {
             icon.classList.remove('bx-plus');
             icon.classList.add('bx-minus');
         }
+
+        // Al abrir el acordeón de una categoría, filtramos automáticamente por ella
+        // para que se muestren las subcategorías en el grid principal.
+        if (id.startsWith('cat-')) {
+            const slug = id.replace('cat-', '');
+            window.updateProductsByFilter(slug, 'cat');
+        }
     }
+};
+
+window.renderSubcategoryCards = function (categorySlug) {
+    const subContainer = document.getElementById('subcategory-grid');
+    if (!subContainer) return;
+
+    const category = (window.categoriesData || []).find(c => c.slug === categorySlug);
+    if (!category || !category.subcategorias || category.subcategorias.length === 0) {
+        subContainer.classList.add('hidden');
+        return;
+    }
+
+    subContainer.innerHTML = '';
+    category.subcategorias.forEach(sub => {
+        const card = document.createElement('div');
+        const imgSrc = sub.imagen || '/images/logo.jpg';
+
+        card.className = "glass-card rounded-[2rem] p-4 flex flex-col mouse-glow cursor-pointer group/sub relative border border-white/5 hover:border-accent-cyan/30 transition-all duration-500 hover:-translate-y-2 shadow-xl bg-tactical-900/40 backdrop-blur-xl aspect-[4/3] overflow-hidden";
+        card.onclick = () => window.updateProductsByFilter(sub.slug, 'subcat');
+
+        card.innerHTML = `
+            <div class="absolute inset-0 z-0">
+                <img src="${imgSrc}" class="w-full h-full object-cover opacity-20 group-hover/sub:opacity-50 transition-opacity duration-700 blur-[2px]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+            </div>
+            <div class="relative z-10 mt-auto p-4 flex flex-col items-center text-center">
+                <div class="w-12 h-12 rounded-full bg-accent-cyan/10 border border-accent-cyan/30 flex items-center justify-center mb-4 group-hover/sub:bg-accent-cyan group-hover/sub:text-black transition-all duration-500">
+                    <i class='bx bx-category-alt text-2xl'></i>
+                </div>
+                <h4 class="font-display text-xl font-bold text-white uppercase tracking-tighter group-hover/sub:text-accent-cyan transition-colors">${sub.nombre}</h4>
+                <span class="text-[9px] text-gray-400 font-mono tracking-widest mt-2 uppercase border border-white/10 px-2 py-0.5 rounded">Explorar Sección</span>
+            </div>
+        `;
+        subContainer.appendChild(card);
+    });
+
+    subContainer.classList.remove('hidden');
+
+    // Animación de entrada
+    gsap.fromTo(subContainer.children,
+        { opacity: 0, y: 30, scale: 0.9 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.08, ease: "back.out(1.2)" }
+    );
 };
 
 window.updateProductsByFilter = function (value, type = 'all') {

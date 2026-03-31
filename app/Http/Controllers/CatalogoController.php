@@ -39,15 +39,40 @@ class CatalogoController extends Controller
         $menuCategorias = collect($productos)
             ->groupBy('categoria')
             ->map(function ($items, $catName) {
+                // Agrupamos por subcategoría
+                $subGroups = $items->groupBy('subcategoria');
+                
+                // Si solo hay una subcategoría y es vacía, no tiene sentido mostrar grid de subcategorías
+                if ($subGroups->count() === 1 && empty($subGroups->keys()->first())) {
+                    return [
+                        'nombre' => $catName,
+                        'slug'   => strtolower(trim($catName)),
+                        'subcategorias' => []
+                    ];
+                }
+
+                $subcats = $subGroups->map(function($subItems, $subName) {
+                        $isGeneral = empty($subName);
+                        $finalName = $isGeneral ? 'GENERAL / OTROS' : $subName;
+                        
+                        $firstWithImg = $subItems->first(fn($p) => !empty($p['imagenes']));
+                        $img = null;
+                        if ($firstWithImg) {
+                            $storageUrl = rtrim($firstWithImg['storage_url'] ?? '', '/');
+                            $img = $storageUrl . '/' . ltrim($firstWithImg['imagenes'][0], '/');
+                        }
+                        return [
+                            'nombre' => $finalName,
+                            'slug'   => strtolower(trim($isGeneral ? 'all' : $subName)),
+                            'is_fallback' => $isGeneral,
+                            'imagen' => $img
+                        ];
+                    })->values()->all();
+
                 return [
                     'nombre' => $catName,
                     'slug'   => strtolower(trim($catName)),
-                    'subcategorias' => $items->pluck('subcategoria')
-                        ->filter()
-                        ->unique()
-                        ->values()
-                        ->map(fn($sub) => ['nombre' => $sub, 'slug' => strtolower(trim($sub))])
-                        ->all()
+                    'subcategorias' => $subcats
                 ];
             })->values();
 
