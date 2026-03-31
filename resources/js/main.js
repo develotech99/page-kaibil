@@ -87,44 +87,232 @@ document.addEventListener('mousemove', e => {
     }
 });
 
-// 6. LÓGICA DE FILTROS EN JAVASCRIPT
+// 6. LÓGICA DE FILTROS Y PAGINACIÓN EN JAVASCRIPT
+window.currentPage = 1;
+window.itemsPerPage = 25;
+window.isShowingAll = false; // El usuario pidió que al inicio solo se vea una muestra
+
 const filterCatRadios = document.querySelectorAll('input[name="cat"]');
 const filterBranchRadios = document.querySelectorAll('input[name="branch"]');
 const productItems = document.querySelectorAll('.product-item');
 const noProductsMsg = document.getElementById('no-products-msg');
+const paginationContainer = document.getElementById('p-pagination');
+
+window.changeItemsPerPage = function(val) {
+    window.itemsPerPage = parseInt(val);
+    window.currentPage = 1;
+    window.applyFilters();
+};
+
+window.resetCatalog = function() {
+    window.isShowingAll = false;
+    window.currentPage = 1;
+    
+    // Resetear filtros activos (Vista inicial limitada)
+    window.activeFilters.cat = 'all';
+    window.activeFilters.subcat = 'all';
+    const title = document.getElementById('current-filter-title');
+    if (title) title.innerText = 'ARSENAL DISPONIBLE';
+    
+    // Resetear marca y buscador
+    const brandSel = document.getElementById('top-filter-brand');
+    const searchInput = document.getElementById('filter-search');
+    if (brandSel) brandSel.value = 'all';
+    if (searchInput) searchInput.value = '';
+
+    // Volver a mostrar el botón de "Cargar Todo"
+    const btnContainer = document.getElementById('show-all-container');
+    if (btnContainer) btnContainer.classList.remove('hidden');
+    
+    if (typeof window.updateBrandDropdown === 'function') window.updateBrandDropdown();
+    window.applyFilters();
+};
+
+window.showAllProducts = function() {
+    window.isShowingAll = true; // Desbloqueamos el catálogo completo para paginar
+    window.currentPage = 1;
+
+    // Resetear filtros para mostrar TODO si así se requiere en la sidebar o botón
+    window.activeFilters.cat = 'all';
+    window.activeFilters.subcat = 'all';
+    const title = document.getElementById('current-filter-title');
+    if (title) title.innerText = 'ARSENAL DISPONIBLE';
+
+    // Ocultar botón de 'Ver más' si existe
+    const btnContainer = document.getElementById('show-all-container');
+    if (btnContainer) btnContainer.classList.add('hidden');
+    
+    if (typeof window.updateBrandDropdown === 'function') window.updateBrandDropdown();
+    window.applyFilters();
+};
+
+window.goToPage = function(p) {
+    window.currentPage = p;
+    window.applyFilters();
+    
+    // Scroll EXACTO al inicio del catálogo
+    // IMPORTANTE: Usamos la sección 'catalogo' porque la barra superior es STICKY 
+    // y su posición relativa no cambia cuando ya estamos dentro de la sección.
+    const anchor = document.getElementById('catalogo');
+    if (anchor) {
+        const offset = 80; // Ajuste para el navbar fijo
+        const elementPosition = anchor.getBoundingClientRect().top + window.pageYOffset - offset;
+
+        window.scrollTo({
+            top: elementPosition,
+            behavior: 'smooth'
+        });
+    }
+
+    // Efecto visual de revelado para la nueva página
+    const firstItems = document.querySelectorAll('.product-item:not(.hidden)');
+    if (firstItems.length > 0) {
+        gsap.fromTo(firstItems, 
+            { opacity: 0, y: 15 }, 
+            { opacity: 1, y: 0, duration: 0.5, stagger: 0.02, ease: 'power2.out' }
+        );
+    }
+};
+
+window.scrollToSection = function(selector, event) {
+    if (event) event.preventDefault();
+    const section = document.querySelector(selector);
+    if (!section) return;
+
+    const navHeight = 55; 
+    const targetScrollPos = section.offsetTop - navHeight;
+
+    window.scrollTo({
+        top: targetScrollPos,
+        behavior: 'smooth'
+    });
+
+    // Activar scanning si se navega a contacto
+    if (selector === '#contacto') {
+        const scanLine = document.querySelector('.animate-scanner');
+        if (scanLine) {
+            scanLine.style.animation = 'none';
+            void scanLine.offsetWidth; // trigger reflow
+            scanLine.style.animation = 'scanner 4s linear infinite';
+        }
+    }
+};
 
 function filterProducts() {
-    let checkedCat = document.querySelector('input[name="cat"]:checked');
-    let checkedBranch = document.querySelector('input[name="branch"]:checked');
+    window.applyFilters();
+}
 
-    if (!checkedCat || !checkedBranch) return;
+// Actualizar applyFilters para que soporte paginación
+window.applyFilters = function () {
+    const brand = document.getElementById('top-filter-brand')?.value || 'all';
+    const branch = document.getElementById('top-filter-branch')?.value || 'all';
+    const searchInput = document.getElementById('filter-search');
+    const search = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
-    let selectedCat = checkedCat.value;
-    let selectedBranch = checkedBranch.value;
-    let visibleCount = 0;
+    const products = Array.from(document.querySelectorAll('.product-item'));
+    const noMsg = document.getElementById('no-products-msg');
+    
+    let filteredList = [];
+    products.forEach(p => {
+        const pCat = p.getAttribute('data-cat') || '';
+        const pSub = p.getAttribute('data-subcat') || '';
+        const pMar = p.getAttribute('data-marca') || '';
+        const pBra = p.getAttribute('data-branch') || '';
+        const pName = p.getAttribute('data-name') || '';
+        const pInitial = p.getAttribute('data-is-initial') === '1';
 
-    productItems.forEach(item => {
-        let itemCat = item.getAttribute('data-cat');
-        let itemBranches = item.getAttribute('data-branch'); // Ej: "hq,sur"
+        const catMatch = (window.activeFilters.cat === 'all' || pCat === window.activeFilters.cat);
+        const subMatch = (window.activeFilters.subcat === 'all' || pSub === window.activeFilters.subcat);
+        const brandMatch = brand === 'all' || pMar === brand;
+        const branchMatch = branch === 'all' || pBra === branch;
+        const searchMatch = search === '' || pName.includes(search);
 
-        // Checkers
-        let catMatch = (selectedCat === 'all' || itemCat === selectedCat);
-        let branchMatch = (selectedBranch === 'all' || itemBranches.includes(selectedBranch));
+        const limitMatch = (window.isShowingAll || pInitial);
 
-        if (catMatch && branchMatch) {
-            item.classList.remove('product-hidden');
-            visibleCount++;
+        if (catMatch && subMatch && brandMatch && branchMatch && searchMatch && limitMatch) {
+            filteredList.push(p);
         } else {
-            item.classList.add('product-hidden');
+            p.classList.add('hidden', 'product-hidden');
         }
     });
 
-    // Mostrar u ocultar mensaje de "No Resultados"
-    if (visibleCount === 0) {
-        noProductsMsg.classList.remove('hidden');
+    const totalVisibleCount = filteredList.length;
+
+    if (totalVisibleCount > 0) {
+        if (noMsg) noMsg.classList.add('hidden');
+        
+        const totalPages = Math.ceil(totalVisibleCount / window.itemsPerPage);
+        if (window.currentPage > totalPages) window.currentPage = totalPages || 1;
+
+        const startIdx = (window.currentPage - 1) * window.itemsPerPage;
+        const endIdx = startIdx + window.itemsPerPage;
+
+        filteredList.forEach((p, index) => {
+            if (index >= startIdx && index < endIdx) {
+                p.classList.remove('hidden', 'product-hidden');
+            } else {
+                p.classList.add('hidden', 'product-hidden');
+            }
+        });
+
+        renderPagination(totalPages);
     } else {
-        noProductsMsg.classList.add('hidden');
+        if (noMsg) noMsg.classList.remove('hidden');
+        if (paginationContainer) paginationContainer.innerHTML = '';
     }
+};
+
+function renderPagination(totalPages) {
+    if (!paginationContainer) return;
+    if (totalPages <= 1) {
+        paginationContainer.innerHTML = '';
+        return;
+    }
+
+    let html = `
+        <div class="flex flex-wrap items-center justify-center gap-1.5 mt-16 py-6 border-t border-white/5 w-full max-w-[1200px] mx-auto overflow-hidden">
+            <button onclick="goToPage(${window.currentPage - 1})" ${window.currentPage === 1 ? 'disabled' : ''} class="w-10 h-10 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-white hover:bg-accent-cyan hover:text-black disabled:opacity-20 disabled:pointer-events-none transition-all mr-2">
+                <i class='bx bx-chevron-left text-xl'></i>
+            </button>
+    `;
+
+    // Lógica avanzada de ventana deslizante para no distorsionar el diseño hacia los lados
+    const range = 1; // Cuántos botones mostrar alrededor del actual
+    const pages = [];
+
+    for (let i = 1; i <= totalPages; i++) {
+        // Siempre mostrar primera página, última, actual y vecinos inmediatos
+        if (i === 1 || i === totalPages || (i >= window.currentPage - range && i <= window.currentPage + range)) {
+            pages.push(i);
+        } else if (i === window.currentPage - range - 1 || i === window.currentPage + range + 1) {
+            pages.push('...');
+        }
+    }
+
+    // Remover duplicados de '...'
+    const uniquePages = pages.filter((page, index) => pages.indexOf(page) === index);
+
+    uniquePages.forEach(p => {
+        if (p === '...') {
+            html += `<span class="px-2 text-gray-600 font-bold opacity-50">...</span>`;
+        } else {
+            const isCurrent = p === window.currentPage;
+            html += `
+                <button onclick="goToPage(${p})" class="min-w-[40px] h-10 px-2 flex items-center justify-center rounded-lg font-bold text-xs transition-all ${isCurrent ? 'bg-[#e67e22] text-white shadow-[0_0_15px_rgba(230,126,34,0.3)] scale-110 z-10' : 'bg-white/5 border border-white/10 text-gray-500 hover:text-white hover:border-white/30'}">
+                    ${p}
+                </button>
+            `;
+        }
+    });
+
+    html += `
+            <button onclick="goToPage(${window.currentPage + 1})" ${window.currentPage === totalPages ? 'disabled' : ''} class="w-10 h-10 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-white hover:bg-accent-cyan hover:text-black disabled:opacity-20 disabled:pointer-events-none transition-all ml-2">
+                <i class='bx bx-chevron-right text-xl'></i>
+            </button>
+        </div>
+    `;
+
+    paginationContainer.innerHTML = html;
 }
 
 // Asignar eventos a las radios
@@ -133,23 +321,51 @@ filterBranchRadios.forEach(r => r.addEventListener('change', filterProducts));
 
 
 // 7. LÓGICA MAPAS SATELITALES (MUESTRA LA POSICIÓN, SIN ENRUTAMIENTO)
-window.showLocation = function (destinationCoords) {
+window.showLocation = function (coords, name, address) {
     const mapMsg = document.getElementById('map-msg');
     const iframe = document.getElementById('google-map-iframe');
+    const loaderBar = document.getElementById('map-loader-bar');
+    const coordDisplay = document.getElementById('map-coord-display');
+    const subStatus = document.getElementById('map-status-sub');
 
-    // Encender radar visualmente
+    // 1. Resetear UI y mostrar protocolo de carga
+    mapMsg.style.display = 'flex';
     mapMsg.style.opacity = '1';
-    mapMsg.querySelector('p:last-child').innerText = "CALIBRANDO GPS...";
-
-    // Pequeño timeout para el efecto UI de carga y actualizar iFrame
-    setTimeout(() => {
-        iframe.src = `https://maps.google.com/maps?q=${destinationCoords}&hl=es&z=17&t=m&output=embed`;
-
-        // Apagar el overlay del radar 
-        setTimeout(() => {
-            mapMsg.style.opacity = '0';
-        }, 400);
-    }, 600);
+    if (loaderBar) loaderBar.style.width = '0%';
+    if (coordDisplay) coordDisplay.innerText = `LAT: ${coords.split(',')[0]} | LONG: ${coords.split(',')[1]}`;
+    
+    // 2. Animación de barra de carga (Simulada para UI)
+    gsap.to(loaderBar, {
+        width: '100%',
+        duration: 1.2,
+        ease: "power2.inOut",
+        onStart: () => {
+            if (subStatus) subStatus.innerText = "CALIBRANDO SATÉLITES...";
+        },
+        onComplete: () => {
+            if (subStatus) subStatus.innerText = "CONEXIÓN ESTABLECIDA. CARGANDO VISUAL...";
+            
+            // 3. Cargar Mapa e iniciar transición
+            iframe.src = `https://maps.google.com/maps?q=${coords}&hl=es&z=14&t=m&output=embed`;
+            
+            setTimeout(() => {
+                gsap.to(mapMsg, {
+                    opacity: 0,
+                    duration: 0.8,
+                    ease: "power2.inout",
+                    onComplete: () => {
+                        mapMsg.style.display = 'none';
+                    }
+                });
+                
+                // Efecto de brillo en el iframe al entrar (Mejorado para claridad)
+                gsap.fromTo(iframe, 
+                    { opacity: 0, filter: 'brightness(2) saturate(0.2)' }, 
+                    { opacity: 0.9, filter: 'brightness(1.1) saturate(1.1)', duration: 1.5 }
+                );
+            }, 500);
+        }
+    });
 };
 
 // 8. LÓGICA LIGHTBOX IMÁGENES
@@ -346,9 +562,9 @@ const initSwiper = () => {
 
     // Inicializar Carrusel de Videoteca (Premium)
     videoSwiper = new Swiper('.video-slider', {
-        slidesPerView: 1,
-        spaceBetween: 20,
-        rewind: true,
+        slidesPerView: 4,
+        spaceBetween: 30,
+        loop: true,
         speed: 800,
         autoplay: {
             delay: 4000,
@@ -365,33 +581,37 @@ const initSwiper = () => {
         },
         observer: true,
         observeParents: true,
-        centerInsufficientSlides: true,
         watchOverflow: true,
         breakpoints: {
-            640: { slidesPerView: 1, spaceBetween: 20 },
-            768: { slidesPerView: 2, spaceBetween: 30 },
+            320: { slidesPerView: 1, spaceBetween: 20 },
+            640: { slidesPerView: 2, spaceBetween: 20 },
             1024: { slidesPerView: 3, spaceBetween: 30 },
+            1280: { slidesPerView: 4, spaceBetween: 30 },
         },
     });
 
-    // Inicializar Carrusel de Arsenal Destacado
+    // Inicializar Carrusel de Arsenal Destacado (Optimizado con Loop Infinito)
     arsenalSwiper = new Swiper('.arsenal-slider', {
         slidesPerView: 1,
         spaceBetween: 20,
+        loop: true,
+        grabCursor: true,
+        centeredSlides: false,
         autoplay: { delay: 3500, disableOnInteraction: false },
         pagination: { el: '.arsenal-pagination', clickable: true },
-        centerInsufficientSlides: true,
-        watchOverflow: true,
+        navigation: {
+            nextEl: '.arsenal-next',
+            prevEl: '.arsenal-prev'
+        },
         breakpoints: {
             640: { slidesPerView: 2, spaceBetween: 20 },
             768: { slidesPerView: 3, spaceBetween: 24 },
             1024: { slidesPerView: 4, spaceBetween: 24 },
             1280: { slidesPerView: 5, spaceBetween: 30 }
         },
-        navigation: {
-            nextEl: '.arsenal-next',
-            prevEl: '.arsenal-prev'
-        }
+        // Forzar visibilidad si hay slides
+        observer: true,
+        observeParents: true,
     });
 };
 
@@ -446,18 +666,15 @@ window.toggleAccordion = function (id) {
 };
 
 window.updateProductsByFilter = function (value, type = 'all') {
-    // Resetear filtros secundarios al cambiar de categoría principal o subcategoría
-    const brandSel = document.getElementById('top-filter-brand');
-    const branchSel = document.getElementById('top-filter-branch');
-    if (brandSel) brandSel.value = 'all';
-    if (branchSel) branchSel.value = 'all';
+    // Al filtrar por una categoría específica, respetamos el estado actual
+    // (bloqueado o desbloqueado). Ya NO desbloqueamos automáticamente.
+    window.currentPage = 1;
 
     if (type === 'all') {
         window.activeFilters.cat = 'all';
         window.activeFilters.subcat = 'all';
         document.getElementById('current-filter-title').innerText = 'ARSENAL DISPONIBLE';
         
-        // Limpiar buscador si se resetea
         const searchInput = document.getElementById('filter-search');
         if (searchInput) searchInput.value = '';
     } else if (type === 'cat') {
@@ -475,7 +692,7 @@ window.updateProductsByFilter = function (value, type = 'all') {
         section.scrollIntoView({ behavior: 'smooth' });
     }
 
-    // Al cambiar categoría, actualizamos qué marcas son visibles en el dropdown
+    // Actualizar marcas y aplicar
     window.updateBrandDropdown();
     window.applyFilters();
 };
@@ -521,43 +738,6 @@ window.updateBrandDropdown = function () {
     }
 };
 
-window.applyFilters = function () {
-    const brand = document.getElementById('top-filter-brand')?.value || 'all';
-    const branch = document.getElementById('top-filter-branch')?.value || 'all';
-    const searchInput = document.getElementById('filter-search');
-    const search = searchInput ? searchInput.value.toLowerCase().trim() : '';
-
-    const products = document.querySelectorAll('.product-item');
-    const noMsg = document.getElementById('no-products-msg');
-    let count = 0;
-
-    products.forEach(p => {
-        const pCat = p.getAttribute('data-cat') || '';
-        const pSub = p.getAttribute('data-subcat') || '';
-        const pMar = p.getAttribute('data-marca') || '';
-        const pBra = p.getAttribute('data-branch') || '';
-        const pName = p.getAttribute('data-name') || '';
-
-        const catMatch = window.activeFilters.cat === 'all' || pCat === window.activeFilters.cat;
-        const subMatch = window.activeFilters.subcat === 'all' || pSub === window.activeFilters.subcat;
-        const brandMatch = brand === 'all' || pMar === brand;
-        const branchMatch = branch === 'all' || pBra === branch;
-        const searchMatch = search === '' || pName.includes(search);
-
-        if (catMatch && subMatch && brandMatch && branchMatch && searchMatch) {
-            p.classList.remove('hidden');
-            count++;
-        } else {
-            p.classList.add('hidden');
-        }
-    });
-
-    if (noMsg) {
-        if (count === 0) noMsg.classList.remove('hidden');
-        else noMsg.classList.add('hidden');
-    }
-};
-
 window.applySorting = function () {
     const order = document.getElementById('top-sort-order')?.value;
     const grid = document.getElementById('product-grid');
@@ -583,6 +763,8 @@ window.applySorting = function () {
     const fragment = document.createDocumentFragment();
     items.forEach(i => fragment.appendChild(i));
     grid.appendChild(fragment);
+    // Re-aplicar filtros para que la PAGINACIÓN respete el nuevo orden
+    window.applyFilters();
     
     // Solo animamos los que están visibles para que se sienta instantáneo
     const visibleItems = items.filter(i => !i.classList.contains('hidden'));
@@ -607,7 +789,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     const introScreen = document.getElementById('intro-screen');
-    if (!introScreen) return;
+    if (!introScreen) {
+        // Si no hay pantalla de intro, inicializar carruseles de inmediato
+        initSwiper();
+        return;
+    }
 
     // Bloquear scroll inicial mientras ocurre la animación
     document.body.style.overflow = 'hidden';

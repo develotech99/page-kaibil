@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Balam Armería | Elite Tactical Gear</title>
+    <link rel="icon" type="image/jpeg" href="{{ asset('images/logo.jpg') }}">
+    <link rel="shortcut icon" type="image/jpeg" href="{{ asset('images/logo.jpg') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo.jpg') }}">
     
     <!-- ==========================================
          RECURSOS CORE DEL SISTEMA (VITE)
@@ -117,14 +120,14 @@
                 </a>
                 
                 <div class="hidden md:flex items-center gap-8 font-medium text-sm text-gray-300">
-                    <a href="#inicio" class="hover:text-accent-primary transition-colors hover-glow">Inicio</a>
-                    <a href="#catalogo" class="hover:text-accent-primary transition-colors hover-glow">Catálogo</a>
-                    <a href="#empresa" class="hover:text-accent-primary transition-colors hover-glow">Nosotros (Quiénes Somos)</a>
-                    <a href="#contacto" class="hover:text-accent-primary transition-colors hover-glow">Ubicaciones</a>
-                    <a href="#contacto-cards" class="hover:text-accent-primary transition-colors hover-glow">Contacto</a>
+                    <a href="#inicio" onclick="scrollToSection('#inicio', event)" class="hover:text-accent-primary transition-colors hover-glow">Inicio</a>
+                    <a href="#catalogo" onclick="resetCatalog(); scrollToSection('#catalogo', event)" class="hover:text-accent-primary transition-colors hover-glow">Catálogo</a>
+                    <a href="#empresa" onclick="scrollToSection('#empresa', event)" class="hover:text-accent-primary transition-colors hover-glow">Nosotros (Quiénes Somos)</a>
+                    <a href="#contacto" onclick="scrollToSection('#contacto', event)" class="hover:text-accent-primary transition-colors hover-glow">Ubicaciones</a>
+                    <a href="#contacto-cards" onclick="scrollToSection('#contacto-cards', event)" class="hover:text-accent-primary transition-colors hover-glow">Contacto</a>
                 </div>
 
-                <a href="#contacto" class="hidden md:flex bg-white/5 hover:bg-white/10 px-5 py-2.5 rounded border border-white/10 text-white font-medium transition-colors items-center gap-2">
+                <a href="#contacto" onclick="scrollToSection('#contacto', event)" class="hidden md:flex bg-white/5 hover:bg-white/10 px-5 py-2.5 rounded border border-white/10 text-white font-medium transition-colors items-center gap-2">
                     <i class='bx bx-user-circle text-xl'></i> Mi Arsenal
                 </a>
             </div>
@@ -288,7 +291,7 @@
 
                 <div class="flex flex-col lg:flex-row gap-8 lg:gap-10 items-start relative">
                     <!-- Sidebar de Filtros (Izquierda) -->
-                    <aside class="w-full lg:w-1/4 xl:w-1/5 shrink-0 sticky top-[100px] z-20 pb-10">
+                    <aside class="w-full lg:w-1/4 xl:w-1/5 shrink-0 sticky top-[96px] z-20 pb-10">
                         <div class="mb-10 px-4 pt-6">
                             <h3 class="font-display text-4xl font-black text-white uppercase tracking-tighter mb-8 border-b-4 border-accent-cyan pb-2 w-max">
                                 Catálogo
@@ -296,7 +299,7 @@
                             
                             <ul class="flex flex-col border-t border-white/5" id="nav-accordion">
                                 <li>
-                                    <a href="#catalogo" onclick="updateProductsByFilter('all')" class="flex items-center justify-between py-5 border-b border-white/5 group transition-all">
+                                    <a href="#catalogo" onclick="showAllProducts()" class="flex items-center justify-between py-5 border-b border-white/5 group transition-all">
                                         <span class="font-display text-xl font-bold text-white group-hover:text-accent-cyan tracking-widest uppercase">TODOS NUESTROS PRODUCTOS</span>
                                     </a>
                                 </li>
@@ -332,7 +335,7 @@
                     <main class="flex-1 w-full">
                         <!-- Barra de Herramientas Superior / Top Bar Filtros -->
                         <!-- Barra de Herramientas Superior / Top Bar Filtros (Fija al Scroll) -->
-                        <div class="sticky top-[100px] z-40 bg-tactical-900/95 backdrop-blur-2xl -mx-6 px-6 py-6 mb-8 border-b border-white/10 transition-all duration-300 flex flex-col gap-6 shadow-2xl" id="catalogo-top-bar">
+                        <div class="sticky top-[96px] z-40 bg-tactical-900/95 backdrop-blur-2xl -mx-6 px-6 py-6 mb-8 border-b border-white/10 transition-all duration-300 flex flex-col gap-6 shadow-2xl" id="catalogo-top-bar">
                             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                                 <h2 id="current-filter-title" class="font-display text-4xl font-black text-white uppercase tracking-tighter">
                                     ARSENAL DISPONIBLE
@@ -372,8 +375,19 @@
                                     </select>
                                 </div>
 
+                                <!-- Mostrar X (Desplazado a la derecha) -->
+                                <div class="flex flex-col gap-2 min-w-[120px] md:ml-auto">
+                                    <span class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] pl-1">Mostrar X</span>
+                                    <select id="top-items-per-page" onchange="changeItemsPerPage(this.value)" class="bg-tactical-950/80 border border-white/10 rounded-xl py-3 px-4 text-white text-[11px] font-bold uppercase tracking-wider transition-all focus:outline-none focus:border-accent-cyan/50 cursor-pointer hover:bg-white/5">
+                                        <option value="10">10 PRODUCTOS</option>
+                                        <option value="20">20 PRODUCTOS</option>
+                                        <option value="25" selected>25 PRODUCTOS</option>
+                                        <option value="30">30 PRODUCTOS</option>
+                                    </select>
+                                </div>
+
                                 <!-- Ordenar Por -->
-                                <div class="flex flex-col gap-2 min-w-[140px] ml-auto">
+                                <div class="flex flex-col gap-2 min-w-[140px]">
                                     <span class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] pl-1">Ordenar Por</span>
                                     <select id="top-sort-order" onchange="applySorting()" class="bg-tactical-950/80 border border-white/10 rounded-xl py-3 px-4 text-white text-[11px] font-bold uppercase tracking-wider transition-all focus:outline-none focus:border-accent-cyan/50 cursor-pointer hover:bg-white/5">
                                         <option value="default">RELEVANCIA</option>
@@ -384,7 +398,7 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-0 sm:gap-6 border-t border-l border-white/5 md:border-none" id="product-grid">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 border-t border-l border-white/5 md:border-none" id="product-grid">
 
                             @if(isset($productos))
                                 @forelse($productos as $producto)
@@ -405,9 +419,10 @@
                                     $branchName = $producto['sucursal'] ?? 'Multi-Sede';
                                     $branchSlug = $producto['sucursal_slug'] ?? '';
                                 @endphp
-                                <div class="glass-card rounded-none md:rounded-2xl p-2 flex flex-col mouse-glow product-item cursor-pointer group/card border-r border-b border-white/5 md:border-none"
+                                <div class="glass-card rounded-none md:rounded-2xl p-2 flex flex-col mouse-glow product-item cursor-pointer group/card border-r border-b border-white/5 md:border-none {{ !($producto['is_initial'] ?? true) ? 'js-limit-hidden hidden' : '' }}"
                                      data-name="{{ strtolower(trim($producto['nombre'])) }}"
                                      data-cat="{{ strtolower(trim($catName)) }}"
+                                     data-is-initial="{{ ($producto['is_initial'] ?? true) ? '1' : '0' }}"
                                      data-subcat="{{ strtolower(trim($producto['subcategoria'] ?? '')) }}"
                                      data-marca="{{ strtolower(trim($producto['marca'] ?? '')) }}"
                                      data-modelo="{{ strtolower(trim($producto['modelo'] ?? '')) }}"
@@ -464,6 +479,25 @@
 
                         </div>
                         
+                        <!-- Botón Ver Todo el Arsenal (Dinámico) -->
+                        @if(count($productos) > 25)
+                        <div id="show-all-container" class="mt-12 flex justify-center py-6">
+                            <button id="show-all-btn" onclick="showAllProducts()" class="group relative px-12 py-5 bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 transition-all duration-500 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+                                <div class="absolute inset-0 bg-gradient-to-r from-accent-cyan/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                <div class="relative flex items-center gap-3">
+                                    <i class='bx bx-plus-circle text-accent-cyan text-xl group-hover:rotate-180 transition-transform duration-700'></i>
+                                    <span class="text-white text-xs font-black uppercase tracking-[0.3em]">Cargar Todo el Arsenal</span>
+                                </div>
+                                <div class="mt-1 text-[8px] text-gray-500 font-mono text-center tracking-widest opacity-0 group-hover:opacity-60 transition-opacity uppercase">
+                                    +{{ count($productos) - 25 }} Modelos Disponibles
+                                </div>
+                            </button>
+                        </div>
+                        @endif
+
+                        <!-- Contenedor para Paginación Dinámica -->
+                        <div id="p-pagination" class="relative z-50"></div>
+
                         <!-- Nuevo Estado Vacío Estilo Legion -->
                         <div id="no-products-msg" class="hidden py-32 px-6 flex flex-col items-center justify-center text-center animate-fade-in">
                             <div class="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mb-8 border border-white/10">
@@ -486,7 +520,7 @@
         <!-- ==============================================
              1. VIDEOTECA TÁCTICA (VIDEOS)
         =================================================== -->
-        <section class="py-28 relative z-10 overflow-hidden border-y border-white/10">
+        <section class="py-2 relative z-10 overflow-hidden border-y border-white/10">
             <!-- Capas de Background Cinemático y de Cristal -->
             <div class="absolute inset-0 z-0 select-none pointer-events-none">
                 <img src="https://images.unsplash.com/photo-1595590424283-b8f1784cb2c8?q=80&w=1920&auto=format&fit=crop" class="w-full h-full object-cover opacity-20 filter grayscale blur-[2px]">
@@ -502,7 +536,7 @@
             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none"></div>
 
             <div class="max-w-7xl mx-auto px-6 relative z-20">
-                <div class="flex flex-col md:flex-row justify-between items-end mb-14 gsap-reveal gs-fade-up relative">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-1 gsap-reveal gs-fade-up relative">
                     <div class="relative">
                         <div class="absolute -left-6 top-2 bottom-2 w-1 bg-white/50 rounded-r-md"></div>
                         <h2 class="font-display text-4xl md:text-5xl font-black text-white mb-2 tracking-tight drop-shadow-[0_0_20px_rgba(255,255,255,0.2)]">VIDEOTECA <span class="text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-gray-500">TÁCTICA</span></h2>
@@ -519,213 +553,122 @@
                     <!-- Glowing Backdrops for the Carousel -->
                     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[50%] bg-gradient-to-r from-accent-pink/5 via-accent-cyan/10 to-accent-pink/5 blur-[80px] rounded-full pointer-events-none"></div>
                     
-                    <div class="swiper video-slider w-full py-8 !overflow-visible">
+                    <div class="swiper video-slider w-full py-1 !overflow-visible">
                         <div class="swiper-wrapper">
-                            <!-- Video Slide 1 -->
                             <div class="swiper-slide group">
                                 <div class="glass-card rounded-2xl overflow-hidden cursor-crosshair mouse-glow relative border border-white/5 hover:border-accent-pink/30 transition-all h-full flex flex-col transform group-hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(255,42,85,0.15)]">
                                     <div class="aspect-video bg-black relative overflow-hidden">
                                         <div class="absolute inset-0 bg-accent-pink/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
-                                        <img src="https://images.unsplash.com/photo-1595590424283-b8f1784cb2c8?q=80&w=800" class="w-full h-full object-cover opacity-50 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700 pointer-events-none">
-                                        
-                                        <!-- Interactive Play Button -->
+                                        <img src="https://images.unsplash.com/photo-1563821035532-68097b69c4f7?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 pointer-events-none">
                                         <div class="absolute inset-0 flex items-center justify-center z-20">
                                             <div class="w-16 h-16 rounded-full bg-tactical-900/80 border border-accent-pink/40 text-accent-pink flex items-center justify-center backdrop-blur-md group-hover:bg-accent-pink group-hover:text-white group-hover:border-accent-pink group-hover:shadow-[0_0_30px_rgba(255,42,85,0.6)] transition-all duration-300 transform group-hover:scale-110">
-                                                <i class='bx bx-play text-4xl ml-1 group-hover:animate-pulse'></i>
+                                                <i class='bx bx-play text-4xl ml-1'></i>
                                             </div>
                                         </div>
-                                        
-                                        <!-- Duration/Badge -->
                                         <div class="absolute bottom-3 right-3 z-20 bg-black/70 backdrop-blur-md border border-white/10 px-2 py-1 rounded text-[10px] text-white font-mono tracking-widest flex items-center gap-1 group-hover:border-accent-pink/50 transition-colors">
                                            <i class='bx bx-time'></i> 12:45
                                         </div>
                                     </div>
-                                    
                                     <div class="p-6 border-t border-white/5 bg-gradient-to-t from-tactical-950 to-tactical-900 flex-1 relative z-20">
                                         <div class="flex items-center gap-2 mb-3">
-                                            <span class="text-[9px] font-bold tracking-widest text-accent-pink uppercase border border-accent-pink/30 px-2 py-0.5 rounded bg-accent-pink/10 shadow-[0_0_10px_rgba(255,42,85,0.2)]">Trending</span>
+                                            <span class="text-[9px] font-bold tracking-widest text-accent-pink uppercase border border-accent-pink/30 px-2 py-0.5 rounded bg-accent-pink/10 shadow-[0_0_10px_rgba(255,42,85,0.2)]">Premium</span>
                                             <span class="text-[9px] text-gray-500 font-mono tracking-widest uppercase">Pruebas Campo</span>
                                         </div>
-                                        <h4 class="font-display font-bold text-white text-xl md:text-2xl mb-2 group-hover:text-accent-pink transition-colors leading-tight">Prueba de Fuego: Glock 19X</h4>
-                                        <p class="text-sm text-gray-400 font-light line-clamp-2 leading-relaxed mb-4">Análisis exhaustivo del desempeño de la Glock en condiciones extremas de lodo y agua. Fiabilidad sin compromisos.</p>
+                                        <h4 class="font-display font-bold text-white text-xl md:text-2xl mb-2 group-hover:text-accent-pink transition-colors leading-tight">Glock 19X: Rendimiento Extremo</h4>
+                                        <p class="text-sm text-gray-400 font-light line-clamp-2 leading-relaxed mb-4">Análisis detallado de balística y fiabilidad en campo abierto con el modelo Crossover de Glock.</p>
                                         <div class="flex justify-between items-center mt-auto border-t border-white/5 pt-4">
                                             <span class="text-[10px] text-gray-400 font-mono tracking-widest"><i class='bx bx-show text-accent-pink mr-1'></i> 10.5K Vistas</span>
-                                            <span class="text-[10px] font-bold text-white bg-white/5 px-2 py-1 rounded border border-white/10 group-hover:bg-accent-pink/10 group-hover:text-accent-pink transition-colors cursor-pointer uppercase tracking-widest">Ver Video</span>
-                                        </div>
+                                            <button class="text-[10px] font-bold text-white bg-white/5 px-4 py-1 rounded border border-white/10 group-hover:bg-accent-pink group-hover:text-white transition-all uppercase tracking-widest">Ver Video</button>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <!-- Video Slide 2 -->
+                            </div>
                             <div class="swiper-slide group">
-                                <div class="glass-card rounded-2xl overflow-hidden cursor-crosshair mouse-glow relative border border-white/5 hover:border-white/30 transition-all h-full flex flex-col transform group-hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(255,255,255,0.1)]">
+                                <div class="glass-card rounded-2xl overflow-hidden cursor-crosshair mouse-glow relative border border-white/5 hover:border-[#ffd700]/30 transition-all h-full flex flex-col transform group-hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(255,215,0,0.15)]">
                                     <div class="aspect-video bg-black relative overflow-hidden">
-                                        <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
-                                        <img src="https://images.unsplash.com/photo-1584346851458-9635b7192ea6?q=80&w=800" class="w-full h-full object-cover opacity-50 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700 pointer-events-none">
-                                        
-                                        <!-- Interactive Play Button -->
+                                        <div class="absolute inset-0 bg-[#ffd700]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
+                                        <img src="https://images.unsplash.com/photo-1590425712124-7473a2164478?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 pointer-events-none">
                                         <div class="absolute inset-0 flex items-center justify-center z-20">
-                                            <div class="w-16 h-16 rounded-full bg-tactical-900/80 border border-white/40 text-white flex items-center justify-center backdrop-blur-md group-hover:bg-white group-hover:text-black group-hover:border-white group-hover:shadow-[0_0_30px_rgba(255,255,255,0.6)] transition-all duration-300 transform group-hover:scale-110">
-                                                <i class='bx bx-play text-4xl ml-1 group-hover:animate-pulse'></i>
+                                            <div class="w-16 h-16 rounded-full bg-tactical-900/80 border border-[#ffd700]/40 text-[#ffd700] flex items-center justify-center backdrop-blur-md group-hover:bg-[#ffd700] group-hover:text-black group-hover:border-[#ffd700] group-hover:shadow-[0_0_30px_rgba(255,215,0,0.6)] transition-all duration-300 transform group-hover:scale-110">
+                                                <i class='bx bx-play text-4xl ml-1'></i>
                                             </div>
                                         </div>
-
-                                        <div class="absolute bottom-3 right-3 z-20 bg-black/70 backdrop-blur-md border border-white/10 px-2 py-1 rounded text-[10px] text-white font-mono tracking-widest flex items-center gap-1 group-hover:border-white/50 transition-colors">
+                                        <div class="absolute bottom-3 right-3 z-20 bg-black/70 backdrop-blur-md border border-white/10 px-2 py-1 rounded text-[10px] text-white font-mono tracking-widest flex items-center gap-1 group-hover:border-[#ffd700]/50 transition-colors">
                                            <i class='bx bx-time'></i> 18:20
                                         </div>
                                     </div>
-                                    
                                     <div class="p-6 border-t border-white/5 bg-gradient-to-t from-tactical-950 to-tactical-900 flex-1 relative z-20">
                                         <div class="flex items-center gap-2 mb-3">
-                                            <span class="text-[9px] font-bold tracking-widest text-tactical-900 uppercase border border-white px-2 py-0.5 rounded bg-white shadow-[0_0_10px_rgba(255,255,255,0.4)]">Exclusivo</span>
+                                            <span class="text-[9px] font-bold tracking-widest text-[#ffd700] uppercase border border-[#ffd700]/30 px-2 py-0.5 rounded bg-[#ffd700]/10 shadow-[0_0_10px_rgba(255,215,0,0.2)]">Exclusivo</span>
                                             <span class="text-[9px] text-gray-500 font-mono tracking-widest uppercase">Unboxing</span>
                                         </div>
-                                        <h4 class="font-display font-bold text-white text-xl md:text-2xl mb-2 group-hover:text-white transition-colors leading-tight">Review: SIG MCX Spear</h4>
-                                        <p class="text-sm text-gray-400 font-light line-clamp-2 leading-relaxed mb-4">El salto generacional en fusiles de asalto. Conociendo el nuevo estandar de la armada a detalle.</p>
+                                        <h4 class="font-display font-bold text-white text-xl md:text-2xl mb-2 group-hover:text-[#ffd700] transition-colors leading-tight">SIG MCX Spear: El Nuevo Estándar</h4>
+                                        <p class="text-sm text-gray-400 font-light line-clamp-2 leading-relaxed mb-4">El salto generacional en fusiles de asalto. Conociendo el nuevo estándar de la armada a detalle.</p>
                                         <div class="flex justify-between items-center mt-auto border-t border-white/5 pt-4">
-                                            <span class="text-[10px] text-gray-400 font-mono tracking-widest"><i class='bx bx-show text-white mr-1'></i> 8.2K Vistas</span>
-                                            <span class="text-[10px] font-bold text-white bg-white/5 px-2 py-1 rounded border border-white/10 group-hover:bg-white group-hover:text-tactical-900 transition-colors cursor-pointer uppercase tracking-widest">Ver Video</span>
+                                            <span class="text-[10px] text-gray-400 font-mono tracking-widest"><i class='bx bx-show text-[#ffd700] mr-1'></i> 8.2K Vistas</span>
+                                            <button class="text-[10px] font-bold text-white bg-white/5 px-4 py-1 rounded border border-white/10 group-hover:bg-[#ffd700] group-hover:text-black transition-all uppercase tracking-widest">Ver Video</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <!-- Video Slide 3 -->
                             <div class="swiper-slide group">
                                 <div class="glass-card rounded-2xl overflow-hidden cursor-crosshair mouse-glow relative border border-white/5 hover:border-accent-cyan/30 transition-all h-full flex flex-col transform group-hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,240,255,0.15)]">
                                     <div class="aspect-video bg-black relative overflow-hidden">
                                         <div class="absolute inset-0 bg-accent-cyan/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
-                                        <img src="https://images.unsplash.com/photo-1552554747-0b1e3e7f9175?q=80&w=800" class="w-full h-full object-cover opacity-50 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700 pointer-events-none">
-                                        
-                                        <!-- Interactive Play Button -->
+                                        <img src="https://images.unsplash.com/photo-1552554747-0b1e3e7f9175?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 pointer-events-none">
                                         <div class="absolute inset-0 flex items-center justify-center z-20">
                                             <div class="w-16 h-16 rounded-full bg-tactical-900/80 border border-accent-cyan/40 text-accent-cyan flex items-center justify-center backdrop-blur-md group-hover:bg-accent-cyan group-hover:text-black group-hover:border-accent-cyan group-hover:shadow-[0_0_30px_rgba(0,240,255,0.6)] transition-all duration-300 transform group-hover:scale-110">
-                                                <i class='bx bx-play text-4xl ml-1 group-hover:animate-pulse'></i>
+                                                <i class='bx bx-play text-4xl ml-1'></i>
                                             </div>
                                         </div>
-
                                         <div class="absolute bottom-3 right-3 z-20 bg-black/70 backdrop-blur-md border border-white/10 px-2 py-1 rounded text-[10px] text-white font-mono tracking-widest flex items-center gap-1 group-hover:border-accent-cyan/50 transition-colors">
                                            <i class='bx bx-time'></i> 45:10
                                         </div>
                                     </div>
-                                    
                                     <div class="p-6 border-t border-white/5 bg-gradient-to-t from-tactical-950 to-tactical-900 flex-1 relative z-20">
                                         <div class="flex items-center gap-2 mb-3">
                                             <span class="text-[9px] font-bold tracking-widest text-accent-cyan uppercase border border-accent-cyan/30 px-2 py-0.5 rounded bg-accent-cyan/10 shadow-[0_0_10px_rgba(0,240,255,0.2)]">Academia</span>
                                             <span class="text-[9px] text-gray-500 font-mono tracking-widest uppercase">Desarrollo Táctico</span>
                                         </div>
-                                        <h4 class="font-display font-bold text-white text-xl md:text-2xl mb-2 group-hover:text-accent-cyan transition-colors leading-tight">Técnicas CQB con AR-15</h4>
-                                        <p class="text-sm text-gray-400 font-light line-clamp-2 leading-relaxed mb-4">Masterclass de ingreso a cuartos estrechos. Ángulos, posicionamiento e identificación positiva de amenazas.</p>
+                                        <h4 class="font-display font-bold text-white text-xl md:text-2xl mb-2 group-hover:text-accent-cyan transition-colors leading-tight">Masterclass CQB</h4>
+                                        <p class="text-sm text-gray-400 font-light line-clamp-2 leading-relaxed mb-4">Técnicas avanzadas de limpieza de cuartos y despeje de áreas bajo fuego simulado.</p>
                                         <div class="flex justify-between items-center mt-auto border-t border-white/5 pt-4">
                                             <span class="text-[10px] text-gray-400 font-mono tracking-widest"><i class='bx bx-show text-accent-cyan mr-1'></i> 15.1K Vistas</span>
-                                            <span class="text-[10px] font-bold text-white bg-white/5 px-2 py-1 rounded border border-white/10 group-hover:bg-accent-cyan/10 group-hover:text-accent-cyan transition-colors cursor-pointer uppercase tracking-widest">Ver Video</span>
+                                            <button class="text-[10px] font-bold text-white bg-white/5 px-4 py-1 rounded border border-white/10 group-hover:bg-accent-cyan group-hover:text-black transition-all uppercase tracking-widest">Ver Video</button>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
-                            
-                            <!-- Video Slide 4 (Simulate dynamic growth) -->
                             <div class="swiper-slide group">
                                 <div class="glass-card rounded-2xl overflow-hidden cursor-crosshair mouse-glow relative border border-white/5 hover:border-accent-primary/30 transition-all h-full flex flex-col transform group-hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(234,179,8,0.15)]">
                                     <div class="aspect-video bg-black relative overflow-hidden">
                                         <div class="absolute inset-0 bg-accent-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
-                                        <img src="https://images.unsplash.com/photo-1542281286-9e0a16bb7366?q=80&w=800" class="w-full h-full object-cover opacity-50 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700 pointer-events-none filter sepia-[0.3]">
-                                        
-                                        <!-- Interactive Play Button -->
+                                        <img src="https://images.unsplash.com/photo-1542281286-9e0a16bb7366?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 pointer-events-none">
                                         <div class="absolute inset-0 flex items-center justify-center z-20">
-                                            <div class="w-16 h-16 rounded-full bg-tactical-900/80 border border-accent-primary/40 text-accent-primary flex items-center justify-center backdrop-blur-md group-hover:bg-accent-primary group-hover:text-tactical-900 group-hover:border-accent-primary group-hover:shadow-[0_0_30px_rgba(234,179,8,0.6)] transition-all duration-300 transform group-hover:scale-110">
-                                                <i class='bx bx-play text-4xl ml-1 group-hover:animate-pulse'></i>
+                                            <div class="w-16 h-16 rounded-full bg-tactical-900/80 border border-accent-primary/40 text-accent-primary flex items-center justify-center backdrop-blur-md group-hover:bg-accent-primary group-hover:text-black group-hover:border-accent-primary group-hover:shadow-[0_0_30px_rgba(234,179,8,0.6)] transition-all duration-300 transform group-hover:scale-110">
+                                                <i class='bx bx-play text-4xl ml-1'></i>
                                             </div>
                                         </div>
-
                                         <div class="absolute bottom-3 right-3 z-20 bg-black/70 backdrop-blur-md border border-white/10 px-2 py-1 rounded text-[10px] text-white font-mono tracking-widest flex items-center gap-1 group-hover:border-accent-primary/50 transition-colors">
                                            <i class='bx bx-time'></i> 08:32
                                         </div>
                                     </div>
-                                    
                                     <div class="p-6 border-t border-white/5 bg-gradient-to-t from-tactical-950 to-tactical-900 flex-1 relative z-20">
                                         <div class="flex items-center gap-2 mb-3">
                                             <span class="text-[9px] font-bold tracking-widest text-accent-primary uppercase border border-accent-primary/30 px-2 py-0.5 rounded bg-accent-primary/10 shadow-[0_0_10px_rgba(234,179,8,0.2)]">Revisión Polígono</span>
                                             <span class="text-[9px] text-gray-500 font-mono tracking-widest uppercase">Precisión</span>
                                         </div>
-                                        <h4 class="font-display font-bold text-white text-xl md:text-2xl mb-2 group-hover:text-accent-primary transition-colors leading-tight">Sight-in: Optics Especiales</h4>
-                                        <p class="text-sm text-gray-400 font-light line-clamp-2 leading-relaxed mb-4">Calibrando miras térmicas a distancias extremas bajo condiciones adversas de iluminación.</p>
+                                        <h4 class="font-display font-bold text-white text-xl md:text-2xl mb-2 group-hover:text-accent-primary transition-colors leading-tight">Sight-in: Ópticas Élite</h4>
+                                        <p class="text-sm text-gray-400 font-light line-clamp-2 leading-relaxed mb-4">Calibración de miras térmicas y nocturnas a 500 metros en condiciones adversas.</p>
                                         <div class="flex justify-between items-center mt-auto border-t border-white/5 pt-4">
                                             <span class="text-[10px] text-gray-400 font-mono tracking-widest"><i class='bx bx-show text-accent-primary mr-1'></i> 5.1K Vistas</span>
-                                            <span class="text-[10px] font-bold text-white bg-white/5 px-2 py-1 rounded border border-white/10 group-hover:bg-accent-primary/10 group-hover:text-accent-primary transition-colors cursor-pointer uppercase tracking-widest">Ver Video</span>
+                                            <button class="text-[10px] font-bold text-white bg-white/5 px-4 py-1 rounded border border-white/10 group-hover:bg-accent-primary group-hover:text-black transition-all uppercase tracking-widest">Ver Video</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             
-                            <!-- Video Slide 5 -->
-                            <div class="swiper-slide group">
-                                <div class="glass-card rounded-2xl overflow-hidden cursor-crosshair mouse-glow relative border border-white/5 hover:border-green-500/30 transition-all h-full flex flex-col transform group-hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,255,102,0.15)]">
-                                    <div class="aspect-video bg-black relative overflow-hidden">
-                                        <div class="absolute inset-0 bg-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
-                                        <img src="https://images.unsplash.com/photo-1542302321-4f114ad11e4f?q=80&w=800" class="w-full h-full object-cover opacity-50 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700 pointer-events-none filter brightness-75">
-                                        
-                                        <!-- Interactive Play Button -->
-                                        <div class="absolute inset-0 flex items-center justify-center z-20">
-                                            <div class="w-16 h-16 rounded-full bg-tactical-900/80 border border-green-500/40 text-green-500 flex items-center justify-center backdrop-blur-md group-hover:bg-green-500 group-hover:text-tactical-900 group-hover:border-green-500 group-hover:shadow-[0_0_30px_rgba(0,255,102,0.6)] transition-all duration-300 transform group-hover:scale-110">
-                                                <i class='bx bx-play text-4xl ml-1 group-hover:animate-pulse'></i>
-                                            </div>
-                                        </div>
 
-                                        <div class="absolute bottom-3 right-3 z-20 bg-black/70 backdrop-blur-md border border-white/10 px-2 py-1 rounded text-[10px] text-white font-mono tracking-widest flex items-center gap-1 group-hover:border-green-500/50 transition-colors">
-                                           <i class='bx bx-time'></i> 24:15
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="p-6 border-t border-white/5 bg-gradient-to-t from-tactical-950 to-tactical-900 flex-1 relative z-20">
-                                        <div class="flex items-center gap-2 mb-3">
-                                            <span class="text-[9px] font-bold tracking-widest text-green-500 uppercase border border-green-500/30 px-2 py-0.5 rounded bg-green-500/10 shadow-[0_0_10px_rgba(0,255,102,0.2)]">Supervivencia</span>
-                                            <span class="text-[9px] text-gray-500 font-mono tracking-widest uppercase">Camuflaje</span>
-                                        </div>
-                                        <h4 class="font-display font-bold text-white text-xl md:text-2xl mb-2 group-hover:text-green-500 transition-colors leading-tight">Despliegue Sigiloso Nocturno</h4>
-                                        <p class="text-sm text-gray-400 font-light line-clamp-2 leading-relaxed mb-4">Ejercicios de infiltración empleando tecnología Night-Vision y supresores sónicos avanzados.</p>
-                                        <div class="flex justify-between items-center mt-auto border-t border-white/5 pt-4">
-                                            <span class="text-[10px] text-gray-400 font-mono tracking-widest"><i class='bx bx-show text-green-500 mr-1'></i> 22.8K Vistas</span>
-                                            <span class="text-[10px] font-bold text-white bg-white/5 px-2 py-1 rounded border border-white/10 group-hover:bg-green-500/10 group-hover:text-green-500 transition-colors cursor-pointer uppercase tracking-widest">Ver Video</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Video Slide 6 -->
-                            <div class="swiper-slide group">
-                                <div class="glass-card rounded-2xl overflow-hidden cursor-crosshair mouse-glow relative border border-white/5 hover:border-purple-500/30 transition-all h-full flex flex-col transform group-hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(168,85,247,0.15)]">
-                                    <div class="aspect-video bg-black relative overflow-hidden">
-                                        <div class="absolute inset-0 bg-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
-                                        <img src="https://images.unsplash.com/photo-1595185966453-15be9dc5aa84?q=80&w=800" class="w-full h-full object-cover opacity-50 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700 pointer-events-none filter contrast-125">
-                                        
-                                        <!-- Interactive Play Button -->
-                                        <div class="absolute inset-0 flex items-center justify-center z-20">
-                                            <div class="w-16 h-16 rounded-full bg-tactical-900/80 border border-purple-500/40 text-purple-500 flex items-center justify-center backdrop-blur-md group-hover:bg-purple-500 group-hover:text-tactical-900 group-hover:border-purple-500 group-hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] transition-all duration-300 transform group-hover:scale-110">
-                                                <i class='bx bx-play text-4xl ml-1 group-hover:animate-pulse'></i>
-                                            </div>
-                                        </div>
-
-                                        <div class="absolute bottom-3 right-3 z-20 bg-black/70 backdrop-blur-md border border-white/10 px-2 py-1 rounded text-[10px] text-white font-mono tracking-widest flex items-center gap-1 group-hover:border-purple-500/50 transition-colors">
-                                           <i class='bx bx-time'></i> 05:50
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="p-6 border-t border-white/5 bg-gradient-to-t from-tactical-950 to-tactical-900 flex-1 relative z-20">
-                                        <div class="flex items-center gap-2 mb-3">
-                                            <span class="text-[9px] font-bold tracking-widest text-purple-500 uppercase border border-purple-500/30 px-2 py-0.5 rounded bg-purple-500/10 shadow-[0_0_10px_rgba(168,85,247,0.2)]">Entrevista</span>
-                                            <span class="text-[9px] text-gray-500 font-mono tracking-widest uppercase">Podcast</span>
-                                        </div>
-                                        <h4 class="font-display font-bold text-white text-xl md:text-2xl mb-2 group-hover:text-purple-500 transition-colors leading-tight">Mente del Operador</h4>
-                                        <p class="text-sm text-gray-400 font-light line-clamp-2 leading-relaxed mb-4">Charlamos con instructores SWAT sobre la preparación psicológica en situaciones de alto estrés.</p>
-                                        <div class="flex justify-between items-center mt-auto border-t border-white/5 pt-4">
-                                            <span class="text-[10px] text-gray-400 font-mono tracking-widest"><i class='bx bx-show text-purple-500 mr-1'></i> 9.3K Vistas</span>
-                                            <span class="text-[10px] font-bold text-white bg-white/5 px-2 py-1 rounded border border-white/10 group-hover:bg-purple-500/10 group-hover:text-purple-500 transition-colors cursor-pointer uppercase tracking-widest">Ver Video</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
                         </div>
 
@@ -741,149 +684,110 @@
                         </div>
                         
                         <!-- Premium Pagination -->
-                        <div class="swiper-pagination-video mt-10 w-full flex justify-center gap-3"></div>
+                        <div class="swiper-pagination-video mt-2 w-full flex justify-center gap-3"></div>
                     </div>
-                    </div>
-                    
                 </div>
             </div>
         </section>
 
         <!-- ==============================================
-             2. ARSENAL DESTACADO (MÁS VENDIDOS)
+             2. ARSENAL DE ÉLITE (SELECCIÓN TÁCTICA)
         =================================================== -->
-        <section class="py-24 bg-tactical-950 relative z-10 overflow-hidden border-t border-white/5">
-            <!-- Efectos de luz difusa y scanlines -->
-            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 pointer-events-none"></div>
-            <div class="absolute -top-40 -left-40 w-[600px] h-[600px] bg-accent-cyan/10 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
-            <div class="absolute top-1/2 right-0 w-1/3 h-[2px] bg-accent-cyan/20 blur-sm pointer-events-none"></div>
+        <section class="py-16 bg-[#030406] relative z-10 overflow-hidden border-y border-white/5">
+            <!-- Fondo Cristalizado Moderno (Capas de Profundidad) -->
+            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] pointer-events-none"></div>
+            <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-[#e67e22]/5 via-transparent to-accent-cyan/5 pointer-events-none"></div>
+            
+            <!-- Elementos de Cristal Flotantes (Decorativos) -->
+            <div class="absolute -top-20 -right-20 w-96 h-96 bg-white/5 backdrop-blur-[120px] rounded-full pointer-events-none border border-white/10 rotate-12"></div>
+            <div class="absolute bottom-10 -left-20 w-80 h-80 bg-accent-cyan/5 backdrop-blur-[100px] rounded-full pointer-events-none border border-accent-cyan/10 -rotate-12"></div>
 
-            <div class="max-w-[90rem] mx-auto px-6 relative z-20">
-                <div class="flex flex-col items-center text-center mb-16 gsap-reveal gs-fade-up">
-                    <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-accent-cyan/10 border border-accent-cyan/30 rounded-full text-accent-cyan font-mono text-xs uppercase tracking-[0.2em] mb-4">
-                        <i class='bx bxs-star'></i> Los Más Codiciados
+            <div class="max-w-[95%] mx-auto px-6 relative z-20">
+                <div class="flex flex-col md:flex-row items-center md:items-end justify-between mb-16 gap-8 border-b border-white/10 pb-8 relative">
+                    <!-- Brillo lineal táctico en la parte superior del título -->
+                    <div class="absolute top-0 left-0 w-32 h-[1px] bg-gradient-to-r from-transparent via-[#e67e22] to-transparent"></div>
+
+                    <div class="max-w-2xl text-center md:text-left w-full">
+                        <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-black text-white leading-none uppercase tracking-tighter mb-6">
+                            PRODUCTOS <br class="hidden md:block"><span class="text-transparent bg-clip-text bg-gradient-to-r from-[#e67e22] to-yellow-500 drop-shadow-[0_0_20px_rgba(230,126,34,0.3)]">DESTACADOS</span>
+                        </h2>
+                        <p class="text-gray-400 text-sm md:text-lg font-light leading-relaxed max-w-xl mx-auto md:mx-0 border-l-2 border-[#e67e22]/50 pl-6 mt-4">
+                            La excelencia no es una opción, es nuestro <span class="text-white">estándar</span>. Descubre los <span class="text-[#e67e22] font-medium">productos más solicitados</span> por expertos, garantizando máxima calidad y precisión táctica.
+                        </p>
                     </div>
-                    <h2 class="font-display text-4xl md:text-5xl font-black text-white mb-4 tracking-tighter uppercase">Arsenal <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent-cyan to-blue-500">Destacado</span></h2>
-                    <p class="text-gray-300 max-w-2xl text-base md:text-lg font-light leading-relaxed">
-                        Conoce el equipamiento que marca la diferencia. Presentamos <strong class="text-white">los preferidos por nuestros clientes</strong>: plataformas de combate comprobadas y desplegadas por los operativos más exigentes.
-                    </p>
+                    
+                    <div class="hidden md:flex flex-col text-right glass-card px-6 py-4 rounded-2xl border-white/10 bg-white/5 backdrop-blur-md">
+                        <span class="text-[10px] text-gray-400 font-mono tracking-widest uppercase mb-1">Operaciones Balam</span>
+                        <div class="flex items-center gap-2 mt-1">
+                            <i class='bx bx-radar text-[#e67e22] text-2xl animate-pulse'></i>
+                            <span class="text-white font-black tracking-widest uppercase text-xs">Múltiples Sedes</span>
+                        </div>
+                    </div>
                 </div>
+
+                @php
+                    // Obtener una mezcla de productos destacados (con imágenes) - Aumentamos para asegurar carrusel
+                    $destacados = collect($todosLosProductos ?? [])
+                        ->filter(fn($p) => !empty($p['imagenes']))
+                        ->shuffle()
+                        ->take(12); // Tomamos 12 directamente para asegurar que el carrusel tenga qué mostrar
+                @endphp
 
                 <div class="swiper arsenal-slider w-full pb-10">
                     <div class="swiper-wrapper">
-                        <!-- Card 1 -->
-                        <div class="swiper-slide pt-4 pb-4">
-                            <div class="glass-card rounded-[1.5rem] p-2 flex flex-col mouse-glow cursor-crosshair group/card relative border border-white/5 hover:border-accent-cyan/30 transition-colors h-full">
-                                <div class="absolute -top-3 -right-2 bg-gradient-to-br from-yellow-400 to-yellow-600 text-black text-[10px] font-black px-3 py-1 rounded border border-yellow-300 shadow-[0_0_15px_rgba(250,204,21,0.4)] z-30 uppercase tracking-widest transform rotate-3 group-hover/card:rotate-0 transition-transform">BEST SELLER</div>
-                                <div class="bg-gradient-to-b from-black/60 to-black/20 rounded-[1.2rem] h-48 flex items-center justify-center p-4 relative overflow-hidden group border border-white/5">
-                                    <div class="absolute inset-0 bg-accent-cyan/5 opacity-0 group-hover/card:opacity-100 transition-opacity"></div>
-                                    <img src="{{ asset('images/pistol.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 relative z-10" alt="Glock">
+                        @foreach($destacados as $item)
+                        @php
+                            $iImagenes = $item['imagenes'] ?? [];
+                            $iStorage  = rtrim($item['storage_url'] ?? '', '/');
+                            $iAllImgs   = [];
+                            foreach($iImagenes as $img) { $iAllImgs[] = $iStorage . '/' . ltrim($img, '/'); }
+                            if(empty($iAllImgs)) $iAllImgs[] = asset('images/logo.jpg');
+                            
+                            $iImgUrl = $iAllImgs[0];
+                            $iAllImgsJson = json_encode($iAllImgs);
+                            $iCat  = $item['categoria'] ?? 'General';
+                            $iSede = $item['sucursal'] ?? 'Balam Gear';
+                        @endphp
+                        <div class="swiper-slide pt-4 pb-4 h-auto">
+                            <div class="glass-card rounded-[2rem] p-4 flex flex-col mouse-glow cursor-default group/card relative border border-white/5 hover:border-accent-cyan/30 transition-all duration-500 hover:-translate-y-2 h-full shadow-[0_15px_30px_rgba(0,0,0,0.4)] hover:shadow-[0_25px_50px_rgba(0,0,0,0.7)]"
+                                 onclick="openProductModal('{{ addslashes($item['nombre']) }}', {{ $iAllImgsJson }}, '{{ addslashes($iCat) }}', '{{ addslashes($iSede) }}', '{{ addslashes($item['descripcion'] ?? '') }}', 'Me interesa el equipo destacado: {{ addslashes($item['nombre']) }}', { marca: '{{ addslashes($item['marca'] ?? '') }}', modelo: '{{ addslashes($item['modelo'] ?? '') }}', calibre: '{{ addslashes($item['calibre'] ?? '') }}', pais: '{{ addslashes($item['pais_fabricacion'] ?? '') }}' })">
+                                
+                                <div class="bg-tactical-900 border border-white/10 rounded-[1.5rem] h-52 flex items-center justify-center p-3 relative overflow-hidden group mb-6 shadow-inner w-full">
+                                    <div class="absolute inset-0 bg-accent-cyan/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                                    <!-- Contenedor blanco sutil para imágenes con fondos jpg -->
+                                    <div class="w-full h-full flex items-center justify-center bg-white rounded-xl overflow-hidden shadow-[0_5px_15px_rgba(0,0,0,0.5)]">
+                                        <img src="{{ $iImgUrl }}" class="max-h-[90%] max-w-[90%] object-contain group-hover:scale-105 transition-transform duration-700 relative z-10" alt="{{ $item['nombre'] }}">
+                                    </div>
                                 </div>
-                                <div class="p-5 flex flex-col flex-1">
-                                    <h4 class="font-display text-lg font-bold text-white mb-2 group-hover/card:text-accent-cyan transition-colors">Glock 19 Gen 5</h4>
-                                    <p class="text-[11px] text-gray-400 font-mono mb-4 leading-relaxed">Las armas cortas más vendidas del mercado actual.</p>
-                                    <div class="mt-auto flex items-center justify-end border-t border-white/5 pt-3">
-                                        <i class='bx bx-plus-circle text-accent-cyan text-xl opacity-50 group-hover/card:opacity-100'></i>
+
+                                <div class="flex flex-col flex-1 px-2">
+                                    <div class="flex justify-between items-center mb-3">
+                                        <span class="text-[9px] font-bold text-accent-cyan uppercase tracking-tighter opacity-70 border-b border-accent-cyan/20">{{ $iCat }}</span>
+                                        <span class="text-[9px] text-gray-500 font-mono flex items-center"><i class='bx bxs-map text-[#e67e22]/70 mr-1'></i> {{ $iSede }}</span>
+                                    </div>
+                                    <h4 class="font-display text-xl font-bold text-white mb-6 group-hover/card:text-accent-cyan transition-colors leading-tight line-clamp-2">
+                                        {{ $item['nombre'] }}
+                                    </h4>
+
+                                    <div class="mt-auto flex items-center justify-between pt-5 border-t border-white/10">
+                                        <!-- Ver Detalle (Estático) -->
+                                        <button class="text-white/40 group-hover/card:text-white text-[10px] font-bold tracking-[0.1em] transition-all flex items-center gap-2">
+                                            <i class='bx bx-plus-circle text-sm group-hover/card:rotate-90 transition-transform'></i>
+                                            Ver detalle
+                                        </button>
+
+                                        <!-- WhatsApp Directo -->
+                                        <a href="https://wa.me/50244445555?text={{ urlencode('Hola, vi en lo destacado el producto: ' . $item['nombre']) }}" 
+                                           onclick="event.stopPropagation();" 
+                                           target="_blank" 
+                                           class="w-9 h-9 bg-[#25D366]/10 border border-[#25D366]/20 text-[#25D366] rounded-full flex items-center justify-center hover:bg-[#25D366] hover:text-white transition-all shadow-[0_0_10px_rgba(37,211,102,0.15)] active:scale-95 group/wa">
+                                            <i class='bx bxl-whatsapp text-xl'></i>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- Card 2 -->
-                        <div class="swiper-slide pt-4 pb-4">
-                            <div class="glass-card rounded-[1.5rem] p-2 flex flex-col mouse-glow cursor-crosshair group/card relative border border-white/5 hover:border-gray-400/30 transition-colors h-full">
-                                <div class="absolute -top-3 -right-2 bg-gradient-to-br from-gray-300 to-gray-500 text-black text-[10px] font-black px-3 py-1 rounded border border-gray-200 shadow-[0_0_15px_rgba(156,163,175,0.4)] z-30 uppercase tracking-widest transform rotate-[-3deg] group-hover/card:rotate-0 transition-transform">Popular</div>
-                                <div class="bg-gradient-to-b from-black/60 to-black/20 rounded-[1.2rem] h-48 flex items-center justify-center p-4 relative overflow-hidden group border border-white/5">
-                                    <img src="{{ asset('images/ar15.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 relative z-10" alt="M4">
-                                </div>
-                                <div class="p-5 flex flex-col flex-1">
-                                    <h4 class="font-display text-lg font-bold text-white mb-2 group-hover/card:text-gray-300 transition-colors">Fusil Táctico M4A1</h4>
-                                    <p class="text-[11px] text-gray-400 font-mono mb-4 leading-relaxed">Confiabilidad extrema en sistemas de asalto urbano.</p>
-                                    <div class="mt-auto flex items-center justify-end border-t border-white/5 pt-3">
-                                        <i class='bx bx-plus-circle text-gray-400 text-xl opacity-50 group-hover/card:opacity-100'></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Card 3 -->
-                        <div class="swiper-slide pt-4 pb-4">
-                            <div class="glass-card rounded-[1.5rem] p-2 flex flex-col mouse-glow cursor-crosshair group/card relative border border-white/5 hover:border-[#cd7f32]/40 transition-colors h-full">
-                                <div class="absolute -top-3 -right-2 bg-gradient-to-br from-[#cd7f32] to-[#8b5a2b] text-white text-[10px] font-black px-3 py-1 rounded border border-[#cd7f32] shadow-[0_0_15px_rgba(205,127,50,0.4)] z-30 uppercase tracking-widest transform rotate-[2deg] group-hover/card:rotate-0 transition-transform">Favorito</div>
-                                <div class="bg-gradient-to-b from-black/60 to-black/20 rounded-[1.2rem] h-48 flex items-center justify-center p-4 relative overflow-hidden group border border-white/5">
-                                    <img src="{{ asset('images/sniper.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 relative z-10" alt="Remington">
-                                </div>
-                                <div class="p-5 flex flex-col flex-1">
-                                    <h4 class="font-display text-lg font-bold text-white mb-2 group-hover/card:text-[#cd7f32] transition-colors">Remington 700 SPS</h4>
-                                    <p class="text-[11px] text-gray-400 font-mono mb-4 leading-relaxed">Precisión letal para cacería y tiradores deportivos.</p>
-                                    <div class="mt-auto flex items-center justify-end border-t border-white/5 pt-3">
-                                        <i class='bx bx-plus-circle text-[#cd7f32] text-xl opacity-50 group-hover/card:opacity-100'></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Card 4 -->
-                        <div class="swiper-slide pt-4 pb-4">
-                            <div class="glass-card rounded-[1.5rem] p-2 flex flex-col mouse-glow cursor-crosshair group/card relative border border-white/5 hover:border-red-500/30 transition-colors h-full">
-                                <div class="bg-gradient-to-b from-black/60 to-black/20 rounded-[1.2rem] h-48 flex items-center justify-center p-4 relative overflow-hidden group border border-white/5">
-                                    <div class="absolute inset-0 bg-red-500/5 opacity-0 group-hover/card:opacity-100 transition-opacity"></div>
-                                    <img src="{{ asset('images/rifle.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 relative z-10" alt="CZ Scorpion">
-                                </div>
-                                <div class="p-5 flex flex-col flex-1">
-                                    <h4 class="font-display text-lg font-bold text-white mb-2 group-hover/card:text-red-400 transition-colors">CZ Scorpion EVO3</h4>
-                                    <p class="text-[11px] text-gray-400 font-mono mb-4 leading-relaxed">Plataforma PCC ultraligera asombrosamente precisa.</p>
-                                    <div class="mt-auto flex items-center justify-end border-t border-white/5 pt-3">
-                                        <i class='bx bx-plus-circle text-red-500 text-xl opacity-50 group-hover/card:opacity-100'></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Card 5 (Nuevo) -->
-                        <div class="swiper-slide pt-4 pb-4">
-                            <div class="glass-card rounded-[1.5rem] p-2 flex flex-col mouse-glow cursor-crosshair group/card relative border border-white/5 hover:border-accent-pink/30 transition-colors h-full">
-                                <div class="bg-gradient-to-b from-black/60 to-black/20 rounded-[1.2rem] h-48 flex items-center justify-center p-4 relative overflow-hidden group border border-white/5">
-                                    <div class="absolute inset-0 bg-accent-pink/5 opacity-0 group-hover/card:opacity-100 transition-opacity"></div>
-                                    <img src="{{ asset('images/beretta.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 relative z-10" alt="Mossberg">
-                                </div>
-                                <div class="p-5 flex flex-col flex-1">
-                                    <h4 class="font-display text-lg font-bold text-white mb-2 group-hover/card:text-accent-pink transition-colors">Mossberg 590 Tact</h4>
-                                    <p class="text-[11px] text-gray-400 font-mono mb-4 leading-relaxed">Escopeta de bombeo legendaria, protección total del hogar.</p>
-                                    <div class="mt-auto flex items-center justify-end border-t border-white/5 pt-3">
-                                        <i class='bx bx-plus-circle text-accent-pink text-xl opacity-50 group-hover/card:opacity-100'></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Card 6 (Test Corrimiento) -->
-                        <div class="swiper-slide pt-4 pb-4">
-                            <div class="glass-card rounded-[1.5rem] p-2 flex flex-col mouse-glow cursor-crosshair group/card relative border border-white/5 hover:border-red-500/30 transition-colors h-full">
-                                <div class="bg-gradient-to-b from-black/60 to-black/20 rounded-[1.2rem] h-48 flex items-center justify-center p-4 relative overflow-hidden group border border-white/5">
-                                    <div class="absolute inset-0 bg-red-500/5 opacity-0 group-hover/card:opacity-100 transition-opacity"></div>
-                                    <img src="{{ asset('images/cz.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 relative z-10" alt="CZ Scorpion">
-                                </div>
-                                <div class="p-5 flex flex-col flex-1">
-                                    <h4 class="font-display text-lg font-bold text-white mb-2 group-hover/card:text-red-400 transition-colors">Micro Roni Gen 4</h4>
-                                    <p class="text-[11px] text-gray-400 font-mono mb-4 leading-relaxed">Conversión ideal para plataformas de armas cortas.</p>
-                                    <div class="mt-auto flex items-center justify-end border-t border-white/5 pt-3">
-                                        <i class='bx bx-plus-circle text-red-500 text-xl opacity-50 group-hover/card:opacity-100'></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Card 7 (Test Corrimiento) -->
-                        <div class="swiper-slide pt-4 pb-4">
-                            <div class="glass-card rounded-[1.5rem] p-2 flex flex-col mouse-glow cursor-crosshair group/card relative border border-white/5 hover:border-accent-cyan/30 transition-colors h-full">
-                                <div class="bg-gradient-to-b from-black/60 to-black/20 rounded-[1.2rem] h-48 flex items-center justify-center p-4 relative overflow-hidden group border border-white/5">
-                                    <div class="absolute inset-0 bg-accent-cyan/5 opacity-0 group-hover/card:opacity-100 transition-opacity"></div>
-                                    <img src="{{ asset('images/pistol.png') }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 relative z-10" alt="Glock">
-                                </div>
-                                <div class="p-5 flex flex-col flex-1">
-                                    <h4 class="font-display text-lg font-bold text-white mb-2 group-hover/card:text-accent-cyan transition-colors">Colt 1911 .45 ACP</h4>
-                                    <p class="text-[11px] text-gray-400 font-mono mb-4 leading-relaxed">Poder de detención absoluto y confiabilidad clásica.</p>
-                                    <div class="mt-auto flex items-center justify-end border-t border-white/5 pt-3">
-                                        <i class='bx bx-plus-circle text-accent-cyan text-xl opacity-50 group-hover/card:opacity-100'></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
 
                     <!-- Botones de Navegación del Carrusel -->
@@ -916,65 +820,99 @@
                     </p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- Item Ingreso 1 -->
-                    <div class="glass-card rounded-[2rem] p-6 flex flex-col sm:flex-row gap-8 items-center border border-white/5 bg-black/40 hover:bg-black/60 hover:border-accent-pink/50 transition-all duration-500 mouse-glow relative overflow-hidden group/inc hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.8)]">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Item Ingreso 1: Glock 19X -->
+                    <div class="glass-card rounded-[2rem] p-6 flex flex-col gap-6 items-center border border-white/5 bg-black/40 hover:border-accent-pink/50 transition-all duration-500 mouse-glow relative overflow-hidden group/inc hover:-translate-y-2">
                         <!-- Barra de llegada progreso -->
-                        <div class="absolute bottom-0 left-0 h-1.5 bg-tactical-800 w-full"><div class="h-full bg-gradient-to-r from-red-600 to-accent-pink w-[85%] shadow-[0_0_15px_#ff2a55]"></div></div>
-                        <div class="absolute top-4 right-6 text-accent-pink text-[10px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-accent-pink animate-ping"></span> 85% Tránsito
+                        <div class="absolute bottom-0 left-0 h-1.5 bg-tactical-800 w-full"><div class="h-full bg-gradient-to-r from-red-600 to-accent-pink w-[92%] shadow-[0_0_15px_#ff2a55]"></div></div>
+                        <div class="absolute top-4 right-6 text-accent-pink text-[9px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 bg-black/40 px-2 py-1 rounded-full border border-accent-pink/20">
+                            <span class="w-1.5 h-1.5 rounded-full bg-accent-pink animate-ping"></span> 92% TRÁNSITO
                         </div>
 
                         <!-- Miniatura lockeada -->
-                        <div class="w-full md:w-40 xl:w-48 h-32 md:h-full bg-tactical-950/80 rounded-2xl flex items-center justify-center p-4 relative overflow-hidden border border-white/5 shrink-0">
-                            <div class="absolute inset-0 bg-black/60 z-10 flex items-center justify-center rounded-2xl backdrop-blur-sm group-hover/inc:backdrop-blur-[1px] transition-all">
+                        <div class="w-full h-48 bg-tactical-950/80 rounded-2xl flex items-center justify-center p-4 relative overflow-hidden border border-white/5 shrink-0">
+                            <div class="absolute inset-0 bg-black/60 z-10 flex items-center justify-center rounded-2xl backdrop-blur-[2px] group-hover/inc:backdrop-blur-none transition-all duration-700">
                                 <div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center bg-black/50 group-hover/inc:border-accent-pink/50 group-hover/inc:shadow-[0_0_20px_rgba(255,42,85,0.3)] transition-all">
                                     <i class='bx bx-lock-alt text-2xl text-white/50 group-hover/inc:text-accent-pink'></i>
                                 </div>
                             </div>
-                            <img src="{{ asset('images/ar15.png') }}" class="h-full w-full object-contain filter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] opacity-30 group-hover/inc:opacity-50 contrast-125 grayscale group-hover/inc:grayscale-0 transition-all duration-700" alt="Próximo">
+                            <img src="https://images.unsplash.com/photo-1595101834457-fe3419097753?q=80&w=600&auto=format&fit=crop" class="h-full w-full object-cover filter brightness-75 group-hover/inc:brightness-100 transition-all duration-1000" alt="Glock 19X">
                         </div>
 
                         <!-- Detalles -->
-                        <div class="flex-1 w-full text-center sm:text-left py-4">
-                            <div class="inline-flex items-center gap-1.5 text-[10px] text-gray-400 border border-white/10 bg-white/5 px-3 py-1 rounded-full font-bold tracking-widest uppercase mb-4">
-                                <i class='bx bx-ship'></i> Lote ETA: 10 Días
+                        <div class="flex-1 w-full text-center py-2 h-full flex flex-col">
+                            <div class="inline-flex items-center justify-center gap-1.5 text-[9px] text-gray-500 border border-white/5 bg-white/5 px-3 py-1 rounded-full font-bold tracking-[0.2em] uppercase mb-4 w-max mx-auto">
+                                <i class='bx bx-ship'></i> ARRIBO: 04 DÍAS
                             </div>
-                            <h4 class="font-display text-2xl font-black text-white mb-2 group-hover/inc:text-accent-pink transition-colors leading-none tracking-tight">IWI Tavor X95</h4>
-                            <p class="text-sm text-gray-400 font-light mb-6 leading-relaxed">El futuro del combate CQC. Diseño Bullpup ultracompacto para Operadores de Fuerzas Especiales.</p>
-                            <button class="bg-white/10 text-white font-bold uppercase tracking-[0.15em] py-3 px-8 rounded-xl hover:bg-accent-pink hover:text-white transition-all border border-white/20 hover:border-transparent hover:shadow-[0_0_20px_rgba(255,42,85,0.4)] w-full sm:w-auto text-xs">
-                                Pre-ordenar Cupo
+                            <h4 class="font-display text-2xl font-black text-white mb-2 group-hover/inc:text-accent-pink transition-colors leading-none tracking-tight uppercase">GLOCK 19X COYOTE</h4>
+                            <p class="text-[11px] text-gray-400 font-light mb-auto leading-relaxed px-2">Crossover oficial de Glock. Diseño robusto, cargadores de alta capacidad y acabado táctico nPVD.</p>
+                            
+                            <button class="mt-6 bg-white/5 text-white font-bold uppercase tracking-[0.2em] py-4 px-4 rounded-xl hover:bg-accent-pink hover:text-white transition-all border border-white/10 hover:border-transparent hover:shadow-[0_0_30px_rgba(255,42,85,0.3)] w-full text-[10px]">
+                                AGENDAR NOTIFICACIÓN
                             </button>
                         </div>
                     </div>
                     
-                    <!-- Item Ingreso 2 -->
-                    <div class="glass-card rounded-[2rem] p-6 flex flex-col sm:flex-row gap-8 items-center border border-white/5 bg-black/40 hover:bg-black/60 hover:border-accent-cyan/50 transition-all duration-500 mouse-glow relative overflow-hidden group/inc hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.8)]">
+                    <!-- Item Ingreso 2: SIG SAUER MCX -->
+                    <div class="glass-card rounded-[2rem] p-6 flex flex-col gap-6 items-center border border-white/5 bg-black/40 hover:border-accent-cyan/50 transition-all duration-500 mouse-glow relative overflow-hidden group/inc hover:-translate-y-2">
                         <!-- Barra de llegada progreso -->
-                        <div class="absolute bottom-0 left-0 h-1.5 bg-tactical-800 w-full"><div class="h-full bg-gradient-to-r from-blue-600 to-accent-cyan w-[40%] shadow-[0_0_15px_#00e5ff]"></div></div>
-                        <div class="absolute top-4 right-6 text-accent-cyan text-[10px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-ping"></span> 40% Tránsito
+                        <div class="absolute bottom-0 left-0 h-1.5 bg-tactical-800 w-full"><div class="h-full bg-gradient-to-r from-cyan-600 to-accent-cyan w-[65%] shadow-[0_0_15px_#00e5ff]"></div></div>
+                        <div class="absolute top-4 right-6 text-accent-cyan text-[9px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 bg-black/40 px-2 py-1 rounded-full border border-accent-cyan/20">
+                            <span class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-ping"></span> 65% TRÁNSITO
                         </div>
 
                         <!-- Miniatura lockeada -->
-                        <div class="w-full md:w-40 xl:w-48 h-32 md:h-full bg-tactical-950/80 rounded-2xl flex items-center justify-center p-4 relative overflow-hidden border border-white/5 shrink-0">
-                            <div class="absolute inset-0 bg-black/60 z-10 flex items-center justify-center rounded-2xl backdrop-blur-sm group-hover/inc:backdrop-blur-[1px] transition-all">
+                        <div class="w-full h-48 bg-tactical-950/80 rounded-2xl flex items-center justify-center p-4 relative overflow-hidden border border-white/5 shrink-0">
+                            <div class="absolute inset-0 bg-black/60 z-10 flex items-center justify-center rounded-2xl backdrop-blur-[2px] group-hover/inc:backdrop-blur-none transition-all duration-700">
                                 <div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center bg-black/50 group-hover/inc:border-accent-cyan/50 group-hover/inc:shadow-[0_0_20px_rgba(0,229,255,0.3)] transition-all">
                                     <i class='bx bx-lock-alt text-2xl text-white/50 group-hover/inc:text-accent-cyan'></i>
                                 </div>
                             </div>
-                            <img src="{{ asset('images/sniper2.png') }}" class="h-full w-full object-contain filter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] opacity-30 group-hover/inc:opacity-50 contrast-125 grayscale group-hover/inc:grayscale-0 transition-all duration-700" alt="Próximo">
+                            <img src="https://images.unsplash.com/photo-1590425712124-7473a2164478?q=80&w=600&auto=format&fit=crop" class="h-full w-full object-cover filter brightness-75 group-hover/inc:brightness-100 transition-all duration-1000" alt="SIG MCX">
                         </div>
 
                         <!-- Detalles -->
-                        <div class="flex-1 w-full text-center sm:text-left py-4">
-                            <div class="inline-flex items-center gap-1.5 text-[10px] text-gray-400 border border-white/10 bg-white/5 px-3 py-1 rounded-full font-bold tracking-widest uppercase mb-4">
-                                <i class='bx bx-plane-alt'></i> Lote ETA: 28 Días
+                        <div class="flex-1 w-full text-center py-2 h-full flex flex-col">
+                            <div class="inline-flex items-center justify-center gap-1.5 text-[9px] text-gray-500 border border-white/5 bg-white/5 px-3 py-1 rounded-full font-bold tracking-[0.2em] uppercase mb-4 w-max mx-auto">
+                                <i class='bx bx-plane-alt'></i> ARRIBO: 15 DÍAS
                             </div>
-                            <h4 class="font-display text-2xl font-black text-white mb-2 group-hover/inc:text-accent-cyan transition-colors leading-none tracking-tight">Barrett M82A1</h4>
-                            <p class="text-sm text-gray-400 font-light mb-6 leading-relaxed">Poder de demolición anti-material. El rifle .50 BMG de francotirador pesado estándar a nivel global.</p>
-                            <button class="bg-white/10 text-white font-bold uppercase tracking-[0.15em] py-3 px-8 rounded-xl hover:bg-accent-cyan hover:text-black transition-all border border-white/20 hover:border-transparent hover:shadow-[0_0_20px_rgba(0,229,255,0.4)] w-full sm:w-auto text-xs">
-                                Apartar Sistema
+                            <h4 class="font-display text-2xl font-black text-white mb-2 group-hover/inc:text-accent-cyan transition-colors leading-none tracking-tight uppercase">SIG SAUER MCX VIRTUS</h4>
+                            <p class="text-[11px] text-gray-400 font-light mb-auto leading-relaxed px-2">Sistema multi-calibre configurable. La cúspide de la ingeniería de tiro moderna y adaptable.</p>
+                            
+                            <button class="mt-6 bg-white/5 text-white font-bold uppercase tracking-[0.2em] py-4 px-4 rounded-xl hover:bg-accent-cyan hover:text-black transition-all border border-white/10 hover:border-transparent hover:shadow-[0_0_30px_rgba(0,229,255,0.3)] w-full text-[10px]">
+                                AGENDAR NOTIFICACIÓN
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Item Ingreso 3: BENELI M4 -->
+                    <div class="glass-card rounded-[2rem] p-6 flex flex-col gap-6 items-center border border-white/5 bg-black/40 hover:border-yellow-500/50 transition-all duration-500 mouse-glow relative overflow-hidden group/inc hover:-translate-y-2">
+                        <!-- Barra de llegada progreso -->
+                        <div class="absolute bottom-0 left-0 h-1.5 bg-tactical-800 w-full"><div class="h-full bg-gradient-to-r from-yellow-600 to-yellow-400 w-[15%] shadow-[0_0_15px_#fbbf24]"></div></div>
+                        <div class="absolute top-4 right-6 text-yellow-500 text-[9px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 bg-black/40 px-2 py-1 rounded-full border border-yellow-500/20">
+                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-ping"></span> 15% LOGÍSTICA
+                        </div>
+
+                        <!-- Miniatura lockeada -->
+                        <div class="w-full h-48 bg-tactical-950/80 rounded-2xl flex items-center justify-center p-4 relative overflow-hidden border border-white/5 shrink-0">
+                            <div class="absolute inset-0 bg-black/60 z-10 flex items-center justify-center rounded-2xl backdrop-blur-[2px] group-hover/inc:backdrop-blur-none transition-all duration-700">
+                                <div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center bg-black/50 group-hover/inc:border-yellow-500/50 group-hover/inc:shadow-[0_0_20px_rgba(251,191,36,0.3)] transition-all">
+                                    <i class='bx bx-lock-alt text-2xl text-white/50 group-hover/inc:text-yellow-500'></i>
+                                </div>
+                            </div>
+                            <img src="https://images.unsplash.com/photo-1595101834161-267591e6005c?q=80&w=600&auto=format&fit=crop" class="h-full w-full object-cover filter brightness-75 group-hover/inc:brightness-100 transition-all duration-1000" alt="Benelli M4">
+                        </div>
+
+                        <!-- Detalles -->
+                        <div class="flex-1 w-full text-center py-2 h-full flex flex-col">
+                            <div class="inline-flex items-center justify-center gap-1.5 text-[9px] text-gray-500 border border-white/5 bg-white/5 px-3 py-1 rounded-full font-bold tracking-[0.2em] uppercase mb-4 w-max mx-auto">
+                                <i class='bx bx-box'></i> ARRIBO: 45 DÍAS
+                            </div>
+                            <h4 class="font-display text-2xl font-black text-white mb-2 group-hover/inc:text-yellow-500 transition-colors leading-none tracking-tight uppercase">BENELLI M4 TACTICAL</h4>
+                            <p class="text-[11px] text-gray-400 font-light mb-auto leading-relaxed px-2">Escopeta semi-automática de combate. Fiabilidad legendaria para cualquier escenario crítico.</p>
+                            
+                            <button class="mt-6 bg-white/5 text-white font-bold uppercase tracking-[0.2em] py-4 px-4 rounded-xl hover:bg-white hover:text-black transition-all border border-white/10 hover:border-transparent hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] w-full text-[10px]">
+                                AGENDAR NOTIFICACIÓN
                             </button>
                         </div>
                     </div>
@@ -983,7 +921,7 @@
         </section>
  
         <!-- Empresa: Quienes Somos (Rediseño Moderno) -->
-        <section id="empresa" class="relative min-h-[90vh] flex flex-col items-center justify-center bg-tactical-900 overflow-hidden">
+        <section id="empresa" class="relative py-16 flex flex-col items-center bg-tactical-900 overflow-hidden">
             <!-- Background Image con Overlay Cinematográfico -->
             <div class="absolute inset-0 z-0">
                 <img src="https://images.unsplash.com/photo-1595590424283-b8f1784cb2c8?q=80&w=1920&auto=format&fit=crop" class="w-full h-full object-cover opacity-30 grayscale contrast-125">
@@ -993,186 +931,176 @@
 
             <!-- Contenido Central -->
             <div class="relative z-10 max-w-5xl mx-auto px-6 text-center gsap-reveal gs-fade-up">
-                <span class="text-accent-cyan font-bold tracking-[0.5em] uppercase text-[10px] md:text-sm mb-6 block border-b border-white/10 pb-4 w-max mx-auto">Trayectoria y Confianza</span>
-                <h2 class="font-display text-4xl md:text-7xl font-black text-white mb-8 leading-[1] uppercase tracking-tighter drop-shadow-[0_15px_30px_rgba(0,0,0,0.5)]">
+                <span class="text-accent-cyan font-bold tracking-[0.5em] uppercase text-[10px] md:text-sm mb-4 block border-b border-white/10 pb-3 w-max mx-auto">Trayectoria y Confianza</span>
+                <h2 class="font-display text-4xl md:text-7xl font-black text-white mb-6 leading-[1] uppercase tracking-tighter drop-shadow-[0_15px_30px_rgba(0,0,0,0.5)]">
                     DÉCADAS DE <span class="text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-cyan-400">EXCELENCIA</span> <br> NOS RESPALDAN
                 </h2>
-                <p class="text-gray-300 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed font-light mb-12">
-                    Somos líderes en la distribución de armamento de alta gama, brindando asesoría especializada a deportistas de élite, cazadores y expertos en seguridad.
+                <p class="text-gray-300 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed font-light mb-4">
+                    Somos líderes en la distribution de armamento de alta gama, brindando asesoría especializada a deportistas de élite, cazadores y expertos en seguridad.
                 </p>
 
                 <!-- Tarjeta de Marcas (Estilo Excel Example) -->
-                <div class="glass-card rounded-[2rem] p-8 md:p-12 border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.6)] mt-8 mouse-glow relative overflow-hidden group">
+                <div class="glass-card rounded-[2rem] pt-4 pb-8 px-6 md:pt-6 md:pb-12 md:px-12 border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.6)] mt-2 mouse-glow relative overflow-hidden group">
                     <div class="absolute -top-10 -right-10 w-40 h-40 bg-cyan-500/10 blur-[80px] rounded-full group-hover:bg-cyan-500/20 transition-all"></div>
                     
-                    <h4 class="text-xs font-bold text-gray-500 tracking-[0.4em] uppercase mb-10 border-b border-white/5 pb-4">Nuestras Marcas Aliadas</h4>
+                    <h4 class="text-[10px] font-bold text-gray-500 tracking-[0.4em] uppercase mb-4 opacity-70">Nuestras Marcas Aliadas</h4>
                     
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-x-12 gap-y-16 items-center">
-                        <!-- Brand 1: Glock (Simulated Logo) -->
-                        <div class="flex flex-col items-center group/brand opacity-60 hover:opacity-100 transition-all cursor-crosshair">
-                            <span class="text-2xl md:text-3xl font-black text-white tracking-tighter border-2 border-white px-2 leading-none mb-2">GLOCK</span>
-                            <span class="text-[8px] text-cyan-400 font-mono tracking-widest uppercase">Perfection</span>
-                        </div>
-                        
-                        <!-- Brand 2: Beretta -->
-                        <div class="flex flex-col items-center group/brand opacity-60 hover:opacity-100 transition-all cursor-crosshair">
-                             <div class="flex items-center gap-1 mb-2">
-                                <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
-                                <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
-                                <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
-                             </div>
-                            <span class="text-xl md:text-2xl font-display font-bold text-white tracking-widest uppercase italic">BERETTA</span>
-                        </div>
-
-                        <!-- Brand 3: Sig Sauer -->
-                        <div class="flex flex-col items-center group/brand opacity-60 hover:opacity-100 transition-all cursor-crosshair">
-                            <span class="text-2xl md:text-3xl font-display font-bold text-white tracking-tight uppercase">SIG<span class="text-cyan-500">SAUER</span></span>
-                        </div>
-
-                        <!-- Brand 4: CZ -->
-                        <div class="flex flex-col items-center group/brand opacity-60 hover:opacity-100 transition-all cursor-crosshair">
-                            <div class="w-10 h-10 border-2 border-white rounded-full flex items-center justify-center mb-2">
-                                <span class="text-lg font-bold">CZ</span>
-                            </div>
-                            <span class="text-[9px] text-gray-400 font-mono tracking-widest uppercase">Ceska Zbrojovka</span>
-                        </div>
-
-                        <!-- Brand 5: Smith & Wesson -->
-                        <div class="flex flex-col items-center group/brand opacity-60 hover:opacity-100 transition-all cursor-crosshair">
-                            <span class="text-xl md:text-2xl font-serif font-black text-white italic">S&W</span>
-                            <span class="text-[8px] text-gray-500 font-mono tracking-tighter uppercase">Smith & Wesson</span>
-                        </div>
-
-                        <!-- Brand 6: Ruger -->
-                        <div class="flex flex-col items-center group/brand opacity-60 hover:opacity-100 transition-all cursor-crosshair">
-                             <div class="w-12 h-6 bg-red-600 rounded flex items-center justify-center mb-2">
-                                <i class='bx bxs-bolt text-white'></i>
-                             </div>
-                            <span class="text-xl font-black text-white uppercase tracking-tighter">RUGER</span>
-                        </div>
-
-                        <!-- Brand 7: Colt -->
-                        <div class="flex flex-col items-center group/brand opacity-60 hover:opacity-100 transition-all cursor-crosshair">
-                            <i class='bx bxs-chess text-3xl text-white mb-1'></i>
-                            <span class="text-xl font-bold text-white uppercase italic tracking-widest">COLT</span>
-                        </div>
-
-                        <!-- Brand 8: Taurus -->
-                        <div class="flex flex-col items-center group/brand opacity-60 hover:opacity-100 transition-all cursor-crosshair">
-                            <span class="text-2xl font-display font-black text-white tracking-widest uppercase">TAURUS</span>
-                            <span class="text-[8px] text-gray-500 font-mono tracking-widest uppercase">Since 1939</span>
+                    <!-- Marquee Dinámico de Marcas de Armas (Innovador y Compacto) -->
+                    <div class="relative overflow-hidden w-full py-4 [mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]">
+                        <div class="flex gap-16 animate-marquee-balam whitespace-nowrap">
+                            @foreach($marcasArmas as $marca)
+                                <div class="flex flex-col items-center group/brand opacity-60 hover:opacity-100 transition-all cursor-crosshair px-10">
+                                    <span class="text-xl md:text-2xl font-black text-white/40 tracking-widest uppercase italic group-hover:text-white transition-colors">{{ $marca['nombre'] }}</span>
+                                    <span class="text-[7px] text-accent-cyan font-mono tracking-[0.3em] uppercase opacity-0 group-hover/brand:opacity-100 transition-all duration-300">Activo Balam</span>
+                                </div>
+                            @endforeach
+                            <!-- Duplicar el loop para efecto infinito -->
+                            @foreach($marcasArmas as $marca)
+                                <div class="flex flex-col items-center group/brand opacity-60 hover:opacity-100 transition-all cursor-crosshair px-10">
+                                    <span class="text-xl md:text-2xl font-black text-white/40 tracking-widest uppercase italic group-hover:text-white transition-colors">{{ $marca['nombre'] }}</span>
+                                    <span class="text-[7px] text-accent-cyan font-mono tracking-[0.3em] uppercase opacity-0 group-hover/brand:opacity-100 transition-all duration-300">Activo Balam</span>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
         </section>
 
         <!-- Red de Sedes y Contacto (Mapas Integrados) -->
-        <section id="contacto" class="py-10 bg-tactical-950 relative z-10 overflow-hidden border-t border-white/5">
-            <!-- Fondo Cristalizado Moderno -->
-            <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542281286-9e0a16bb7366?q=80&w=1920&auto=format&fit=crop')] bg-cover bg-fixed bg-center opacity-10 pointer-events-none"></div>
-            <div class="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-accent-cyan/15 rounded-full blur-[150px] animate-pulse pointer-events-none" style="animation-duration: 10s;"></div>
-            <div class="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-accent-pink/10 rounded-full blur-[150px] animate-pulse pointer-events-none" style="animation-duration: 8s;"></div>
-            <div class="absolute inset-0 backdrop-blur-[100px] pointer-events-none"></div>
+        <section id="contacto" class="py-16 bg-[#050505] relative z-10 overflow-hidden border-t border-white/5">
+            <!-- 1. Capas de Fondo de Nivel Profesional / Elite Tactical -->
+            
+            <!-- Ruido y Textura Base (Obsidian Noise) -->
+            <div class="absolute inset-0 bg-noise opacity-[0.03] pointer-events-none"></div>
+            
+            <!-- Topografía Digital (Ultra-Sutil) -->
+            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/binding-dark.png')] opacity-20 pointer-events-none"></div>
+            
+            <!-- Tactical Radar HUD (Deco Background) - Profesional -->
+            <div class="absolute top-[-5%] right-[2%] w-[500px] h-[500px] opacity-[0.1] pointer-events-none z-0">
+                <div class="w-full h-full rounded-full border border-[#e67e22]/30 animate-[spin_120s_linear_infinite] shadow-[0_0_50px_rgba(230,126,34,0.1)]"></div>
+                <div class="absolute inset-[5%] rounded-full border border-white/5"></div>
+                <div class="absolute inset-[15%] rounded-full border border-[#e67e22]/10"></div>
+                <div class="absolute inset-[35%] rounded-full border border-white/5"></div>
+                <!-- Líneas de Cruzado Detalladas -->
+                <div class="absolute top-1/2 left-0 w-full h-[0.5px] bg-white/10"></div>
+                <div class="absolute left-1/2 top-0 w-[0.5px] h-full bg-white/10"></div>
+                <div class="absolute top-1/2 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#e67e22]/20 to-transparent blur-[1px]"></div>
+            </div>
+            
+            <!-- Grid de fondo tecnológico de precisión -->
+            <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:100px_100px] pointer-events-none"></div>
+            
+            <!-- Gradientes de Atmósfera Profesional -->
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(230,126,34,0.04)_0%,transparent_60%)] pointer-events-none"></div>
+            <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black to-transparent z-0 pointer-events-none"></div>
 
             <div class="max-w-[95%] mx-auto px-4 z-10 relative">
-                <div class="mb-8 gsap-reveal gs-slide-right max-w-2xl px-4">
-                    <span class="text-accent-cyan font-bold tracking-widest text-[10px] uppercase badge-glow">Presencia Regional</span>
-                    <h2 class="font-display text-4xl font-bold text-white mt-2 drop-shadow-[0_0_15px_rgba(0,240,255,0.4)]">Nuestras Sucursales</h2>
-                    <p class="text-gray-300 text-sm mt-2 font-light leading-relaxed">
-                        <span class="text-accent-cyan font-bold">Visítanos y equípate.</span> Estamos siempre listos para ti.
-                    </p>
+                <!-- Título y Subtítulo Estratégico -->
+                <div class="mb-10 gsap-reveal gs-slide-right flex flex-col items-start gap-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="w-2 h-10 bg-[#e67e22] shadow-[0_0_15px_rgba(230,126,34,0.5)]"></span>
+                        <div>
+                            <h2 class="font-display text-4xl md:text-6xl font-black text-white uppercase tracking-tighter leading-none drop-shadow-[0_0_40px_rgba(0,0,0,0.8)]">Nuestras <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#e67e22] via-white to-[#ffd700] bg-[length:200%_auto] animate-gradient-x">Sedes</span></h2>
+                        </div>
+                    </div>
+                    
+                    <div class="relative pl-5 max-w-2xl">
+                        <div class="absolute left-0 top-0 bottom-0 w-[1px] bg-gradient-to-b from-[#e67e22] to-transparent"></div>
+                        <p class="text-gray-300 text-lg md:text-xl font-light italic tracking-wide leading-relaxed">
+                            <span class="text-white font-bold opacity-100">Distribución estratégica</span> para una cobertura total, asegurando una respuesta inmediata en cada punto de origen.
+                        </p>
+                    </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                    <!-- Tarjetas de sucursales -->
-                    <div class="lg:col-span-4 flex flex-col gap-4 max-h-[75vh] pr-2 overflow-y-auto custom-scrollbar lg:ml-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                    <!-- Sidebar de Sedes -->
+                    <div class="lg:col-span-4 flex flex-col gap-6 max-h-[550px] overflow-y-auto px-2 custom-scrollbar">
                         
                         <!-- Sede Poptún -->
-                        <div class="glass-card p-6 rounded-[2rem] border border-white/5 group cursor-pointer mouse-glow bg-tactical-800/40 hover:bg-tactical-800/80 transition-all hover:border-accent-cyan/40 max-w-[440px]" onclick="showLocation('16.3314,-89.4183')">
-                            <div class="flex items-start gap-6">
-                                <div class="w-32 h-32 rounded-2xl overflow-hidden shrink-0 border border-white/10 group-hover:border-accent-cyan/30 transition-colors shadow-2xl relative mb-4">
-                                    <img src="{{ asset('images/sucursales/poptun.png') }}" class="w-full h-full object-cover transition-all scale-110 group-hover:scale-100" id="img-poptun" alt="Poptun Shop">
-                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                        <i class='bx bx-search-alt text-white text-3xl'></i>
+                        <div class="location-card relative group cursor-pointer" onclick="showLocation('16.3314,-89.4183', 'Sede Poptún', 'Barrio El Centro, Petén')">
+                            <div class="absolute -inset-0.5 bg-gradient-to-r from-[#e67e22]/0 to-[#e67e22]/0 group-hover:from-[#e67e22]/30 group-hover:to-transparent rounded-2xl blur opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                            <div class="relative bg-tactical-900/60 backdrop-blur-xl border border-white/5 rounded-2xl p-5 group-hover:border-[#e67e22]/30 transition-all duration-300">
+                                <div class="flex items-center gap-5">
+                                    <div class="w-24 h-24 rounded-xl overflow-hidden shrink-0 border border-white/10 group-hover:border-[#e67e22]/50 transition-all relative">
+                                        <img src="{{ asset('images/sucursales/poptun.png') }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                        <div class="absolute inset-0 bg-[#e67e22]/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                     </div>
-                                </div>
-                                <div class="flex flex-col justify-between py-1 flex-1">
-                                    <div>
-                                        <h5 class="font-display text-xl font-bold text-white group-hover:text-accent-cyan transition-colors">Sede Poptún</h5>
-                                        <p class="text-gray-400 text-[10px] font-mono uppercase tracking-tighter mt-1">Barrio El Centro, Petén</p>
-                                        <div class="mt-2 flex items-center gap-2 text-[9px] text-accent-cyan font-bold tracking-widest">
-                                            <span class="w-2 h-2 rounded-full bg-accent-cyan animate-pulse"></span> OPERATIVA
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center justify-between mb-1">
+                                            <span class="text-[10px] font-black text-[#e67e22] tracking-widest uppercase">BALAM 01</span>
                                         </div>
-                                    </div>
-                                    
-                                    <div class="flex flex-wrap gap-2 mt-4">
-                                        <a href="https://www.google.com/maps/search/?api=1&query=16.3314,-89.4183" target="_blank" onclick="event.stopPropagation();" class="bg-accent-cyan/10 hover:bg-accent-cyan text-accent-cyan hover:text-tactical-900 border border-accent-cyan/20 px-3 py-2 text-[9px] font-black uppercase rounded-lg flex items-center gap-1 transition-all">
-                                            <i class='bx bx-navigation text-sm'></i> MAPS
-                                        </a>
-                                        <button onclick="event.stopPropagation(); openLightbox('{{ asset('images/sucursales/poptun.png') }}', 'Sede Poptún')" class="bg-white/5 hover:bg-white/20 text-white border border-white/10 px-3 py-2 text-[9px] font-black uppercase rounded-lg flex items-center gap-1 transition-all">
-                                            <i class='bx bx-image text-sm'></i> VER FOTO
-                                        </button>
+                                        <h4 class="text-2xl font-bold text-white group-hover:text-[#e67e22] transition-colors leading-tight">Sede Poptún</h4>
+                                        <p class="text-gray-300 text-xs tracking-wide opacity-80 mt-1 font-medium">Barrio El Centro, Petén</p>
+                                        
+                                        <div class="flex gap-2 mt-4">
+                                            <button onclick="event.stopPropagation(); window.open('https://www.google.com/maps/search/?api=1&query=16.3314,-89.4183','_blank')" class="flex-1 bg-white/5 hover:bg-[#e67e22] hover:text-black py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 hover:border-[#e67e22]">
+                                                <i class='bx bxs-map'></i> MAPS
+                                            </button>
+                                            <button onclick="event.stopPropagation(); openLightbox('{{ asset('images/sucursales/poptun.png') }}', 'Sede Poptún')" class="flex-1 bg-white/5 hover:bg-[#e67e22]/10 hover:border-[#e67e22]/50 hover:text-[#e67e22] py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 shadow-sm hover:shadow-[#e67e22]/20 hover:-translate-y-0.5">
+                                                <i class='bx bx-camera'></i> VER FOTO
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Sede San Luis -->
-                        <div class="glass-card p-6 rounded-[2rem] border border-white/5 group cursor-pointer mouse-glow bg-tactical-800/40 hover:bg-tactical-800/80 transition-all hover:border-accent-cyan/40 max-w-[440px]" onclick="showLocation('16.1956,-89.4442')">
-                            <div class="flex items-start gap-6">
-                                <div class="w-32 h-32 rounded-2xl overflow-hidden shrink-0 border border-white/10 group-hover:border-accent-cyan/30 transition-colors shadow-2xl relative mb-4">
-                                    <img src="https://images.unsplash.com/photo-1595590424283-b8f17842773f?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover transition-all scale-110 group-hover:scale-100" id="img-sanluis" alt="San Luis Shop">
-                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                        <i class='bx bx-search-alt text-white text-3xl'></i>
+                        <div class="location-card relative group cursor-pointer" onclick="showLocation('16.1956,-89.4442', 'Sede San Luis', 'Calle Principal, Petén')">
+                            <div class="absolute -inset-0.5 bg-gradient-to-r from-[#e67e22]/0 to-[#e67e22]/0 group-hover:from-[#e67e22]/30 group-hover:to-transparent rounded-2xl blur opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                            <div class="relative bg-tactical-900/60 backdrop-blur-xl border border-white/5 rounded-2xl p-5 group-hover:border-[#e67e22]/30 transition-all duration-300">
+                                <div class="flex items-center gap-5">
+                                    <div class="w-24 h-24 rounded-xl overflow-hidden shrink-0 border border-white/10 group-hover:border-[#e67e22]/50 transition-all relative">
+                                        <img src="https://images.unsplash.com/photo-1595590424283-b8f17842773f?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                        <div class="absolute inset-0 bg-[#e67e22]/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                     </div>
-                                </div>
-                                <div class="flex flex-col justify-between py-1 flex-1">
-                                    <div>
-                                        <h5 class="font-display text-xl font-bold text-white group-hover:text-accent-cyan transition-colors">Sede San Luis</h5>
-                                        <p class="text-gray-400 text-[10px] font-mono uppercase tracking-tighter mt-1">Calle Principal, Petén</p>
-                                        <div class="mt-2 flex items-center gap-2 text-[9px] text-accent-cyan font-bold tracking-widest">
-                                            <span class="w-2 h-2 rounded-full bg-accent-cyan animate-pulse"></span> OPERATIVA
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center justify-between mb-1">
+                                            <span class="text-[10px] font-black text-[#e67e22] tracking-widest uppercase">BALAM 02</span>
                                         </div>
-                                    </div>
-                                    
-                                    <div class="flex flex-wrap gap-2 mt-4">
-                                        <a href="https://www.google.com/maps/search/?api=1&query=16.1956,-89.4442" target="_blank" onclick="event.stopPropagation();" class="bg-accent-cyan/10 hover:bg-accent-cyan text-accent-cyan hover:text-tactical-900 border border-accent-cyan/20 px-3 py-2 text-[9px] font-black uppercase rounded-lg flex items-center gap-1 transition-all">
-                                            <i class='bx bx-navigation text-sm'></i> MAPS
-                                        </a>
-                                        <button onclick="event.stopPropagation(); openLightbox('https://images.unsplash.com/photo-1595590424283-b8f17842773f?q=80&w=1200', 'Sede San Luis')" class="bg-white/5 hover:bg-white/20 text-white border border-white/10 px-3 py-2 text-[9px] font-black uppercase rounded-lg flex items-center gap-1 transition-all">
-                                            <i class='bx bx-image text-sm'></i> VER FOTO
-                                        </button>
+                                        <h4 class="text-2xl font-bold text-white group-hover:text-[#e67e22] transition-colors leading-tight">Sede San Luis</h4>
+                                        <p class="text-gray-300 text-xs tracking-wide opacity-80 mt-1 font-medium">Calle Principal, Petén</p>
+                                        
+                                        <div class="flex gap-2 mt-4">
+                                            <button onclick="event.stopPropagation(); window.open('https://www.google.com/maps/search/?api=1&query=16.1956,-89.4442','_blank')" class="flex-1 bg-white/5 hover:bg-[#e67e22] hover:text-black py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 hover:border-[#e67e22]">
+                                                <i class='bx bxs-map'></i> MAPS
+                                            </button>
+                                            <button onclick="event.stopPropagation(); openLightbox('https://images.unsplash.com/photo-1595590424283-b8f17842773f?q=80&w=1200', 'Sede San Luis')" class="flex-1 bg-white/5 hover:bg-[#e67e22]/10 hover:border-[#e67e22]/50 hover:text-[#e67e22] py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 shadow-sm hover:shadow-[#e67e22]/20 hover:-translate-y-0.5">
+                                                <i class='bx bx-camera'></i> VER FOTO
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Sede Melchor de Mencos -->
-                        <div class="glass-card p-6 rounded-[2rem] border border-white/5 group cursor-pointer mouse-glow bg-tactical-800/40 hover:bg-tactical-800/80 transition-all hover:border-accent-cyan/40 max-w-[440px]" onclick="showLocation('17.0628,-89.1558')">
-                            <div class="flex items-start gap-6">
-                                <div class="w-32 h-32 rounded-2xl overflow-hidden shrink-0 border border-white/10 group-hover:border-accent-cyan/30 transition-colors shadow-2xl relative mb-4">
-                                    <img src="https://images.unsplash.com/photo-1584282361661-04eecb31548e?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover transition-all scale-110 group-hover:scale-100" id="img-melchor" alt="Melchor Shop">
-                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                        <i class='bx bx-search-alt text-white text-3xl'></i>
+                        <!-- Sede Melchor -->
+                        <div class="location-card relative group cursor-pointer" onclick="showLocation('17.0628,-89.1558', 'Sede Melchor', 'Frontera, Melchor de Mencos')">
+                            <div class="absolute -inset-0.5 bg-gradient-to-r from-accent-pink/0 to-accent-pink/0 group-hover:from-accent-pink/30 group-hover:to-transparent rounded-2xl blur opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                            <div class="relative bg-tactical-900/60 backdrop-blur-xl border border-white/5 rounded-2xl p-5 group-hover:border-accent-pink/30 transition-all duration-300">
+                                <div class="flex items-center gap-5">
+                                    <div class="w-24 h-24 rounded-xl overflow-hidden shrink-0 border border-white/10 group-hover:border-accent-pink/50 transition-all relative">
+                                        <img src="https://images.unsplash.com/photo-1584282361661-04eecb31548e?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                        <div class="absolute inset-0 bg-accent-pink/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                     </div>
-                                </div>
-                                <div class="flex flex-col justify-between py-1 flex-1">
-                                    <div>
-                                        <h5 class="font-display text-xl font-bold text-white group-hover:text-accent-cyan transition-colors">Sede Melchor</h5>
-                                        <p class="text-gray-400 text-[10px] font-mono uppercase tracking-tighter mt-1">Frontera, Melchor de Mencos</p>
-                                        <div class="mt-2 flex items-center gap-2 text-[9px] text-accent-pink font-bold tracking-widest">
-                                            <span class="w-2 h-2 rounded-full bg-accent-pink animate-pulse"></span> ESTRATÉGICO
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center justify-between mb-1">
+                                            <span class="text-[10px] font-black text-accent-pink tracking-widest uppercase">BALAM 03</span>
                                         </div>
-                                    </div>
-                                    
-                                    <div class="flex flex-wrap gap-2 mt-4">
-                                        <a href="https://www.google.com/maps/search/?api=1&query=17.0628,-89.1558" target="_blank" onclick="event.stopPropagation();" class="bg-accent-cyan/10 hover:bg-accent-cyan text-accent-cyan hover:text-tactical-900 border border-accent-cyan/20 px-3 py-2 text-[9px] font-black uppercase rounded-lg flex items-center gap-1 transition-all">
-                                            <i class='bx bx-navigation text-sm'></i> MAPS
-                                        </a>
-                                        <button onclick="event.stopPropagation(); openLightbox('https://images.unsplash.com/photo-1584282361661-04eecb31548e?q=80&w=1200', 'Sede Melchor de Mencos')" class="bg-white/5 hover:bg-white/20 text-white border border-white/10 px-3 py-2 text-[9px] font-black uppercase rounded-lg flex items-center gap-1 transition-all">
-                                            <i class='bx bx-image text-sm'></i> VER FOTO
-                                        </button>
+                                        <h4 class="text-2xl font-bold text-white group-hover:text-[#e67e22] transition-colors leading-tight">Sede Melchor</h4>
+                                        <p class="text-gray-300 text-xs tracking-wide opacity-80 mt-1 font-medium">Frontera, Melchor de Mencos</p>
+                                        
+                                        <div class="flex gap-2 mt-4">
+                                            <button onclick="event.stopPropagation(); window.open('https://www.google.com/maps/search/?api=1&query=17.0628,-89.1558','_blank')" class="flex-1 bg-white/5 hover:bg-accent-pink hover:text-black py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 hover:border-accent-pink">
+                                                <i class='bx bxs-map'></i> MAPS
+                                            </button>
+                                            <button onclick="event.stopPropagation(); openLightbox('https://images.unsplash.com/photo-1584282361661-04eecb31548e?q=80&w=1200', 'Sede Melchor')" class="flex-1 bg-white/5 hover:bg-[#e67e22]/10 hover:border-[#e67e22]/50 hover:text-[#e67e22] py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 shadow-sm hover:shadow-[#e67e22]/20 hover:-translate-y-0.5">
+                                                <i class='bx bx-camera'></i> VER FOTO
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1180,17 +1108,58 @@
 
                     </div>
 
-                    <!-- Contenedor Mapa -->
-                    <div class="lg:col-span-8 bg-[#0a0f18] rounded-[2.5rem] overflow-hidden border border-white/5 relative h-[400px] lg:h-[500px] gsap-reveal gs-fade-up shadow-[0_0_35px_rgba(0,0,0,0.9)] sticky top-24">
-                        <div id="map-msg" class="absolute inset-0 flex flex-col items-center justify-center bg-tactical-900/90 backdrop-blur-md z-10 transition-opacity duration-300 pointer-events-none">
-                            <i class='bx bx-radar text-8xl text-accent-cyan animate-spin mb-4' style="animation-duration: 3s; filter: drop-shadow(0 0 10px rgba(0,240,255,0.8));"></i>
-                            <p class="font-display text-white tracking-widest text-2xl">SISTEMA SATELITAL PREPARADO</p>
-                            <p class="text-sm text-gray-400 mt-2 font-mono" id="map-status-sub">SELECCIONA UNA SUCURSAL DE LA IZQUIERDA PARA VISUALIZAR.</p>
+                    <!-- Tactical Map Console (Centro de Mando) -->
+                    <div class="lg:col-span-8 relative">
+                        <!-- HUD Elements (Gold) -->
+                        <div class="absolute -top-3 -left-3 w-12 h-12 border-t-2 border-l-2 border-[#e67e22] z-20"></div>
+                        <div class="absolute -top-3 -right-3 w-12 h-12 border-t-2 border-r-2 border-[#e67e22] z-20"></div>
+                        <div class="absolute -bottom-3 -left-3 w-12 h-12 border-b-2 border-l-2 border-[#e67e22] z-20"></div>
+                        <div class="absolute -bottom-3 -right-3 w-12 h-12 border-b-2 border-r-2 border-[#e67e22] z-20"></div>
+
+                        <!-- Side Technical Readouts (Gold) -->
+                        <div class="absolute top-6 left-6 z-20 flex flex-col font-mono text-[9px] text-[#e67e22]/60 pointer-events-none">
+                            <span>SATELLITE: BALAM-NAV-01</span>
+                            <span>STATUS: SCANNING...</span>
+                            <span>FREQ: 142.100 MHz</span>
                         </div>
-                        <iframe id="google-map-iframe" width="100%" height="100%" class="absolute inset-0 transition-all duration-1000" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15444.60639918237!2d-89.4183!3d16.3314!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTbCsDE5JzUzLjAiTiA4OcKwMjUnMDUuOSJX!5e0!3m2!1sen!2sgt!4v1680000000000!5m2!1sen!2sgt"></iframe>
+                        <div class="absolute bottom-6 right-6 z-20 flex flex-col font-mono text-[9px] text-[#e67e22]/60 text-right pointer-events-none">
+                            <span id="map-coord-display">LAT: --.---- | LONG: --.----</span>
+                            <span>ENCRYPTION: ACTIVE</span>
+                        </div>
+
+                        <!-- Map Main Glass Frame -->
+                        <div class="relative w-full h-[400px] lg:h-[550px] rounded-[3rem] overflow-hidden border border-white/10 bg-black shadow-[0_0_80px_rgba(0,0,0,1)]">
+                            <!-- Tactical Overlay (Lightened) -->
+                            <div class="absolute inset-0 bg-[#e67e22]/2 pointer-events-none z-10 opacity-30"></div>
+                            
+                            <!-- Static Scanning Line Animation (Gold) -->
+                            <div class="absolute left-0 w-full h-[1px] bg-[#e67e22]/50 shadow-[0_0_15px_rgba(230,126,34,1)] z-20 pointer-events-none opacity-20 animate-scanner"></div>
+
+                            <!-- Welcome Screen / Loader -->
+                            <div id="map-msg" class="absolute inset-0 flex flex-col items-center justify-center bg-[#050505]/95 backdrop-blur-xl z-30 transition-all duration-700">
+                                <div class="relative w-20 h-20 mb-6 group">
+                                    <div class="absolute inset-0 rounded-full border-2 border-[#e67e22]/20 animate-ping"></div>
+                                    <div class="absolute inset-0 rounded-full border-t-4 border-[#e67e22] animate-spin" style="animation-duration: 2s;"></div>
+                                    <div class="absolute inset-2 rounded-full border-b-4 border-white animate-spin-reverse" style="animation-duration: 3s;"></div>
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <i class='bx bx-target-lock text-3xl text-[#e67e22]'></i>
+                                    </div>
+                                </div>
+                                <h3 class="font-display text-xl font-black text-white tracking-[0.2em] uppercase mb-3 text-center">Localizando <span class="text-[#e67e22]">Sucursal</span></h3>
+                                <div class="flex flex-col items-center gap-2">
+                                    <div class="w-48 h-1 bg-white/5 rounded-full overflow-hidden relative border border-white/10">
+                                        <div id="map-loader-bar" class="absolute top-0 left-0 h-full bg-[#e67e22] w-0"></div>
+                                    </div>
+                                    <p class="text-[8px] font-mono text-gray-500 uppercase tracking-widest" id="map-status-sub">Esperando coordenadas...</p>
+                                </div>
+                            </div>
+
+                            <!-- Real Google Map Frame -->
+                            <iframe id="google-map-iframe" width="100%" height="100%" class="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-1000 saturate-[0.8]" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src=""></iframe>
                     </div>
                 </div>
             </div>
+        </section>
 
             <!-- Lightbox Modal -->
             <div id="image-lightbox" onclick="closeLightbox()" class="fixed inset-0 z-[999] bg-black/95 backdrop-blur-xl flex items-center justify-center opacity-0 pointer-events-none transition-all duration-500 overflow-hidden cursor-zoom-out">
@@ -1313,7 +1282,7 @@
     </section>
 
     <!-- Footer Completo -->
-    <footer class="bg-[#05080c] pt-20 pb-20 relative z-10 border-t border-accent-primary/20">
+    <footer id="social-footer" class="bg-[#05080c] pt-20 pb-20 relative z-10 border-t border-accent-primary/20">
         <!-- Decoration light -->
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-accent-primary/50 to-transparent"></div>
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[200px] h-[50px] bg-accent-primary/20 blur-[50px]"></div>
@@ -1354,10 +1323,10 @@
                     <i class='bx bx-compass text-accent-primary'></i> Navegación
                 </h4>
                 <ul class="flex flex-col gap-4">
-                    <li><a href="#" class="text-gray-400 hover:text-accent-primary text-sm flex items-center gap-2 transition-colors group"><i class='bx bx-chevron-right text-gray-600 group-hover:text-accent-primary transition-colors'></i> Inicio</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-accent-primary text-sm flex items-center gap-2 transition-colors group"><i class='bx bx-chevron-right text-gray-600 group-hover:text-accent-primary transition-colors'></i> Nuestro Catálogo</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-accent-primary text-sm flex items-center gap-2 transition-colors group"><i class='bx bx-chevron-right text-gray-600 group-hover:text-accent-primary transition-colors'></i> Nosotros (Academia)</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-accent-primary text-sm flex items-center gap-2 transition-colors group"><i class='bx bx-chevron-right text-gray-600 group-hover:text-accent-primary transition-colors'></i> Sucursales</a></li>
+                    <li><a href="#inicio" onclick="scrollToSection('#inicio', event)" class="text-gray-400 hover:text-accent-primary text-sm flex items-center gap-2 transition-colors group"><i class='bx bx-chevron-right text-gray-600 group-hover:text-accent-primary transition-colors'></i> Inicio</a></li>
+                    <li><a href="#catalogo" onclick="scrollToSection('#catalogo', event)" class="text-gray-400 hover:text-accent-primary text-sm flex items-center gap-2 transition-colors group"><i class='bx bx-chevron-right text-gray-600 group-hover:text-accent-primary transition-colors'></i> Nuestro Catálogo</a></li>
+                    <li><a href="#empresa" onclick="scrollToSection('#empresa', event)" class="text-gray-400 hover:text-accent-primary text-sm flex items-center gap-2 transition-colors group"><i class='bx bx-chevron-right text-gray-600 group-hover:text-accent-primary transition-colors'></i> Nosotros (Academia)</a></li>
+                    <li><a href="#contacto" onclick="scrollToSection('#contacto', event)" class="text-gray-400 hover:text-accent-primary text-sm flex items-center gap-2 transition-colors group"><i class='bx bx-chevron-right text-gray-600 group-hover:text-accent-primary transition-colors'></i> Sucursales</a></li>
                 </ul>
             </div>
 
@@ -1415,13 +1384,7 @@
             </div>
         </div>
 
-        <!-- Legal Disclaimer Bar -->
-        <div class="bg-accent-primary text-tactical-900 py-3 px-4 relative z-20 mb-16 md:mb-12">
-            <p class="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 max-w-[95%] mx-auto text-center opacity-80">
-                <i class='bx bx-error-circle text-sm sm:text-base hidden sm:block'></i>
-                <span>Aviso legal: La comercialización y venta de armas y municiones están estrictamente reguladas de acuerdo a la ley de armas y municiones en Guatemala y supervisadas por DIGECAM.</span>
-            </p>
-        </div>
+
     </footer>
 
 
@@ -1491,14 +1454,21 @@
     </div>
 
     <!-- 2. Simple Image Lightbox (Para el mapa de Sucursales) -->
-    <div id="image-lightbox" class="fixed inset-0 z-[110] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
-        <div class="absolute inset-0 bg-tactical-900/95 backdrop-blur-md" onclick="closeLightbox()"></div>
-        <div class="relative z-10 w-[90%] max-w-5xl flex flex-col items-center">
-            <div class="flex justify-between items-center w-full mb-4">
-                <h3 id="lightbox-title" class="font-display text-white text-xl md:text-2xl font-bold uppercase tracking-widest"></h3>
-                <button onclick="closeLightbox()" class="text-gray-400 hover:text-white transition-colors bg-white/5 w-10 h-10 rounded-full flex items-center justify-center"><i class='bx bx-x text-2xl'></i></button>
+    <div id="image-lightbox" class="fixed inset-0 z-[110] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300 p-4">
+        <div class="absolute inset-0 bg-tactical-900/95 backdrop-blur-xl" onclick="closeLightbox()"></div>
+        <div class="relative z-10 w-full max-w-4xl bg-tactical-900/40 border border-white/10 rounded-[2.5rem] overflow-hidden backdrop-blur-xl shadow-[0_0_100px_rgba(0,0,0,0.8)]">
+            <div class="flex justify-between items-center px-8 py-6 border-b border-white/5">
+                <h3 id="lightbox-title" class="font-display text-white text-xl font-bold uppercase tracking-widest"></h3>
+                <button onclick="closeLightbox()" class="text-gray-400 hover:text-white transition-colors bg-white/5 w-10 h-10 rounded-full flex items-center justify-center border border-white/10"><i class='bx bx-x text-2xl'></i></button>
             </div>
-            <img id="lightbox-img" src="" class="max-w-full max-h-[75vh] object-contain rounded-xl border border-white/10 shadow-[0_0_40px_rgba(0,0,0,0.8)]">
+            <div class="aspect-video w-full flex items-center justify-center bg-black/60 relative group">
+                <!-- Scan line effect over the image -->
+                <div class="absolute inset-0 bg-[linear-gradient(rgba(230,126,34,0.05)_1px,transparent_1px)] bg-[size:100%_4px] pointer-events-none opacity-30"></div>
+                <img id="lightbox-img" src="" class="w-full h-full object-contain relative z-10">
+            </div>
+            <div class="px-8 py-4 bg-black/20 flex justify-center">
+                <span class="text-[9px] font-mono text-[#e67e22] tracking-[0.3em] uppercase">Visualización de Activo Balam-01 // Operativo</span>
+            </div>
         </div>
     </div>
 

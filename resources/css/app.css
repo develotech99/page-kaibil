@@ -1,5 +1,39 @@
 @import 'tailwindcss';
 
+@keyframes scanner {
+    0% { top: 0; }
+    50% { top: 100%; opacity: 0.8; }
+    100% { top: 0; }
+}
+
+@keyframes spin-reverse {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
+}
+
+.animate-scanner {
+    animation: scanner 4s linear infinite;
+}
+
+.animate-spin-reverse {
+    animation: spin-reverse 8s linear infinite;
+}
+
+/* Custom Scrollbar for Tactical HUD */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(0, 240, 255, 0.2);
+    border-radius: 20px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 240, 255, 0.5);
+}
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
@@ -118,6 +152,11 @@
         background-size: 40px 40px;
         background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
             linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    }
+
+    /* Profesional Noise Texture */
+    .bg-noise {
+        background-image: var(--background-image-noise);
     }
 
     /* Swiper Hero Fix Overlap */
@@ -723,4 +762,52 @@ body.balam-hovering #s-arm-r {
     width: 60px;
     background: var(--color-accent-pink);
     box-shadow: 0 0 10px rgba(255, 42, 85, 0.6);
+}
+
+/* ====================================================
+   4. CUSTOM SWIPER PAGINATION FOR ARSENAL DESTACADO
+   ==================================================== */
+.arsenal-pagination {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    padding-top: 20px;
+}
+
+.arsenal-pagination .swiper-pagination-bullet {
+    width: 24px;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 1;
+    margin: 0 !important;
+}
+
+.arsenal-pagination .swiper-pagination-bullet:hover {
+    background: rgba(230, 126, 34, 0.3);
+    border-color: rgba(230, 126, 34, 0.5);
+    width: 30px;
+}
+
+.arsenal-pagination .swiper-pagination-bullet-active {
+    width: 50px;
+    background: linear-gradient(90deg, #e67e22, #f1c40f);
+    border-color: #f1c40f;
+    box-shadow: 0 0 15px rgba(230, 126, 34, 0.6);
+}
+
+/* MARQUEE BALAM */
+@keyframes marquee-balam {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(-50% - 2rem)); }
+}
+.animate-marquee-balam {
+    display: flex;
+    width: max-content;
+    animation: marquee-balam 40s linear infinite;
+}
+.animate-marquee-balam:hover {
+    animation-play-state: paused;
 }
