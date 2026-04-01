@@ -143,6 +143,7 @@ window.showAllProducts = function() {
     if (btnContainer) btnContainer.classList.add('hidden');
     
     if (typeof window.updateBrandDropdown === 'function') window.updateBrandDropdown();
+    if (typeof window.updateFilterUI === 'function') window.updateFilterUI();
     window.applyFilters();
 };
 
@@ -225,33 +226,7 @@ window.applyFilters = function () {
     const subContainer = document.getElementById('subcategory-grid');
     const prodContainer = document.getElementById('product-grid');
     const paginationContainer = document.getElementById('p-pagination');
-
-    const shouldShowSubcategories = 
-        window.activeFilters.cat !== 'all' && 
-        window.activeFilters.subcat === 'all' && 
-        brand === 'all' && 
-        branch === 'all' && 
-        search === '';
-        
-    const categoryData = window.activeFilters.cat !== 'all' ? 
-        (window.categoriesData || []).find(c => c.slug === window.activeFilters.cat) : null;
-    
-    const hasSubcategories = categoryData && categoryData.subcategorias && categoryData.subcategorias.length > 0;
-
-    if (shouldShowSubcategories && hasSubcategories) {
-        if (subContainer) {
-            window.renderSubcategoryCards(window.activeFilters.cat);
-            subContainer.classList.remove('hidden');
-        }
-        if (prodContainer) prodContainer.classList.add('hidden');
-        if (noMsg) noMsg.classList.add('hidden');
-        if (paginationContainer) paginationContainer.innerHTML = '';
-        return; // Detenemos aquí, no mostramos productos si mostramos subcategorías
-    } else {
-        if (subContainer) subContainer.classList.add('hidden');
-        if (prodContainer) prodContainer.classList.remove('hidden');
-    }
-    // -- FIN LÓGICA SUBCATEGORÍAS --
+    // -- FIN LÓGICA SUBCATEGORÍAS (REMOVIDA PARA ACCESO DIRECTO A PRODUCTOS) --
 
     let filteredList = [];
     products.forEach(p => {
@@ -654,6 +629,21 @@ const initSwiper = () => {
         observer: true,
         observeParents: true,
     });
+
+    // Inicializar Carrusel de Promociones y Premios
+    const promoSwiper = new Swiper('.promo-slider', {
+        slidesPerView: 1,
+        spaceBetween: 20,
+        autoplay: { delay: 4000, disableOnInteraction: false },
+        pagination: { el: '.promo-pagination', clickable: true },
+        navigation: { nextEl: '.promo-next', prevEl: '.promo-prev' },
+        breakpoints: {
+            640: { slidesPerView: 2, spaceBetween: 24 },
+            1024: { slidesPerView: 2, spaceBetween: 30 }
+        },
+        observer: true,
+        observeParents: true,
+    });
 };
 
 // Initialization will be performed after the entry animation completes.
@@ -704,12 +694,8 @@ window.toggleAccordion = function (id) {
             icon.classList.add('bx-minus');
         }
 
-        // Al abrir el acordeón de una categoría, filtramos automáticamente por ella
-        // para que se muestren las subcategorías en el grid principal.
-        if (id.startsWith('cat-')) {
-            const slug = id.replace('cat-', '');
-            window.updateProductsByFilter(slug, 'cat');
-        }
+        // (REMOVIDO: Ya no filtra automáticamente al abrir el acordeón,
+        // el usuario debe dar clic explícitamente a una subcategoría o a 'Ver Todo').
     }
 };
 
@@ -756,7 +742,7 @@ window.renderSubcategoryCards = function (categorySlug) {
     );
 };
 
-window.updateProductsByFilter = function (value, type = 'all') {
+window.updateProductsByFilter = function (value, type = 'all', element = null) {
     // Al filtrar por una categoría específica, respetamos el estado actual
     // (bloqueado o desbloqueado). Ya NO desbloqueamos automáticamente.
     window.currentPage = 1;
@@ -789,9 +775,50 @@ window.updateProductsByFilter = function (value, type = 'all') {
     if (brandSel) brandSel.value = 'all';
     if (branchSel) branchSel.value = 'all';
 
+    // Actualizar visual de la barra lateral (active states)
+    window.updateFilterUI();
+
     // Actualizar marcas y aplicar
     window.updateBrandDropdown();
     window.applyFilters();
+};
+
+window.updateFilterUI = function() {
+    const filterItems = document.querySelectorAll('.filter-item');
+    filterItems.forEach(item => {
+        const itemType = item.id === 'filter-all' ? 'all' : (item.onclick.toString().includes('subcat') ? 'subcat' : 'cat');
+        const itemVal = item.getAttribute('data-filter') || 'all';
+        
+        let isActive = false;
+        if (item.id === 'filter-all') {
+            isActive = (window.activeFilters.cat === 'all' && window.activeFilters.subcat === 'all');
+        } else if (window.activeFilters.subcat !== 'all') {
+            // Si hay subcat activa, solo marca esa subcat
+            isActive = (window.activeFilters.subcat === itemVal);
+        } else {
+            // Si solo hay cat activa, marca la cat y su "Ver todo"
+            isActive = (window.activeFilters.cat === itemVal);
+        }
+
+        const box = item.querySelector('.selection-box');
+        const check = item.querySelector('.bx-check');
+
+        if (isActive) {
+            item.classList.add('active');
+            if (box) {
+                box.classList.remove('border-white/20');
+                box.classList.add('border-accent-cyan', 'bg-accent-cyan');
+            }
+            if (check) check.classList.remove('hidden');
+        } else {
+            item.classList.remove('active');
+            if (box) {
+                box.classList.add('border-white/20');
+                box.classList.remove('border-accent-cyan', 'bg-accent-cyan');
+            }
+            if (check) check.classList.add('hidden');
+        }
+    });
 };
 
 window.updateBrandDropdown = function () {

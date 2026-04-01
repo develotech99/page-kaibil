@@ -811,3 +811,9 @@ body.balam-hovering #s-arm-r {
 .animate-marquee-balam:hover {
     animation-play-state: paused;
 }
+
+/* Scan animation for tactical overlays */
+@keyframes scan {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(3000%); }
+}

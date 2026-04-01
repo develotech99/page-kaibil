@@ -294,7 +294,7 @@
 
                 <div class="flex flex-col lg:flex-row gap-8 lg:gap-10 items-start relative">
                     <!-- Sidebar de Filtros (Izquierda) -->
-                    <aside class="w-full lg:w-1/4 xl:w-1/5 shrink-0 sticky top-[96px] z-20 pb-10">
+                    <aside class="w-full lg:w-1/4 xl:w-1/5 shrink-0 sticky top-[96px] z-20 pb-10 max-h-[calc(100vh-140px)] overflow-y-auto hide-scrollbar custom-scrollbar">
                         <div class="mb-10 px-4 pt-6">
                             <h3 class="font-display text-4xl font-black text-white uppercase tracking-tighter mb-8 border-b-4 border-accent-cyan pb-2 w-max">
                                 Catálogo
@@ -302,8 +302,11 @@
                             
                             <ul class="flex flex-col border-t border-white/5" id="nav-accordion">
                                 <li>
-                                    <a href="#catalogo" onclick="showAllProducts()" class="flex items-center justify-between py-5 border-b border-white/5 group transition-all">
+                                    <a href="#catalogo" onclick="showAllProducts()" class="flex items-center justify-between py-5 border-b border-white/5 group transition-all filter-item active" id="filter-all">
                                         <span class="font-display text-xl font-bold text-white group-hover:text-accent-cyan tracking-widest uppercase">TODOS NUESTROS PRODUCTOS</span>
+                                        <div class="w-5 h-5 rounded border-2 border-accent-cyan bg-accent-cyan flex items-center justify-center transition-all selection-box">
+                                            <i class='bx bx-check text-black font-bold'></i>
+                                        </div>
                                     </a>
                                 </li>
                                 @if(isset($menuCategorias))
@@ -313,15 +316,21 @@
                                             <span class="font-display text-xl font-bold text-white group-hover:text-accent-cyan tracking-widest uppercase">{{ $cat['nombre'] }}</span>
                                             <i class='bx bx-plus text-2xl text-gray-500 group-hover:text-accent-cyan transition-transform' id="icon-cat-{{ $cat['slug'] }}"></i>
                                         </div>
-                                        <ul id="cat-{{ $cat['slug'] }}" class="hidden flex flex-col pl-4 pb-4 animate-fade-down">
+                                        <ul id="cat-{{ $cat['slug'] }}" class="hidden flex flex-col pl-4 pb-4 animate-fade-down gap-1">
                                             <li>
-                                                <a href="#catalogo" onclick="updateProductsByFilter('{{ $cat['slug'] }}', 'cat')" class="block py-2 text-sm text-gray-400 hover:text-white transition-colors uppercase font-mono tracking-widest">
+                                                <a href="#catalogo" onclick="updateProductsByFilter('{{ $cat['slug'] }}', 'cat', this)" class="flex items-center gap-3 py-2 text-[11px] text-gray-400 hover:text-white transition-all uppercase font-mono tracking-widest filter-item" data-filter="{{ $cat['slug'] }}">
+                                                    <div class="w-4 h-4 rounded border border-white/20 flex items-center justify-center transition-all selection-box group-hover:border-accent-cyan/50">
+                                                        <i class='bx bx-check text-black font-bold hidden'></i>
+                                                    </div>
                                                     Ver Todo de {{ $cat['nombre'] }}
                                                 </a>
                                             </li>
                                             @foreach($cat['subcategorias'] as $sub)
                                             <li>
-                                                <a href="#catalogo" onclick="updateProductsByFilter('{{ $sub['slug'] }}', 'subcat')" class="block py-2 text-sm text-gray-500 hover:text-white transition-colors uppercase font-mono tracking-widest">
+                                                <a href="#catalogo" onclick="updateProductsByFilter('{{ $sub['slug'] }}', 'subcat', this)" class="flex items-center gap-3 py-2 text-[11px] text-gray-500 hover:text-white transition-all uppercase font-mono tracking-widest filter-item" data-filter="{{ $sub['slug'] }}">
+                                                    <div class="w-4 h-4 rounded border border-white/20 flex items-center justify-center transition-all selection-box group-hover:border-accent-cyan/50">
+                                                        <i class='bx bx-check text-black font-bold hidden'></i>
+                                                    </div>
                                                     {{ $sub['nombre'] }}
                                                 </a>
                                             </li>
@@ -415,10 +424,21 @@
                                     $imagenes   = $producto['imagenes'] ?? [];
                                     $storageUrl = rtrim($producto['storage_url'] ?? '', '/');
                                     $allImages  = [];
+                                    $tieneImagenREAL = false;
+
                                     foreach($imagenes as $img) {
                                         $allImages[] = $storageUrl . '/' . ltrim($img, '/');
                                     }
-                                    if(empty($allImages)) $allImages[] = asset('images/logo.jpg');
+                                    
+                                    // REEMPLAZO DINÁMICO DE IMAGEN VACÍA (Diseño Estilo "Armería Confidencial")
+                                    if(empty($allImages)) {
+                                        $inicial = strtoupper(mb_substr(trim($producto['nombre'] ?? 'B'), 0, 1));
+                                        // Color gris carbón súper táctico (stealth) para no distraer
+                                        $fallbackUrl = "https://ui-avatars.com/api/?name=" . urlencode($inicial) . "&background=111116&color=334155&size=512&font-size=0.4&bold=true";
+                                        $allImages[] = $fallbackUrl;
+                                    } else {
+                                        $tieneImagenREAL = true;
+                                    }
                                     
                                     $imgUrl = $allImages[0];
                                     $allImagesJson = json_encode($allImages);
@@ -439,7 +459,17 @@
                                     <div class="bg-black/30 rounded-xl h-56 flex items-center justify-center p-2 relative overflow-hidden group">
                                         <div class="absolute inset-0 bg-cyan-500/10 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                                         <div class="absolute top-3 right-3 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 w-8 h-8 rounded bg-white/10 flex items-center justify-center text-white backdrop-blur-md z-20"><i class='bx bx-zoom-in'></i></div>
-                                        <img src="{{ $imgUrl }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500 relative z-10" alt="{{ $producto['nombre'] }}">
+                                        
+                                        <img src="{{ $imgUrl }}" class="max-h-full max-w-full object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] {{ $tieneImagenREAL ? 'group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500' : 'opacity-80' }} relative z-10" alt="{{ $producto['nombre'] }}">
+                                        
+                                        @if(!$tieneImagenREAL)
+                                            <!-- Overlay Mensaje Faltante -->
+                                            <div class="absolute bottom-4 left-0 right-0 flex justify-center z-20 pointer-events-none">
+                                                <div class="bg-black/80 backdrop-blur border border-white/5 text-gray-500 text-[8px] font-mono tracking-[0.2em] px-3 py-1.5 rounded uppercase flex items-center gap-1.5 shadow-xl">
+                                                    <i class='bx bx-camera text-[10px]'></i> FOTO EN CAMINO
+                                                </div>
+                                            </div>
+                                        @endif
                                     </div>
                                     <div class="p-5 flex flex-col flex-1 relative z-10">
                                         <div class="flex justify-between items-start mb-2 gap-2">
@@ -522,6 +552,128 @@
                 </div>
             </div>
         </section>
+
+        <!-- ==============================================
+             PROMOCIONES Y EVENTOS
+        =================================================== -->
+        <section id="promociones" class="py-16 md:py-24 relative overflow-hidden border-t border-b border-white/10 bg-tactical-950">
+            <!-- Capas de Background Cinemático y de Cristal -->
+            <div class="absolute inset-0 z-0 select-none pointer-events-none">
+                <img src="https://images.unsplash.com/photo-1595590424283-b8f1784cb2c8?q=80&w=1920&auto=format&fit=crop" class="w-full h-full object-cover opacity-10 filter grayscale blur-sm">
+                <div class="absolute inset-0 bg-tactical-950/80 backdrop-blur-3xl"></div>
+                <!-- Glowing orbs tacticos -->
+                <div class="absolute top-[10%] left-[-5%] w-[600px] h-[600px] bg-[#e67e22]/10 rounded-full blur-[150px] mix-blend-screen pointer-events-none"></div>
+                <div class="absolute bottom-[-10%] right-[-5%] w-[600px] h-[600px] bg-accent-cyan/10 rounded-full blur-[150px] mix-blend-screen pointer-events-none"></div>
+            </div>
+
+            <div class="max-w-[95%] mx-auto px-4 z-10 relative">
+                <!-- Título Mejorado con Glowing Effect -->
+                <div class="flex flex-col md:flex-row justify-between items-end mb-12 gsap-reveal gs-fade-up">
+                    <div class="relative pl-6">
+                        <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-[#e67e22] to-transparent rounded-full shadow-[0_0_15px_#e67e22]"></div>
+                        <h2 class="font-display text-4xl md:text-5xl font-black text-white mb-2 tracking-tighter uppercase relative z-10 inline-block">
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#e67e22] to-yellow-500 drop-shadow-[0_0_10px_rgba(230,126,34,0.5)]">Promociones</span> 
+                            <span class="text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">& Eventos</span>
+                            <div class="absolute inset-0 bg-[#e67e22]/20 blur-3xl z-[-1]"></div>
+                        </h2>
+                        <p class="text-gray-400 font-mono text-sm tracking-widest uppercase mt-1">Sorteos • Oportunidades • Novedades</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col lg:flex-row gap-8 items-stretch pt-2">
+                    <!-- Banner Promocional Principal (Izquierda) -->
+                    <div class="w-full lg:w-5/12 xl:w-5/12 flex flex-col gsap-reveal gs-slide-right h-[450px] md:h-[500px]">
+                        <div class="glass-card rounded-2xl overflow-hidden p-2 relative w-full h-full flex flex-col group mouse-glow shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/5 hover:border-[#e67e22]/50 transition-all duration-500 bg-[#0a0a0ce6] cursor-pointer" onclick="event.stopPropagation(); window.openLightbox('{{ asset('images/promociones/rifa.jpg') }}', 'Destacados del Mes')">
+                            <!-- Glow effect -->
+                            <div class="absolute inset-0 bg-[#e67e22]/10 rounded-full blur-[80px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+                            
+                            <div class="relative w-full h-full rounded-xl overflow-hidden group-hover:shadow-[0_0_30px_rgba(230,126,34,0.3)] transition-all bg-[#050505]">
+                                <img src="{{ asset('images/promociones/rifa.jpg') }}" class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100" alt="Promoción Principal" onerror="this.onerror=null; this.src='{{ asset('images/logo.jpg') }}'">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent pointer-events-none"></div>
+                                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                                    <div class="bg-black/50 backdrop-blur-sm rounded-full p-4 border border-white/20 shadow-[0_0_15px_rgba(230,126,34,0.5)]"><i class='bx bx-zoom-in text-white text-3xl'></i></div>
+                                </div>
+                                <div class="absolute bottom-0 left-0 right-0 p-6 z-20 md:p-8 pointer-events-none">
+                                    <div class="inline-block px-3 py-1 bg-[#e67e22]/20 border border-[#e67e22]/40 text-[#f39c12] text-[10px] font-bold tracking-widest uppercase rounded mb-3 backdrop-blur-md shadow-[0_0_15px_rgba(230,126,34,0.3)]"><i class='bx bx-time-five'></i> OPORTUNIDAD LIMITADA</div>
+                                    <h3 class="font-display text-3xl font-black text-white uppercase tracking-tighter mb-2 drop-shadow-lg">Destacados del Mes</h3>
+                                    <p class="text-gray-300 text-sm font-mono uppercase tracking-widest w-full">Equipamiento táctico, descuentos exclusivos y novedades.</p>
+                                    <div class="mt-4 px-6 py-2 bg-white/10 text-white text-xs font-bold uppercase tracking-[0.2em] rounded border border-white/20 transition-colors shadow-lg flex items-center gap-2 w-max group-hover:bg-[#e67e22] group-hover:border-[#e67e22]">Ampliar Vista <i class='bx bx-zoom-in text-lg'></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Carrusel de Tendencias (Derecha) -->
+                    <div class="w-full lg:w-7/12 xl:w-7/12 flex flex-col justify-center relative gsap-reveal gs-slide-left h-[450px] md:h-[500px]">
+                        <div class="flex items-center justify-between mb-4 shrink-0 px-2 lg:px-0">
+                            <h4 class="text-white font-black uppercase tracking-widest text-lg font-display flex items-center gap-2 drop-shadow-md">
+                                <i class='bx bx-radar text-[#e67e22] animate-pulse'></i> EN TENDENCIA
+                            </h4>
+                            <div class="flex gap-2">
+                                <button onclick="document.getElementById('native-promo-slider').scrollBy({left: -350, behavior: 'smooth'})" class="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-[#e67e22] hover:border-[#e67e22] transition-all cursor-pointer"><i class='bx bx-chevron-left text-xl pointer-events-none'></i></button>
+                                <button onclick="document.getElementById('native-promo-slider').scrollBy({left: 350, behavior: 'smooth'})" class="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-[#e67e22] hover:border-[#e67e22] transition-all cursor-pointer"><i class='bx bx-chevron-right text-xl pointer-events-none'></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Carrusel JS/CSS Robusto Permanente -->
+                        <div id="native-promo-slider" class="w-full h-full pb-0 overflow-x-auto overflow-y-hidden snap-x snap-mandatory flex gap-4 hide-scrollbar scroll-smooth">
+                                <!-- Elemento 1 -->
+                                <div class="shrink-0 w-[85%] sm:w-[calc(50%-0.5rem)] lg:w-[calc(50%-0.5rem)] snap-start h-full pb-2">
+                                    <div class="glass-card rounded-2xl overflow-hidden p-2 flex flex-col h-full bg-tactical-800/80 border border-white/5 mouse-glow group shadow-lg">
+                                        <div class="relative w-full shrink-0 h-[85%] bg-[#0a0a0c] rounded-xl overflow-hidden mb-3 border border-white/5 cursor-pointer group-hover:border-accent-cyan/30 transition-all" onclick="event.stopPropagation(); window.openLightbox('{{ asset('images/promociones/premio1.jpg') }}', 'Alta Demanda')">
+                                            <div class="absolute inset-0 bg-accent-cyan/5 opacity-0 group-hover:opacity-100 blur-xl transition-all pointer-events-none"></div>
+                                            <img src="{{ asset('images/promociones/premio1.jpg') }}" alt="Equipo" class="absolute inset-0 w-full h-full object-cover filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] group-hover:scale-110 transition-transform duration-700" onerror="this.onerror=null; this.src='{{ asset('images/logo.jpg') }}'">
+                                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent pointer-events-none"></div>
+                                            <div class="absolute top-3 left-3 bg-white/10 backdrop-blur-md border border-white/20 text-white text-[9px] font-bold px-2 py-1 rounded-sm tracking-widest font-mono uppercase shadow-lg z-10"><i class='bx bx-crosshair'></i> ALTA DEMANDA</div>
+                                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                                                <div class="bg-black/50 backdrop-blur-sm rounded-full p-3 border border-white/20"><i class='bx bx-zoom-in text-white text-2xl'></i></div>
+                                            </div>
+                                        </div>
+                                        <div class="px-3 flex flex-col flex-1 pb-1 justify-center relative">
+                                            <a href="#contacto-cards" class="mt-auto px-4 py-2 border border-white/10 rounded-lg text-white/80 text-[10px] font-bold uppercase tracking-[0.2em] group-hover:border-accent-cyan/50 group-hover:text-accent-cyan group-hover:bg-accent-cyan/10 transition-colors bg-white/5 text-left relative flex justify-between items-center w-full shadow-sm">Consultar <i class='bx bx-message-rounded-dots text-lg'></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Elemento 2 -->
+                                <div class="shrink-0 w-[85%] sm:w-[calc(50%-0.5rem)] lg:w-[calc(50%-0.5rem)] snap-start h-full pb-2">
+                                    <div class="glass-card rounded-2xl overflow-hidden p-2 flex flex-col h-full bg-tactical-800/80 border border-white/5 mouse-glow group shadow-lg">
+                                        <div class="relative w-full shrink-0 h-[85%] bg-[#0a0a0c] rounded-xl overflow-hidden mb-3 border border-white/5 cursor-pointer group-hover:border-accent-cyan/30 transition-all" onclick="event.stopPropagation(); window.openLightbox('{{ asset('images/promociones/premio2.jpg') }}', 'Exclusivo')">
+                                            <div class="absolute inset-0 bg-accent-cyan/5 opacity-0 group-hover:opacity-100 blur-xl transition-all pointer-events-none"></div>
+                                            <img src="{{ asset('images/promociones/premio2.jpg') }}" alt="Equipo" class="absolute inset-0 w-full h-full object-cover filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] group-hover:scale-110 transition-transform duration-700" onerror="this.onerror=null; this.src='{{ asset('images/logo.jpg') }}'">
+                                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent pointer-events-none"></div>
+                                            <div class="absolute top-3 left-3 bg-white/10 backdrop-blur-md border border-white/20 text-white text-[9px] font-bold px-2 py-1 rounded-sm tracking-widest font-mono uppercase shadow-lg z-10"><i class='bx bx-shield-quarter'></i> EXCLUSIVO</div>
+                                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                                                <div class="bg-black/50 backdrop-blur-sm rounded-full p-3 border border-white/20"><i class='bx bx-zoom-in text-white text-2xl'></i></div>
+                                            </div>
+                                        </div>
+                                        <div class="px-3 flex flex-col flex-1 pb-1 justify-center relative">
+                                            <a href="#contacto-cards" class="mt-auto px-4 py-2 border border-white/10 rounded-lg text-white/80 text-[10px] font-bold uppercase tracking-[0.2em] group-hover:border-accent-cyan/50 group-hover:text-accent-cyan group-hover:bg-accent-cyan/10 transition-colors bg-white/5 text-left relative flex justify-between items-center w-full shadow-sm">Consultar <i class='bx bx-message-rounded-dots text-lg'></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Elemento 3 -->
+                                <div class="shrink-0 w-[85%] sm:w-[calc(50%-0.5rem)] lg:w-[calc(50%-0.5rem)] snap-start h-full pb-2">
+                                    <div class="glass-card rounded-2xl overflow-hidden p-2 flex flex-col h-full bg-tactical-800/80 border border-white/5 mouse-glow group shadow-lg">
+                                        <div class="relative w-full shrink-0 h-[85%] bg-[#0a0a0c] rounded-xl overflow-hidden mb-3 border border-white/5 cursor-pointer group-hover:border-accent-cyan/30 transition-all" onclick="event.stopPropagation(); window.openLightbox('{{ asset('images/promociones/premio3.png') }}', 'Imperdible')">
+                                            <div class="absolute inset-0 bg-accent-cyan/5 opacity-0 group-hover:opacity-100 blur-xl transition-all pointer-events-none"></div>
+                                            <img src="{{ asset('images/promociones/premio3.png') }}" alt="Equipo" class="absolute inset-0 w-full h-full object-cover filter drop-shadow-[0_15px_15px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700" onerror="this.onerror=null; this.src='{{ asset('images/logo.jpg') }}'">
+                                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent pointer-events-none"></div>
+                                            <div class="absolute top-3 left-3 bg-white/10 backdrop-blur-md border border-white/20 text-white text-[9px] font-bold px-2 py-1 rounded-sm tracking-widest font-mono uppercase shadow-lg z-10"><i class='bx bxs-hot'></i> IMPERDIBLE</div>
+                                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                                                <div class="bg-black/50 backdrop-blur-sm rounded-full p-3 border border-white/20"><i class='bx bx-zoom-in text-white text-2xl'></i></div>
+                                            </div>
+                                        </div>
+                                        <div class="px-3 flex flex-col flex-1 pb-1 justify-center relative">
+                                            <a href="#contacto-cards" class="mt-auto px-4 py-2 border border-white/10 rounded-lg text-white/80 text-[10px] font-bold uppercase tracking-[0.2em] group-hover:border-accent-cyan/50 group-hover:text-accent-cyan group-hover:bg-accent-cyan/10 transition-colors bg-white/5 text-left relative flex justify-between items-center w-full shadow-sm">Consultar <i class='bx bx-message-rounded-dots text-lg'></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
         <!-- ==============================================
              1. VIDEOTECA TÁCTICA (VIDEOS)
@@ -927,50 +1079,70 @@
         </section>
  
         <!-- Empresa: Quienes Somos (Rediseño Moderno) -->
-        <section id="empresa" class="relative py-16 flex flex-col items-center bg-tactical-900 overflow-hidden">
+        <section id="empresa" class="relative py-24 md:py-32 flex flex-col items-center bg-tactical-900 overflow-hidden border-b border-white/5">
             <!-- Background Image con Overlay Cinematográfico -->
             <div class="absolute inset-0 z-0">
-                <img src="https://images.unsplash.com/photo-1595590424283-b8f1784cb2c8?q=80&w=1920&auto=format&fit=crop" class="w-full h-full object-cover opacity-30 grayscale contrast-125">
-                <div class="absolute inset-0 bg-gradient-to-t from-tactical-900 via-tactical-900/40 to-tactical-900"></div>
-                <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,240,255,0.05)_0%,transparent_70%)]"></div>
+                <img src="https://images.unsplash.com/photo-1595590424283-b8f1784cb2c8?q=80&w=1920&auto=format&fit=crop" class="w-full h-full object-cover opacity-10 grayscale contrast-150">
+                <div class="absolute inset-0 bg-gradient-to-t from-tactical-900 via-tactical-900/60 to-tactical-900"></div>
             </div>
 
-            <!-- Contenido Central -->
-            <div class="relative z-10 max-w-5xl mx-auto px-6 text-center gsap-reveal gs-fade-up">
-                <span class="text-accent-cyan font-bold tracking-[0.5em] uppercase text-[10px] md:text-sm mb-4 block border-b border-white/10 pb-3 w-max mx-auto">Trayectoria y Confianza</span>
-                <h2 class="font-display text-4xl md:text-7xl font-black text-white mb-6 leading-[1] uppercase tracking-tighter drop-shadow-[0_15px_30px_rgba(0,0,0,0.5)]">
-                    DÉCADAS DE <span class="text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-cyan-400">EXCELENCIA</span> <br> NOS RESPALDAN
-                </h2>
-                <p class="text-gray-300 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed font-light mb-4">
-                    Somos líderes en la distribution de armamento de alta gama, brindando asesoría especializada a deportistas de élite, cazadores y expertos en seguridad.
-                </p>
+            <div class="relative z-10 max-w-[95%] mx-auto px-6">
+                <!-- Grid de 2 Columnas para Desktop -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    
+                    <!-- Columna Izquierda: Imagen de Marca Táctica (Tigre) -->
+                    <div class="relative order-2 lg:order-1 flex justify-center">
+                        <div class="relative rounded-3xl overflow-hidden border border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.6)] group max-w-sm md:max-w-md">
+                            <img src="{{ asset('images/nosotros_tigre_v2.png') }}" alt="Balam Armería - Elite" class="w-full h-auto transform group-hover:scale-105 transition-transform duration-1000">
+                        </div>
+                        
+                        <!-- Badge de Calidad Flotante -->
+                        <div class="absolute -bottom-4 -left-4 bg-tactical-900 border border-white/10 p-4 rounded-2xl shadow-2xl backdrop-blur-xl flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-[#e67e22]/10 border border-[#e67e22]/30 flex items-center justify-center text-[#e67e22]">
+                                <i class='bx bxs-check-shield text-2xl'></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-gray-500 font-mono uppercase tracking-widest leading-none mb-1">Certificación</p>
+                                <p class="text-white font-bold text-sm uppercase italic">Calidad Élite</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <!-- Tarjeta de Marcas (Estilo Excel Example) -->
-                <div class="glass-card rounded-[2rem] pt-4 pb-8 px-6 md:pt-6 md:pb-12 md:px-12 border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.6)] mt-2 mouse-glow relative overflow-hidden group">
-                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-cyan-500/10 blur-[80px] rounded-full group-hover:bg-cyan-500/20 transition-all"></div>
-                    
-                    <h4 class="text-[10px] font-bold text-gray-500 tracking-[0.4em] uppercase mb-4 opacity-70">Nuestras Marcas Aliadas</h4>
-                    
-                    <!-- Marquee Dinámico de Marcas de Armas (Innovador y Compacto) -->
-                    <div class="relative overflow-hidden w-full py-4 [mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]">
-                        <div class="flex gap-16 animate-marquee-balam whitespace-nowrap">
-                            @foreach($marcasArmas as $marca)
-                                <div class="flex flex-col items-center group/brand opacity-60 hover:opacity-100 transition-all cursor-crosshair px-10">
-                                    <span class="text-xl md:text-2xl font-black text-white/40 tracking-widest uppercase italic group-hover:text-white transition-colors">{{ $marca['nombre'] }}</span>
-                                    <span class="text-[7px] text-accent-cyan font-mono tracking-[0.3em] uppercase opacity-0 group-hover/brand:opacity-100 transition-all duration-300">Activo Balam</span>
-                                </div>
-                            @endforeach
-                            <!-- Duplicar el loop para efecto infinito -->
-                            @foreach($marcasArmas as $marca)
-                                <div class="flex flex-col items-center group/brand opacity-60 hover:opacity-100 transition-all cursor-crosshair px-10">
-                                    <span class="text-xl md:text-2xl font-black text-white/40 tracking-widest uppercase italic group-hover:text-white transition-colors">{{ $marca['nombre'] }}</span>
-                                    <span class="text-[7px] text-accent-cyan font-mono tracking-[0.3em] uppercase opacity-0 group-hover/brand:opacity-100 transition-all duration-300">Activo Balam</span>
-                                </div>
-                            @endforeach
+                    <!-- Columna Derecha: Texto y Valores -->
+                    <div class="flex flex-col text-center lg:text-left order-1 lg:order-2">
+                        <span class="text-[#e67e22] font-bold tracking-[0.5em] uppercase text-[10px] md:text-sm mb-6 flex items-center justify-center lg:justify-start gap-3">
+                            <span class="w-8 h-[1px] bg-[#e67e22]/50"></span>
+                            ¿QUIÉNES SOMOS?
+                        </span>
+                        <h2 class="font-display text-4xl md:text-6xl lg:text-7xl font-black text-white mb-8 leading-[1] uppercase tracking-tighter drop-shadow-[0_15px_30px_rgba(0,0,0,0.5)]">
+                            DÉCADAS DE <span class="text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-[#e67e22]">EXCELENCIA</span> <br> NOS RESPALDAN
+                        </h2>
+                        <p class="text-gray-300 text-lg md:text-xl max-w-2xl mx-auto lg:mx-0 leading-relaxed font-light mb-10 italic border-l-2 lg:border-l-4 border-[#e67e22]/30 pl-6">
+                            Somos líderes en la distribución de armamento de alta gama, brindando asesoría especializada a deportistas de élite, cazadores y expertos en seguridad.
+                        </p>
+
+                        <!-- Highlights Tácticos -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
+                            <div class="flex flex-col items-center lg:items-start group">
+                                <i class='bx bx-award text-3xl text-[#e67e22] mb-3 group-hover:scale-110 transition-transform'></i>
+                                <h5 class="text-white font-bold uppercase tracking-widest text-xs mb-1">Experiencia</h5>
+                                <p class="text-gray-500 text-[10px] uppercase font-mono">15+ Años en el Mercado</p>
+                            </div>
+                            <div class="flex flex-col items-center lg:items-start group">
+                                <i class='bx bx-support text-3xl text-[#e67e22] mb-3 group-hover:scale-110 transition-transform'></i>
+                                <h5 class="text-white font-bold uppercase tracking-widest text-xs mb-1">Soporte</h5>
+                                <p class="text-gray-500 text-[10px] uppercase font-mono">Asesoramiento Experto</p>
+                            </div>
+                            <div class="flex flex-col items-center lg:items-start group">
+                                <i class='bx bx-target-lock text-3xl text-[#e67e22] mb-3 group-hover:scale-110 transition-transform'></i>
+                                <h5 class="text-white font-bold uppercase tracking-widest text-xs mb-1">Precisión</h5>
+                                <p class="text-gray-500 text-[10px] uppercase font-mono">Equipo de Alta Gama</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                </div>
+
+                <!-- Marquee de Marcas removido por solicitud del usuario -->
             </div>
         </section>
 
@@ -984,23 +1156,9 @@
             <!-- Topografía Digital (Ultra-Sutil) -->
             <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/binding-dark.png')] opacity-20 pointer-events-none"></div>
             
-            <!-- Tactical Radar HUD (Deco Background) - Profesional -->
-            <div class="absolute top-[-5%] right-[2%] w-[500px] h-[500px] opacity-[0.1] pointer-events-none z-0">
-                <div class="w-full h-full rounded-full border border-[#e67e22]/30 animate-[spin_120s_linear_infinite] shadow-[0_0_50px_rgba(230,126,34,0.1)]"></div>
-                <div class="absolute inset-[5%] rounded-full border border-white/5"></div>
-                <div class="absolute inset-[15%] rounded-full border border-[#e67e22]/10"></div>
-                <div class="absolute inset-[35%] rounded-full border border-white/5"></div>
-                <!-- Líneas de Cruzado Detalladas -->
-                <div class="absolute top-1/2 left-0 w-full h-[0.5px] bg-white/10"></div>
-                <div class="absolute left-1/2 top-0 w-[0.5px] h-full bg-white/10"></div>
-                <div class="absolute top-1/2 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#e67e22]/20 to-transparent blur-[1px]"></div>
-            </div>
-            
             <!-- Grid de fondo tecnológico de precisión -->
             <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:100px_100px] pointer-events-none"></div>
             
-            <!-- Gradientes de Atmósfera Profesional -->
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(230,126,34,0.04)_0%,transparent_60%)] pointer-events-none"></div>
             <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black to-transparent z-0 pointer-events-none"></div>
 
             <div class="max-w-[95%] mx-auto px-4 z-10 relative">
@@ -1026,26 +1184,26 @@
                     <div class="lg:col-span-4 flex flex-col gap-6 max-h-[550px] overflow-y-auto px-2 custom-scrollbar">
                         
                         <!-- Sede Poptún -->
-                        <div class="location-card relative group cursor-pointer" onclick="showLocation('16.3314,-89.4183', 'Sede Poptún', 'Barrio El Centro, Petén')">
-                            <div class="absolute -inset-0.5 bg-gradient-to-r from-[#e67e22]/0 to-[#e67e22]/0 group-hover:from-[#e67e22]/30 group-hover:to-transparent rounded-2xl blur opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-                            <div class="relative bg-tactical-900/60 backdrop-blur-xl border border-white/5 rounded-2xl p-5 group-hover:border-[#e67e22]/30 transition-all duration-300">
+                        <div class="location-card relative group cursor-pointer" onclick="switchContactBranch('poptun')">
+                            <div class="absolute -inset-0.5 bg-gradient-to-r from-accent-primary/0 to-accent-primary/0 group-hover:from-accent-primary/30 group-hover:to-transparent rounded-2xl blur opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                            <div class="relative bg-tactical-900/60 backdrop-blur-xl border border-white/5 rounded-2xl p-5 group-hover:border-accent-primary/30 transition-all duration-300">
                                 <div class="flex items-center gap-5">
-                                    <div class="w-24 h-24 rounded-xl overflow-hidden shrink-0 border border-white/10 group-hover:border-[#e67e22]/50 transition-all relative">
+                                    <div class="w-24 h-24 rounded-xl overflow-hidden shrink-0 border border-white/10 group-hover:border-accent-primary/50 transition-all relative">
                                         <img src="{{ asset('images/sucursales/poptun.png') }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                                        <div class="absolute inset-0 bg-[#e67e22]/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                        <div class="absolute inset-0 bg-accent-primary/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center justify-between mb-1">
-                                            <span class="text-[10px] font-black text-[#e67e22] tracking-widest uppercase">BALAM 01</span>
+                                            <span class="text-[10px] font-black text-accent-primary tracking-widest uppercase">BALAM 01</span>
                                         </div>
-                                        <h4 class="text-2xl font-bold text-white group-hover:text-[#e67e22] transition-colors leading-tight">Sede Poptún</h4>
+                                        <h4 class="text-2xl font-bold text-white group-hover:text-accent-primary transition-colors leading-tight">Sede Poptún</h4>
                                         <p class="text-gray-300 text-xs tracking-wide opacity-80 mt-1 font-medium">Barrio El Centro, Petén</p>
                                         
                                         <div class="flex gap-2 mt-4">
-                                            <button onclick="event.stopPropagation(); window.open('https://www.google.com/maps/search/?api=1&query=16.3314,-89.4183','_blank')" class="flex-1 bg-white/5 hover:bg-[#e67e22] hover:text-black py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 hover:border-[#e67e22]">
+                                            <button onclick="event.stopPropagation(); window.open('https://www.google.com/maps/search/?api=1&query=16.3314,-89.4183','_blank')" class="flex-1 bg-white/5 hover:bg-accent-primary hover:text-black py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 hover:border-accent-primary">
                                                 <i class='bx bxs-map'></i> MAPS
                                             </button>
-                                            <button onclick="event.stopPropagation(); openLightbox('{{ asset('images/sucursales/poptun.png') }}', 'Sede Poptún')" class="flex-1 bg-white/5 hover:bg-[#e67e22]/10 hover:border-[#e67e22]/50 hover:text-[#e67e22] py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 shadow-sm hover:shadow-[#e67e22]/20 hover:-translate-y-0.5">
+                                            <button onclick="event.stopPropagation(); openLightbox('{{ asset('images/sucursales/poptun.png') }}', 'Sede Poptún')" class="flex-1 bg-white/5 hover:bg-accent-primary/10 hover:border-accent-primary/50 hover:text-accent-primary py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 shadow-sm hover:shadow-accent-primary/20 hover:-translate-y-0.5">
                                                 <i class='bx bx-camera'></i> VER FOTO
                                             </button>
                                         </div>
@@ -1055,26 +1213,26 @@
                         </div>
 
                         <!-- Sede San Luis -->
-                        <div class="location-card relative group cursor-pointer" onclick="showLocation('16.1956,-89.4442', 'Sede San Luis', 'Calle Principal, Petén')">
-                            <div class="absolute -inset-0.5 bg-gradient-to-r from-[#e67e22]/0 to-[#e67e22]/0 group-hover:from-[#e67e22]/30 group-hover:to-transparent rounded-2xl blur opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-                            <div class="relative bg-tactical-900/60 backdrop-blur-xl border border-white/5 rounded-2xl p-5 group-hover:border-[#e67e22]/30 transition-all duration-300">
+                        <div class="location-card relative group cursor-pointer" onclick="switchContactBranch('sanluis')">
+                            <div class="absolute -inset-0.5 bg-gradient-to-r from-accent-primary/0 to-accent-primary/0 group-hover:from-accent-primary/30 group-hover:to-transparent rounded-2xl blur opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                            <div class="relative bg-tactical-900/60 backdrop-blur-xl border border-white/5 rounded-2xl p-5 group-hover:border-accent-primary/30 transition-all duration-300">
                                 <div class="flex items-center gap-5">
-                                    <div class="w-24 h-24 rounded-xl overflow-hidden shrink-0 border border-white/10 group-hover:border-[#e67e22]/50 transition-all relative">
+                                    <div class="w-24 h-24 rounded-xl overflow-hidden shrink-0 border border-white/10 group-hover:border-accent-primary/50 transition-all relative">
                                         <img src="https://images.unsplash.com/photo-1595590424283-b8f17842773f?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                                        <div class="absolute inset-0 bg-[#e67e22]/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                        <div class="absolute inset-0 bg-accent-primary/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center justify-between mb-1">
-                                            <span class="text-[10px] font-black text-[#e67e22] tracking-widest uppercase">BALAM 02</span>
+                                            <span class="text-[10px] font-black text-accent-primary tracking-widest uppercase">BALAM 02</span>
                                         </div>
-                                        <h4 class="text-2xl font-bold text-white group-hover:text-[#e67e22] transition-colors leading-tight">Sede San Luis</h4>
+                                        <h4 class="text-2xl font-bold text-white group-hover:text-accent-primary transition-colors leading-tight">Sede San Luis</h4>
                                         <p class="text-gray-300 text-xs tracking-wide opacity-80 mt-1 font-medium">Calle Principal, Petén</p>
                                         
                                         <div class="flex gap-2 mt-4">
-                                            <button onclick="event.stopPropagation(); window.open('https://www.google.com/maps/search/?api=1&query=16.1956,-89.4442','_blank')" class="flex-1 bg-white/5 hover:bg-[#e67e22] hover:text-black py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 hover:border-[#e67e22]">
+                                            <button onclick="event.stopPropagation(); window.open('https://www.google.com/maps/search/?api=1&query=16.1956,-89.4442','_blank')" class="flex-1 bg-white/5 hover:bg-accent-primary hover:text-black py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 hover:border-accent-primary">
                                                 <i class='bx bxs-map'></i> MAPS
                                             </button>
-                                            <button onclick="event.stopPropagation(); openLightbox('https://images.unsplash.com/photo-1595590424283-b8f17842773f?q=80&w=1200', 'Sede San Luis')" class="flex-1 bg-white/5 hover:bg-[#e67e22]/10 hover:border-[#e67e22]/50 hover:text-[#e67e22] py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 shadow-sm hover:shadow-[#e67e22]/20 hover:-translate-y-0.5">
+                                            <button onclick="event.stopPropagation(); openLightbox('https://images.unsplash.com/photo-1595590424283-b8f17842773f?q=80&w=1200', 'Sede San Luis')" class="flex-1 bg-white/5 hover:bg-accent-primary/10 hover:border-accent-primary/50 hover:text-accent-primary py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 shadow-sm hover:shadow-accent-primary/20 hover:-translate-y-0.5">
                                                 <i class='bx bx-camera'></i> VER FOTO
                                             </button>
                                         </div>
@@ -1084,26 +1242,26 @@
                         </div>
 
                         <!-- Sede Melchor -->
-                        <div class="location-card relative group cursor-pointer" onclick="showLocation('17.0628,-89.1558', 'Sede Melchor', 'Frontera, Melchor de Mencos')">
-                            <div class="absolute -inset-0.5 bg-gradient-to-r from-accent-pink/0 to-accent-pink/0 group-hover:from-accent-pink/30 group-hover:to-transparent rounded-2xl blur opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-                            <div class="relative bg-tactical-900/60 backdrop-blur-xl border border-white/5 rounded-2xl p-5 group-hover:border-accent-pink/30 transition-all duration-300">
+                        <div class="location-card relative group cursor-pointer" onclick="switchContactBranch('melchor')">
+                            <div class="absolute -inset-0.5 bg-gradient-to-r from-accent-primary/0 to-accent-primary/0 group-hover:from-accent-primary/30 group-hover:to-transparent rounded-2xl blur opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                            <div class="relative bg-tactical-900/60 backdrop-blur-xl border border-white/5 rounded-2xl p-5 group-hover:border-accent-primary/30 transition-all duration-300">
                                 <div class="flex items-center gap-5">
-                                    <div class="w-24 h-24 rounded-xl overflow-hidden shrink-0 border border-white/10 group-hover:border-accent-pink/50 transition-all relative">
+                                    <div class="w-24 h-24 rounded-xl overflow-hidden shrink-0 border border-white/10 group-hover:border-accent-primary/50 transition-all relative">
                                         <img src="https://images.unsplash.com/photo-1584282361661-04eecb31548e?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                                        <div class="absolute inset-0 bg-accent-pink/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                        <div class="absolute inset-0 bg-accent-primary/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center justify-between mb-1">
-                                            <span class="text-[10px] font-black text-accent-pink tracking-widest uppercase">BALAM 03</span>
+                                            <span class="text-[10px] font-black text-accent-primary tracking-widest uppercase">BALAM 03</span>
                                         </div>
-                                        <h4 class="text-2xl font-bold text-white group-hover:text-[#e67e22] transition-colors leading-tight">Sede Melchor</h4>
+                                        <h4 class="text-2xl font-bold text-white group-hover:text-accent-primary transition-colors leading-tight">Sede Melchor</h4>
                                         <p class="text-gray-300 text-xs tracking-wide opacity-80 mt-1 font-medium">Frontera, Melchor de Mencos</p>
                                         
                                         <div class="flex gap-2 mt-4">
-                                            <button onclick="event.stopPropagation(); window.open('https://www.google.com/maps/search/?api=1&query=17.0628,-89.1558','_blank')" class="flex-1 bg-white/5 hover:bg-accent-pink hover:text-black py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 hover:border-accent-pink">
+                                            <button onclick="event.stopPropagation(); window.open('https://www.google.com/maps/search/?api=1&query=17.0628,-89.1558','_blank')" class="flex-1 bg-white/5 hover:bg-accent-primary hover:text-black py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 hover:border-accent-primary">
                                                 <i class='bx bxs-map'></i> MAPS
                                             </button>
-                                            <button onclick="event.stopPropagation(); openLightbox('https://images.unsplash.com/photo-1584282361661-04eecb31548e?q=80&w=1200', 'Sede Melchor')" class="flex-1 bg-white/5 hover:bg-[#e67e22]/10 hover:border-[#e67e22]/50 hover:text-[#e67e22] py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 shadow-sm hover:shadow-[#e67e22]/20 hover:-translate-y-0.5">
+                                            <button onclick="event.stopPropagation(); openLightbox('https://images.unsplash.com/photo-1584282361661-04eecb31548e?q=80&w=1200', 'Sede Melchor')" class="flex-1 bg-white/5 hover:bg-accent-primary/10 hover:border-accent-primary/50 hover:text-accent-primary py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 shadow-sm hover:shadow-accent-primary/20 hover:-translate-y-0.5">
                                                 <i class='bx bx-camera'></i> VER FOTO
                                             </button>
                                         </div>
@@ -1167,124 +1325,210 @@
             </div>
         </section>
 
-            <!-- Lightbox Modal -->
-            <div id="image-lightbox" onclick="closeLightbox()" class="fixed inset-0 z-[999] bg-black/95 backdrop-blur-xl flex items-center justify-center opacity-0 pointer-events-none transition-all duration-500 overflow-hidden cursor-zoom-out">
-                <button onclick="closeLightbox()" class="absolute top-8 right-8 text-white/50 hover:text-accent-cyan text-6xl transition-colors z-[1000] cursor-pointer">
-                    <i class='bx bx-x text-7xl'></i>
-                </button>
-                <div class="max-w-[90%] max-h-[85vh] relative group" onclick="event.stopPropagation()">
-                    <div class="absolute -inset-1 bg-gradient-to-r from-accent-cyan/50 to-accent-pink/50 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
-                    <img id="lightbox-img" src="" class="relative rounded-2xl shadow-2xl border border-white/10 max-w-full max-h-[85vh] object-contain" alt="Sucursal Preview">
-                    <div id="lightbox-caption" class="absolute bottom-6 left-6 right-6 p-4 bg-tactical-900/80 backdrop-blur-md rounded-xl border border-white/5">
-                        <h4 class="font-display text-white text-xl font-bold tracking-wider" id="lightbox-title">Sede Balam</h4>
-                        <p class="text-accent-cyan text-[10px] font-mono uppercase mt-1">Vista Detallada de Sucursal</p>
-                    </div>
-                </div>
             </div>
         </section>
 
-    </div> <!-- Termina Scroll Container -->
-
-    <!-- Marquee Marketing Animado Dorado -->
-                            
-    </div>
-
-    <!-- Sección de Contacto -->
+    <!-- Sección de Contacto Dinámica por Sede -->
     <section id="contacto-cards" class="py-20 relative bg-tactical-800 cyber-grid-bg border-b border-white/5 z-10 transition-colors">
         <div class="max-w-7xl mx-auto px-4 z-10 relative">
-            <div class="text-center mb-16 gsap-reveal">
+            <div class="text-center mb-10">
                 <span class="text-accent-primary font-bold tracking-widest text-[10px] uppercase border border-accent-primary/30 py-1.5 px-4 rounded-full bg-accent-primary/10 shadow-[0_0_15px_rgba(234,179,8,0.2)]">Centro de Comunicaciones</span>
                 <h2 class="font-display text-4xl lg:text-5xl font-bold text-white mt-6 drop-shadow-[0_0_15px_rgba(234,179,8,0.4)]">Contáctanos</h2>
-                <p class="text-gray-400 text-sm mt-4 font-light max-w-xl mx-auto">Conecta con nuestros especialistas por tu canal preferido. Estamos preparados para asistirte en cada misión.</p>
+                <p class="text-gray-400 text-sm mt-4 font-light max-w-xl mx-auto">Conecta con nuestros especialistas. Selecciona una sede para comunicarte directamente con su equipo.</p>
+            </div>
+
+            <!-- Selector de Sucursales -->
+            <div class="flex flex-wrap justify-center gap-3 md:gap-6 mb-12">
+                <button onclick="switchContactBranch('poptun')" id="btn-poptun" class="contact-tab px-6 py-2.5 rounded-full border border-accent-primary bg-accent-primary/10 text-white font-mono text-[11px] font-bold uppercase tracking-widest shadow-[0_0_15px_rgba(234,179,8,0.3)] transition-all hover:scale-105 active:scale-95"><i class='bx bx-map mr-1'></i> Poptún</button>
+                <button onclick="switchContactBranch('sanluis')" id="btn-sanluis" class="contact-tab px-6 py-2.5 rounded-full border border-white/10 bg-white/5 text-gray-400 font-mono text-[11px] font-bold uppercase tracking-widest transition-all hover:bg-white/10 hover:text-white hover:scale-105 active:scale-95"><i class='bx bx-map mr-1'></i> San Luis</button>
+                <button onclick="switchContactBranch('melchor')" id="btn-melchor" class="contact-tab px-6 py-2.5 rounded-full border border-white/10 bg-white/5 text-gray-400 font-mono text-[11px] font-bold uppercase tracking-widest transition-all hover:bg-white/10 hover:text-white hover:scale-105 active:scale-95"><i class='bx bx-map mr-1'></i> Melchor</button>
             </div>
 
             <!-- Grid de Redes Sociales y Contacto -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Teléfono -->
-                <a href="tel:+50212345678" class="glass-card mouse-glow flex items-center p-6 rounded-2xl group border border-white/5 cursor-pointer transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(255,255,255,0.05)] hover:border-gray-500/50">
-                    <div class="w-14 h-14 rounded-xl bg-gray-500/10 flex items-center justify-center text-gray-400 group-hover:text-white group-hover:bg-gray-500/30 transition-all shadow-[0_0_15px_rgba(0,0,0,0.5)]">
-                        <i class='bx bxs-phone-call text-3xl'></i>
+                
+                <!-- [FIJO] Teléfono Central Empresa -->
+                <a href="https://wa.me/50251736991" target="_blank" class="glass-card mouse-glow flex items-center p-6 rounded-2xl group border border-[#e67e22]/30 cursor-pointer transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(230,126,34,0.15)] bg-gradient-to-r from-[#e67e22]/10 to-transparent">
+                    <div class="w-14 h-14 rounded-xl bg-[#e67e22]/20 flex items-center justify-center text-[#e67e22] group-hover:text-white group-hover:bg-[#e67e22] transition-all shadow-[0_0_15px_rgba(230,126,34,0.3)]">
+                        <i class='bx bxs-business text-3xl'></i>
                     </div>
                     <div class="ml-5 flex-1">
-                        <p class="text-[10px] text-gray-500 font-mono tracking-widest focus:outline-none uppercase">Línea Directa</p>
-                        <h4 class="text-white font-bold text-lg mt-0.5 group-hover:text-gray-300 transition-colors">+502 1234 5678</h4>
+                        <p class="text-[10px] text-[#e67e22] font-mono tracking-widest uppercase font-bold">Línea Central Empresa</p>
+                        <h4 class="text-white font-bold text-lg mt-0.5 group-hover:text-gray-300 transition-colors">+502 5173 6991</h4>
+                    </div>
+                    <i class='bx bx-right-arrow-alt text-2xl text-[#e67e22] group-hover:text-white transition-colors group-hover:translate-x-1 duration-300'></i>
+                </a>
+
+                <!-- [FIJO] Correo -->
+                <a href="mailto:balamarmasymuniciones@gmail.com" class="glass-card mouse-glow flex items-center p-6 rounded-2xl group border border-white/5 cursor-pointer transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(255,255,255,0.05)] hover:border-gray-500/50">
+                    <div class="w-14 h-14 rounded-xl bg-gray-500/10 flex items-center justify-center text-gray-400 group-hover:text-white group-hover:bg-gray-500/30 transition-all">
+                        <i class='bx bx-envelope text-3xl'></i>
+                    </div>
+                    <div class="ml-5 flex-1 break-all">
+                        <p class="text-[10px] text-gray-500 font-mono tracking-widest uppercase">Correo Oficial</p>
+                        <h4 class="text-white font-bold text-xs md:text-sm mt-0.5 group-hover:text-gray-300 transition-colors">balamarmasymuniciones<br>@gmail.com</h4>
                     </div>
                     <i class='bx bx-right-arrow-alt text-2xl text-gray-600 group-hover:text-white transition-colors group-hover:translate-x-1 duration-300'></i>
                 </a>
 
-                <!-- WhatsApp -->
-                <a href="#" class="glass-card mouse-glow flex items-center p-6 rounded-2xl group border border-white/5 cursor-pointer transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(37,211,102,0.15)] hover:border-[#25D366]/50">
+                <!-- [DINÁMICO] WhatsApp Sucursal -->
+                <a id="dyn-wa-link" href="https://wa.me/50240430725" target="_blank" class="glass-card mouse-glow flex items-center p-6 rounded-2xl group border border-white/5 cursor-pointer transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(37,211,102,0.15)] hover:border-[#25D366]/50">
                     <div class="w-14 h-14 rounded-xl bg-[#25D366]/10 flex items-center justify-center text-[#25D366] group-hover:text-white group-hover:bg-[#25D366] transition-all shadow-[0_0_15px_rgba(37,211,102,0.2)]">
                         <i class='bx bxl-whatsapp text-3xl'></i>
                     </div>
                     <div class="ml-5 flex-1">
-                        <p class="text-[10px] text-gray-500 font-mono tracking-widest uppercase">WhatsApp</p>
-                        <h4 class="text-white font-bold text-lg mt-0.5 group-hover:text-[#25D366] transition-colors">Atención Rápida</h4>
+                        <p class="text-[10px] text-gray-500 font-mono tracking-widest uppercase">WhatsApp Sucursal</p>
+                        <h4 id="dyn-wa-num" class="text-white font-bold text-lg mt-0.5 group-hover:text-[#25D366] transition-colors">+502 4043 0725</h4>
                     </div>
                     <i class='bx bx-right-arrow-alt text-2xl text-gray-600 group-hover:text-[#25D366] transition-colors group-hover:translate-x-1 duration-300'></i>
                 </a>
 
-                <!-- Instagram -->
-                <a href="#" class="glass-card mouse-glow flex items-center p-6 rounded-2xl group border border-white/5 cursor-pointer transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(225,48,108,0.15)] hover:border-[#E1306C]/50">
-                    <div class="w-14 h-14 rounded-xl bg-[#E1306C]/10 flex items-center justify-center text-[#E1306C] group-hover:text-white group-hover:bg-gradient-to-br group-hover:from-[#833AB4] group-hover:via-[#FD1D1D] group-hover:to-[#F56040] transition-all shadow-[0_0_15px_rgba(225,48,108,0.2)]">
-                        <i class='bx bxl-instagram text-3xl'></i>
-                    </div>
-                    <div class="ml-5 flex-1">
-                        <p class="text-[10px] text-gray-500 font-mono tracking-widest uppercase">Instagram</p>
-                        <h4 class="text-white font-bold text-lg mt-0.5 group-hover:text-[#E1306C] transition-colors">@BalamArmeria</h4>
-                    </div>
-                    <i class='bx bx-right-arrow-alt text-2xl text-gray-600 group-hover:text-[#E1306C] transition-colors group-hover:translate-x-1 duration-300'></i>
-                </a>
-
-                <!-- TikTok -->
-                <a href="#" class="glass-card mouse-glow flex items-center p-6 rounded-2xl group border border-white/5 cursor-pointer transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(255,0,80,0.15)] hover:border-[#FF0050]/50">
-                    <div class="w-14 h-14 rounded-xl bg-[#FF0050]/10 flex items-center justify-center text-[#FF0050] group-hover:text-white group-hover:bg-gradient-to-br group-hover:from-[#00f2fe] group-hover:to-[#4facfe] transition-all shadow-[0_0_15px_rgba(255,0,80,0.2)]">
-                        <i class='bx bxl-tiktok text-3xl'></i>
-                    </div>
-                    <div class="ml-5 flex-1">
-                        <p class="text-[10px] text-gray-500 font-mono tracking-widest uppercase">TikTok</p>
-                        <h4 class="text-white font-bold text-lg mt-0.5 group-hover:text-[#00f2fe] transition-colors">@BalamArmeria</h4>
-                    </div>
-                    <i class='bx bx-right-arrow-alt text-2xl text-gray-600 group-hover:text-[#00f2fe] transition-colors group-hover:translate-x-1 duration-300'></i>
-                </a>
-
-                <!-- Facebook -->
-                <a href="#" class="glass-card mouse-glow flex items-center p-6 rounded-2xl group border border-white/5 cursor-pointer transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(24,119,242,0.15)] hover:border-[#1877F2]/50">
+                <!-- [DINÁMICO] Facebook -->
+                <a id="dyn-fb-link" href="https://www.facebook.com/share/1AuQFGQPtt/?mibextid=wwXIfr" target="_blank" class="glass-card mouse-glow flex items-center p-6 rounded-2xl group border border-white/5 cursor-pointer transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(24,119,242,0.15)] hover:border-[#1877F2]/50">
                     <div class="w-14 h-14 rounded-xl bg-[#1877F2]/10 flex items-center justify-center text-[#1877F2] group-hover:text-white group-hover:bg-[#1877F2] transition-all shadow-[0_0_15px_rgba(24,119,242,0.2)]">
                         <i class='bx bxl-facebook text-3xl'></i>
                     </div>
                     <div class="ml-5 flex-1">
                         <p class="text-[10px] text-gray-500 font-mono tracking-widest uppercase">Facebook</p>
-                        <h4 class="text-white font-bold text-lg mt-0.5 group-hover:text-[#1877F2] transition-colors">Balam Armería</h4>
+                        <h4 id="dyn-fb-alias" class="text-white font-bold text-lg mt-0.5 group-hover:text-[#1877F2] transition-colors line-clamp-1">Balam Poptún</h4>
                     </div>
                     <i class='bx bx-right-arrow-alt text-2xl text-gray-600 group-hover:text-[#1877F2] transition-colors group-hover:translate-x-1 duration-300'></i>
                 </a>
 
-                <!-- Facebook Messenger -->
-                <a href="#" class="glass-card mouse-glow flex items-center p-6 rounded-2xl group border border-white/5 cursor-pointer transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(0,132,255,0.15)] hover:border-[#0084FF]/50">
-                    <div class="w-14 h-14 rounded-xl bg-[#0084FF]/10 flex items-center justify-center text-[#0084FF] group-hover:text-white group-hover:bg-[#0084FF] transition-all shadow-[0_0_15px_rgba(0,132,255,0.2)]">
-                        <i class='bx bxl-messenger text-3xl'></i>
+                <!-- [DINÁMICO] Instagram -->
+                <a id="dyn-ig-link" href="https://www.instagram.com/balampoptun?igsh=MXNmM210ZDVxYTYzOA==" target="_blank" class="glass-card mouse-glow flex items-center p-6 rounded-2xl group border border-white/5 cursor-pointer transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(225,48,108,0.15)] hover:border-[#E1306C]/50">
+                    <div class="w-14 h-14 rounded-xl bg-[#E1306C]/10 flex items-center justify-center text-[#E1306C] group-hover:text-white group-hover:bg-gradient-to-br group-hover:from-[#833AB4] group-hover:via-[#FD1D1D] group-hover:to-[#F56040] transition-all shadow-[0_0_15px_rgba(225,48,108,0.2)]">
+                        <i class='bx bxl-instagram text-3xl'></i>
                     </div>
                     <div class="ml-5 flex-1">
-                        <p class="text-[10px] text-gray-500 font-mono tracking-widest uppercase">Messenger</p>
-                        <h4 class="text-white font-bold text-lg mt-0.5 group-hover:text-[#0084FF] transition-colors">Chat Directo</h4>
+                        <p class="text-[10px] text-gray-500 font-mono tracking-widest uppercase">Instagram</p>
+                        <h4 id="dyn-ig-alias" class="text-white font-bold text-sm lg:text-md mt-0.5 group-hover:text-[#E1306C] transition-colors line-clamp-1">@balampoptun</h4>
                     </div>
-                    <i class='bx bx-right-arrow-alt text-2xl text-gray-600 group-hover:text-[#0084FF] transition-colors group-hover:translate-x-1 duration-300'></i>
+                    <i class='bx bx-right-arrow-alt text-2xl text-gray-600 group-hover:text-[#E1306C] transition-colors group-hover:translate-x-1 duration-300'></i>
                 </a>
+
+                <!-- [DINÁMICO] TikTok -->
+                <a id="dyn-tk-link" href="https://www.tiktok.com/@balampoptun?_r=1&_t=ZS-959MbJz25Ya" target="_blank" class="glass-card mouse-glow flex items-center p-6 rounded-2xl group border border-white/5 cursor-pointer transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(255,0,80,0.15)] hover:border-[#FF0050]/50">
+                    <div class="w-14 h-14 rounded-xl bg-[#FF0050]/10 flex items-center justify-center text-[#FF0050] group-hover:text-white group-hover:bg-gradient-to-br group-hover:from-[#00f2fe] group-hover:to-[#4facfe] transition-all shadow-[0_0_15px_rgba(255,0,80,0.2)]">
+                        <i class='bx bxl-tiktok text-3xl'></i>
+                    </div>
+                    <div class="ml-5 flex-1">
+                        <p class="text-[10px] text-gray-500 font-mono tracking-widest uppercase">TikTok</p>
+                        <h4 id="dyn-tk-alias" class="text-white font-bold text-sm lg:text-md mt-0.5 group-hover:text-[#00f2fe] transition-colors line-clamp-1">@balampoptun</h4>
+                    </div>
+                    <i class='bx bx-right-arrow-alt text-2xl text-gray-600 group-hover:text-[#00f2fe] transition-colors group-hover:translate-x-1 duration-300'></i>
+                </a>
+
             </div>
 
             <!-- CTA Bar -->
-            <div class="mt-16 bg-tactical-900/80 p-8 rounded-3xl border border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 backdrop-blur-xl gsap-reveal">
+            <div class="mt-16 bg-tactical-900/80 p-8 rounded-3xl border border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 backdrop-blur-xl">
                 <div>
                     <h3 class="text-white font-bold text-2xl font-display">¿Necesitas ayuda inmediata?</h3>
-                    <p class="text-gray-400 text-sm mt-2 font-light">Nuestros asesores están en línea y listos para guiar tu próxima adquisición táctica.</p>
+                    <p class="text-gray-400 text-sm mt-2 font-light">Nuestros asesores de la sucursal activa están listos para guiar tu próxima adquisición.</p>
                 </div>
-                <a href="#" class="bg-[#25D366] hover:bg-[#20c35b] text-white px-8 py-4 rounded-xl font-bold tracking-widest transition-all shadow-[0_0_20px_rgba(37,211,102,0.4)] hover:shadow-[0_0_30px_rgba(37,211,102,0.6)] flex items-center gap-3 hover:-translate-y-1">
+                <a id="cta-wa-link" href="https://wa.me/50240430725" target="_blank" class="bg-[#25D366] hover:bg-[#20c35b] text-white px-8 py-4 rounded-xl font-bold tracking-widest transition-all shadow-[0_0_20px_rgba(37,211,102,0.4)] hover:shadow-[0_0_30px_rgba(37,211,102,0.6)] flex items-center gap-3 hover:-translate-y-1">
                     <i class='bx bxl-whatsapp text-2xl'></i>
-                    CHATEA EN WHATSAPP
+                    CHATEAR CON POPTÚN
                 </a>
             </div>
         </div>
+        
+        <script>
+            const branchContacts = {
+                poptun: {
+                    name: 'Sede Poptún',
+                    address: 'Barrio El Centro, Petén',
+                    coords: '16.3314,-89.4183',
+                    wa: { num: '+502 4043 0725', link: 'https://wa.me/50240430725' },
+                    fb: { alias: 'Balam Poptún',   link: 'https://www.facebook.com/share/1AuQFGQPtt/?mibextid=wwXIfr' },
+                    ig: { alias: '@balampoptun',  link: 'https://www.instagram.com/balampoptun?igsh=MXNmM210ZDVxYTYzOA==' },
+                    tk: { alias: '@balampoptun',  link: 'https://www.tiktok.com/@balampoptun?_r=1&_t=ZS-959MbJz25Ya' }
+                },
+                sanluis: {
+                    name: 'Sede San Luis',
+                    address: 'Calle Principal, Petén',
+                    coords: '16.1956,-89.4442',
+                    wa: { num: '+502 4903 8728', link: 'https://wa.me/50249038728' },
+                    fb: { alias: 'Balam San Luis', link: 'https://www.facebook.com/share/1NULrBuz4A/?mibextid=wwXIfr' },
+                    ig: { alias: '@balamsanluis', link: 'https://www.instagram.com/balamsanluis?igsh=enB5cHl2bTAzODd3' },
+                    tk: { alias: '@balamsanluis1', link: 'https://www.tiktok.com/@balamsanluis1?_r=1&_t=ZS-959Mvvx5eeS' }
+                },
+                melchor: {
+                    name: 'Sede Melchor',
+                    address: 'Frontera, Melchor de Mencos',
+                    coords: '17.0628,-89.1558',
+                    wa: { num: '+502 4499 7414', link: 'https://wa.me/50244997414' },
+                    fb: { alias: 'Balam Melchor',  link: 'https://www.facebook.com/share/1DjAQtgF6N/?mibextid=wwXIfr' },
+                    ig: { alias: '@balammelchordemencos', link: 'https://www.instagram.com/balammelchordemencos?igsh=MWsyNzU4djBocm51Yw==' },
+                    tk: { alias: '@balam__22',     link: 'https://www.tiktok.com/@balam__22?_r=1&_t=ZS-959N4cOkqtY' }
+                }
+            };
+
+            function switchContactBranch(branch) {
+                // 1. Apagar todos los botones
+                document.querySelectorAll('.contact-tab').forEach(btn => {
+                    btn.classList.remove('bg-accent-primary/10', 'border-accent-primary', 'text-white', 'shadow-[0_0_15px_rgba(234,179,8,0.3)]');
+                    btn.classList.add('bg-white/5', 'border-white/10', 'text-gray-400');
+                });
+                
+                // Encender el botón clickeado
+                let activeBtn = document.getElementById('btn-' + branch);
+                activeBtn.classList.remove('bg-white/5', 'border-white/10', 'text-gray-400');
+                activeBtn.classList.add('bg-accent-primary/10', 'border-accent-primary', 'text-white', 'shadow-[0_0_15px_rgba(234,179,8,0.3)]');
+
+                // 2. Extraer los datos correctos
+                const data = branchContacts[branch];
+                
+                // 3. Sincronizar el Mapa (Si la función existe en main.js)
+                if (window.showLocation) {
+                    window.showLocation(data.coords, data.name, data.address);
+                }
+
+                // 4. Animación GSAP para "refrescar" los datos de contacto
+                const dynElements = [
+                    'dyn-wa-link', 'dyn-fb-link', 'dyn-ig-link', 'dyn-tk-link'
+                ];
+                
+                gsap.to(dynElements.map(id => document.getElementById(id)), {
+                    opacity: 0,
+                    y: 10,
+                    duration: 0.2,
+                    stagger: 0.05,
+                    onComplete: () => {
+                        // Actualizar WhatsApp
+                        document.getElementById('dyn-wa-link').href = data.wa.link;
+                        document.getElementById('dyn-wa-num').innerText = data.wa.num;
+                        const ctaBtn = document.getElementById('cta-wa-link');
+                        ctaBtn.href = data.wa.link;
+                        ctaBtn.innerHTML = `<i class='bx bxl-whatsapp text-2xl'></i> CHATEAR CON ${branch.toUpperCase()}`;
+                        
+                        // Actualizar Facebook
+                        document.getElementById('dyn-fb-link').href = data.fb.link;
+                        document.getElementById('dyn-fb-alias').innerText = data.fb.alias;
+
+                        // Actualizar Instagram
+                        document.getElementById('dyn-ig-link').href = data.ig.link;
+                        document.getElementById('dyn-ig-alias').innerText = data.ig.alias;
+
+                        // Actualizar TikTok
+                        document.getElementById('dyn-tk-link').href = data.tk.link;
+                        document.getElementById('dyn-tk-alias').innerText = data.tk.alias;
+
+                        // Aparecer con animación
+                        gsap.to(dynElements.map(id => document.getElementById(id)), {
+                            opacity: 1,
+                            y: 0,
+                            duration: 0.4,
+                            stagger: 0.05,
+                            ease: "back.out(1.7)"
+                        });
+                    }
+                });
+            }
+            // Exponer la función globalmente para los handlers onclick
+            window.switchContactBranch = switchContactBranch;
+        </script>
     </section>
 
     <!-- Footer Completo -->
@@ -1307,18 +1551,18 @@
                         <span class="text-[9px] text-accent-primary font-mono tracking-[0.2em] uppercase mt-[-4px]">Armas & Municiones</span>
                     </div>
                 </div>
-                <p class="mt-6 text-sm text-gray-500 leading-relaxed font-light">
+                <p class="mt-6 text-sm text-gray-500 leading-relaxed font-light uppercase tracking-tight">
                     Excelencia, trayectoria legal y el mejor equipamiento táctico en Guatemala. Somos la armería líder y tu aliado estratégico para cada misión.
                 </p>
-                <div class="flex gap-3 mt-8 text-xl text-gray-400">
-                    <a href="#" class="w-10 h-10 rounded-xl bg-tactical-800 border border-white/5 flex items-center justify-center hover:bg-[#1877F2] hover:text-white hover:border-[#1877F2] hover:shadow-[0_0_15px_rgba(24,119,242,0.4)] transition-all">
-                        <i class='bx bxl-facebook'></i>
+                <div class="flex gap-3 mt-8">
+                    <a href="https://www.facebook.com/share/1AuQFGQPtt/?mibextid=wwXIfr" target="_blank" class="w-10 h-10 rounded-xl bg-tactical-800 border border-white/5 flex items-center justify-center text-gray-400 hover:bg-[#1877F2] hover:text-white hover:border-[#1877F2] hover:shadow-[0_0_15px_rgba(24,119,242,0.4)] transition-all">
+                        <i class='bx bxl-facebook text-xl'></i>
                     </a>
-                    <a href="#" class="w-10 h-10 rounded-xl bg-tactical-800 border border-white/5 flex items-center justify-center hover:bg-[#E1306C] hover:text-white hover:border-[#E1306C] hover:shadow-[0_0_15px_rgba(225,48,108,0.4)] transition-all">
-                        <i class='bx bxl-instagram'></i>
+                    <a href="https://www.instagram.com/balampoptun?igsh=MXNmM210ZDVxYTYzOA==" target="_blank" class="w-10 h-10 rounded-xl bg-tactical-800 border border-white/5 flex items-center justify-center text-gray-400 hover:bg-[#E1306C] hover:text-white hover:border-[#E1306C] hover:shadow-[0_0_15px_rgba(225,48,108,0.4)] transition-all">
+                        <i class='bx bxl-instagram text-xl'></i>
                     </a>
-                    <a href="#" class="w-10 h-10 rounded-xl bg-tactical-800 border border-white/5 flex items-center justify-center hover:bg-[#00f2fe] hover:text-white hover:border-[#00f2fe] hover:shadow-[0_0_15px_rgba(0,242,254,0.4)] transition-all">
-                        <i class='bx bxl-tiktok'></i>
+                    <a href="https://www.tiktok.com/@balampoptun?_r=1&_t=ZS-959MbJz25Ya" target="_blank" class="w-10 h-10 rounded-xl bg-tactical-800 border border-white/5 flex items-center justify-center text-gray-400 hover:bg-[#00f2fe] hover:text-black hover:border-[#00f2fe] hover:shadow-[0_0_15px_rgba(0,242,254,0.4)] transition-all">
+                        <i class='bx bxl-tiktok text-xl'></i>
                     </a>
                 </div>
             </div>
@@ -1329,45 +1573,45 @@
                     <i class='bx bx-compass text-accent-primary'></i> Navegación
                 </h4>
                 <ul class="flex flex-col gap-4">
-                    <li><a href="#inicio" onclick="scrollToSection('#inicio', event)" class="text-gray-400 hover:text-accent-primary text-sm flex items-center gap-2 transition-colors group"><i class='bx bx-chevron-right text-gray-600 group-hover:text-accent-primary transition-colors'></i> Inicio</a></li>
-                    <li><a href="#catalogo" onclick="scrollToSection('#catalogo', event)" class="text-gray-400 hover:text-accent-primary text-sm flex items-center gap-2 transition-colors group"><i class='bx bx-chevron-right text-gray-600 group-hover:text-accent-primary transition-colors'></i> Nuestro Catálogo</a></li>
-                    <li><a href="#empresa" onclick="scrollToSection('#empresa', event)" class="text-gray-400 hover:text-accent-primary text-sm flex items-center gap-2 transition-colors group"><i class='bx bx-chevron-right text-gray-600 group-hover:text-accent-primary transition-colors'></i> Nosotros (Academia)</a></li>
-                    <li><a href="#contacto" onclick="scrollToSection('#contacto', event)" class="text-gray-400 hover:text-accent-primary text-sm flex items-center gap-2 transition-colors group"><i class='bx bx-chevron-right text-gray-600 group-hover:text-accent-primary transition-colors'></i> Sucursales</a></li>
+                    <li><a href="#inicio" onclick="scrollToSection('#inicio', event)" class="text-gray-400 hover:text-accent-primary text-[11px] font-bold uppercase tracking-widest flex items-center gap-2 transition-colors group"><i class='bx bx-chevron-right text-gray-600 group-hover:text-accent-primary transition-colors'></i> Inicio</a></li>
+                    <li><a href="#catalogo" onclick="scrollToSection('#catalogo', event)" class="text-gray-400 hover:text-accent-primary text-[11px] font-bold uppercase tracking-widest flex items-center gap-2 transition-colors group"><i class='bx bx-chevron-right text-gray-600 group-hover:text-accent-primary transition-colors'></i> Nuestro Catálogo</a></li>
+                    <li><a href="#empresa" onclick="scrollToSection('#empresa', event)" class="text-gray-400 hover:text-accent-primary text-[11px] font-bold uppercase tracking-widest flex items-center gap-2 transition-colors group"><i class='bx bx-chevron-right text-gray-600 group-hover:text-accent-primary transition-colors'></i> Nosotros</a></li>
+                    <li><a href="#contacto" onclick="scrollToSection('#contacto', event)" class="text-gray-400 hover:text-accent-primary text-[11px] font-bold uppercase tracking-widest flex items-center gap-2 transition-colors group"><i class='bx bx-chevron-right text-gray-600 group-hover:text-accent-primary transition-colors'></i> Ubicaciones</a></li>
                 </ul>
             </div>
 
-            <!-- Columna 3: Catálogo -->
+            <!-- Columna 3: Servicios -->
             <div>
                 <h4 class="text-white font-bold font-display uppercase tracking-widest mb-6 flex items-center gap-2 text-sm">
-                    <i class='bx bx-crosshair text-accent-primary'></i> Especialidades
+                    <i class='bx bx-crosshair text-accent-primary'></i> Servicios
                 </h4>
                 <ul class="flex flex-col gap-4">
-                    <li><a href="#" class="text-gray-400 hover:text-white text-sm flex items-center gap-2 transition-colors group"><i class='bx bx-chevron-right text-gray-600 group-hover:text-accent-cyan transition-colors'></i> Armas Cortas y Largas</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white text-sm flex items-center gap-2 transition-colors group"><i class='bx bx-chevron-right text-gray-600 group-hover:text-accent-cyan transition-colors'></i> Municiones Varios Calibres</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white text-sm flex items-center gap-2 transition-colors group"><i class='bx bx-chevron-right text-gray-600 group-hover:text-accent-cyan transition-colors'></i> Equipo Táctico Profesional</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white text-sm flex items-center gap-2 transition-colors group"><i class='bx bx-chevron-right text-gray-600 group-hover:text-accent-cyan transition-colors'></i> Óptica y Miras de Precisión</a></li>
+                    <li class="text-gray-400 text-[11px] font-bold uppercase tracking-widest flex items-center gap-2 transition-colors group hover:text-white cursor-default"><i class='bx bx-check-double text-gray-600 group-hover:text-accent-cyan'></i> Venta de Armas</li>
+                    <li class="text-gray-400 text-[11px] font-bold uppercase tracking-widest flex items-center gap-2 transition-colors group hover:text-white cursor-default"><i class='bx bx-check-double text-gray-600 group-hover:text-accent-cyan'></i> Municiones Varios Calibres</li>
+                    <li class="text-gray-400 text-[11px] font-bold uppercase tracking-widest flex items-center gap-2 transition-colors group hover:text-white cursor-default"><i class='bx bx-check-double text-gray-600 group-hover:text-accent-cyan'></i> Equipo Táctico Profesional</li>
+
                 </ul>
             </div>
 
-            <!-- Columna 4: Horarios -->
+            <!-- Columna 4: Estado Operativo -->
             <div>
                 <h4 class="text-white font-bold font-display uppercase tracking-widest mb-6 flex items-center gap-2 text-sm">
-                    <i class='bx bx-time-five text-accent-primary'></i> Horario de Atención
+                    <i class='bx bx-pulse text-accent-primary'></i> Estado de Servicio
                 </h4>
-                <div class="bg-tactical-800 p-6 rounded-2xl border border-white/5 relative overflow-hidden group hover:border-white/10 transition-colors">
-                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div class="flex justify-between items-center text-sm mb-4 border-b border-white/5 pb-3">
-                        <span class="text-gray-400 font-medium">Lunes - Viernes</span>
-                        <span class="text-white font-mono font-bold tracking-wider text-xs bg-black/40 px-2 py-1 rounded">08:00 - 18:00</span>
+                <div class="bg-tactical-800/40 p-6 rounded-2xl border border-white/5 relative overflow-hidden group hover:border-white/10 transition-colors backdrop-blur-md">
+                    <div class="absolute inset-0 bg-gradient-to-br from-accent-primary/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="flex justify-between items-center text-[10px] mb-4 border-b border-white/5 pb-3">
+                        <span class="text-gray-400 font-bold uppercase tracking-widest">Atención L-V</span>
+                        <span class="text-white font-mono font-bold tracking-wider bg-black/40 px-2 py-1 rounded">08:00 - 18:00</span>
                     </div>
-                    <div class="flex justify-between items-center text-sm mb-6 border-b border-white/5 pb-3">
-                        <span class="text-gray-400 font-medium">Sábado</span>
-                        <span class="text-white font-mono font-bold tracking-wider text-xs bg-black/40 px-2 py-1 rounded">08:00 - 13:00</span>
+                    <div class="flex justify-between items-center text-[10px] mb-6 border-b border-white/5 pb-3">
+                        <span class="text-gray-400 font-bold uppercase tracking-widest">Sábados</span>
+                        <span class="text-white font-mono font-bold tracking-wider bg-black/40 px-2 py-1 rounded">08:00 - 12:00</span>
                     </div>
                     
-                    <div class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-green-500/10 border border-green-500/20 shadow-[0_0_10px_rgba(34,197,94,0.1)]">
-                        <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span>
-                        <span class="text-green-500 text-[10px] font-bold tracking-[0.15em] uppercase">Abierto Ahora</span>
+                    <div id="footer-status-badge" class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-green-500/10 border border-green-500/20 shadow-[0_0_15px_rgba(34,197,94,0.1)] transition-all">
+                        <span id="footer-status-dot" class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.8)]"></span>
+                        <span id="footer-status-text" class="text-green-500 text-[10px] font-black tracking-[0.2em] uppercase">Unidades Activas</span>
                     </div>
                 </div>
             </div>
@@ -1375,22 +1619,55 @@
         </div>
 
         <!-- Bottom Footer (Copyright y Develotech) - FIXED -->
-        <div class="fixed bottom-0 left-0 w-full z-[100] bg-[#030406]/90 backdrop-blur-xl py-4 border-t border-white/5 shadow-[0_-10px_30px_rgba(0,0,0,0.8)]">
-            <div class="max-w-[95%] mx-auto px-4 flex flex-col items-center justify-center text-center gap-1">
-                <div class="text-gray-400 text-[9px] sm:text-[11px] font-mono tracking-[0.2em] uppercase leading-relaxed">
-                    &copy; 2026 BALAM Armas y Municiones. Todos los derechos reservados. Guatemala, C.A.
+        <div class="fixed bottom-0 left-0 w-full z-[100] bg-[#030406]/95 backdrop-blur-xl py-4 border-t border-white/5 shadow-[0_-15px_40px_rgba(0,0,0,0.9)]">
+            <div class="max-w-[95%] mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-3">
+                <div class="text-gray-400 text-[9px] sm:text-[10px] font-mono tracking-[0.2em] uppercase leading-relaxed text-center md:text-left order-2 md:order-1">
+                    &copy; 2026 BALAM Armas y Municiones. todos los derechos reservados. guatemala, c.a.
                 </div>
                 
-                <a href="https://develotechgt.com/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 group cursor-pointer">
+                <a href="https://develotechgt.com/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 group cursor-pointer order-1 md:order-2 bg-white/5 px-4 py-1.5 rounded-full border border-white/5 hover:border-accent-primary/30 transition-all">
                     <span class="text-accent-primary font-mono text-[10px]">&lt;/&gt;</span>
-                    <span class="text-[9px] sm:text-[10px] font-black tracking-[0.25em] text-gray-500 group-hover:text-accent-primary transition-colors uppercase">
+                    <span class="text-[9px] sm:text-[10px] font-black tracking-[0.3em] text-gray-500 group-hover:text-white transition-colors uppercase">
                         hecho por develotch
                     </span>
                 </a>
             </div>
         </div>
 
+        <script>
+            function updateFooterStatus() {
+                const now = new Date();
+                const day = now.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+                const hour = now.getHours();
+                const minutes = now.getMinutes();
+                const time = hour + minutes / 60;
 
+                let isOpen = false;
+                if (day >= 1 && day <= 5) { // Lunes a Viernes
+                    if (time >= 8 && time < 18) isOpen = true;
+                } else if (day === 6) { // Sábado
+                    if (time >= 8 && time < 12) isOpen = true;
+                }
+
+                const badge = document.getElementById('footer-status-badge');
+                const dot = document.getElementById('footer-status-dot');
+                const text = document.getElementById('footer-status-text');
+
+                if (isOpen) {
+                    badge.className = 'w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-green-500/10 border border-green-500/20 shadow-[0_0_15px_rgba(34,197,94,0.1)]';
+                    dot.className = 'w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.8)]';
+                    text.innerText = 'Unidades Activas';
+                    text.className = 'text-green-500 text-[10px] font-black tracking-[0.2em] uppercase';
+                } else {
+                    badge.className = 'w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)]';
+                    dot.className = 'w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.8)]';
+                    text.innerText = 'Fuera de Operación';
+                    text.className = 'text-red-500 text-[10px] font-black tracking-[0.2em] uppercase';
+                }
+            }
+            updateFooterStatus();
+            setInterval(updateFooterStatus, 60000); // Actualizar cada minuto
+        </script>
     </footer>
 
 
