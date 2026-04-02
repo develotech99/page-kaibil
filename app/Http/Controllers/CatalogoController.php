@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Services\CatalogoArmeriaService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class CatalogoController extends Controller
 {
@@ -120,6 +122,9 @@ class CatalogoController extends Controller
             ->values()
             ->map(fn($m) => ['nombre' => $m, 'slug' => strtolower(trim($m))]);
 
+        // --- LÓGICA DE CONTENIDO DINÁMICO (DASHBOARD) ---
+        $websiteContent = $this->getDashboardContent();
+
         // Retornar a la vista welcome
         return view('welcome', [
             'productos' => $productosFinales,
@@ -129,7 +134,34 @@ class CatalogoController extends Controller
             'marcas' => $marcas,
             'marcasArmas' => $marcasArmas,
             'sucursalSeleccionada' => $sucursalSeleccionada,
-            'erroresSucursales' => $erroresSucursales
+            'erroresSucursales' => $erroresSucursales,
+            'web' => $websiteContent // Pasamos los contenidos dinámicos
         ]);
+    }
+
+    /**
+     * Obtiene el contenido dinámico desde el Dashboard con sistema de seguridad (Fallback).
+     */
+    private function getDashboardContent()
+    {
+        $apiUrl = env('DASHBOARD_API_URL', 'http://127.0.0.1:8000/api');
+        
+        try {
+            $response = Http::withoutVerifying()
+                ->withHeader('X-API-KEY', env('CATALOGO_API_KEY'))
+                ->timeout(3)
+                ->get($apiUrl . '/website-content');
+            
+            if ($response->successful()) {
+                $data = $response->json();
+                return collect($data['data'] ?? []);
+            }
+        } catch (\Exception $e) {
+            Log::warning("No se pudo conectar con el Dashboard CMS: " . $e->getMessage());
+        }
+
+        // --- SISTEMA DE RESPALDO (FALLBACK) ---
+        // Si la API falla, devolvemos una estructura vacía para que Blade use las imágenes locales por defecto.
+        return collect([]);
     }
 }

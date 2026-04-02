@@ -366,6 +366,17 @@
         </nav>
 
         <!-- Cabecera / Hero Central con Carrusel Integrado -->
+        @php
+            // Helper para obtener contenido del dashboard con fallback
+            $getD = function($section, $key, $field = 'content', $fallback = '') use ($web) {
+                $item = collect($web)->where('section', $section)->where('key', $key)->first();
+                if ($field === 'image') return $item['image_url'] ?? $fallback;
+                if ($field === 'header') return $item['header'] ?? $fallback;
+                if ($field === 'description') return $item['description'] ?? $fallback;
+                if ($field === 'progress') return $item['progress'] ?? $fallback;
+                return $item['content'] ?? $fallback;
+            };
+        @endphp
         <section id="inicio" class="relative w-full min-h-screen bg-tactical-900 flex items-center overflow-hidden pt-24 pb-12">
             <!-- Capa negra atrás para evitar overlaps de texto extraños -->
             <div class="absolute inset-0 bg-tactical-900 z-0"></div>
@@ -431,10 +442,11 @@
                                 <div style="position:relative;height:560px;width:100%;border:1px solid rgba(0,240,255,0.18)">
                                     <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(0,240,255,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,0.07) 1px,transparent 1px);background-size:44px 44px;z-index:0;pointer-events:none"></div>
                                     <div class="assembly-wrapper" style="position:absolute;left:0;top:0;width:63%;height:100%;overflow:hidden;z-index:1">
+                                        @php $hero_img1 = $getD('hero', 'banner_1', 'image', asset('images/banner_home_1.jpg')); @endphp
                                         <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(0,240,255,0.12) 0%,transparent 70%)"></div>
-                                        <div class="frag frag-1" style="position:absolute;inset:0;z-index:30;opacity:0;clip-path:polygon(0 0,38% 0,38% 100%,0 100%)"><img src="{{ asset('images/banner_home_1.jpg') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
-                                        <div class="frag frag-2" style="position:absolute;inset:0;z-index:20;opacity:0;clip-path:polygon(38% 0,70% 0,70% 100%,38% 100%)"><img src="{{ asset('images/banner_home_1.jpg') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
-                                        <div class="frag frag-3" style="position:absolute;inset:0;z-index:10;opacity:0;clip-path:polygon(70% 0,100% 0,100% 100%,70% 100%)"><img src="{{ asset('images/banner_home_1.jpg') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-1" style="position:absolute;inset:0;z-index:30;opacity:0;clip-path:polygon(0 0,38% 0,38% 100%,0 100%)"><img src="{{ $hero_img1 }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-2" style="position:absolute;inset:0;z-index:20;opacity:0;clip-path:polygon(38% 0,70% 0,70% 100%,38% 100%)"><img src="{{ $hero_img1 }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-3" style="position:absolute;inset:0;z-index:10;opacity:0;clip-path:polygon(70% 0,100% 0,100% 100%,70% 100%)"><img src="{{ $hero_img1 }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
                                         <div style="position:absolute;inset:0;background:linear-gradient(to right,transparent 55%,rgba(4,8,20,0.95) 100%);z-index:35"></div>
                                         <div class="assemble-grid" style="position:absolute;inset:0;background-image:linear-gradient(rgba(0,240,255,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,0.1) 1px,transparent 1px);background-size:44px 44px;opacity:0;pointer-events:none;z-index:40"></div>
                                     </div>
@@ -459,10 +471,11 @@
                                 <div style="position:relative;height:560px;width:100%;border:1px solid rgba(230,126,34,0.18)">
                                     <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(230,126,34,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(230,126,34,0.07) 1px,transparent 1px);background-size:44px 44px;z-index:0;pointer-events:none"></div>
                                     <div class="assembly-wrapper" style="position:absolute;left:0;top:0;width:63%;height:100%;overflow:hidden;z-index:1">
+                                        @php $hero_img2 = $getD('hero', 'banner_2', 'image', asset('images/banner_home_2.jpg')); @endphp
                                         <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(230,126,34,0.12) 0%,transparent 70%)"></div>
-                                        <div class="frag frag-1" style="position:absolute;inset:0;z-index:30;opacity:0;clip-path:polygon(0 0,38% 0,38% 100%,0 100%)"><img src="{{ asset('images/banner_home_2.jpg') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
-                                        <div class="frag frag-2" style="position:absolute;inset:0;z-index:20;opacity:0;clip-path:polygon(38% 0,70% 0,70% 100%,38% 100%)"><img src="{{ asset('images/banner_home_2.jpg') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
-                                        <div class="frag frag-3" style="position:absolute;inset:0;z-index:10;opacity:0;clip-path:polygon(70% 0,100% 0,100% 100%,70% 100%)"><img src="{{ asset('images/banner_home_2.jpg') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-1" style="position:absolute;inset:0;z-index:30;opacity:0;clip-path:polygon(0 0,38% 0,38% 100%,0 100%)"><img src="{{ $hero_img2 }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-2" style="position:absolute;inset:0;z-index:20;opacity:0;clip-path:polygon(38% 0,70% 0,70% 100%,38% 100%)"><img src="{{ $hero_img2 }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-3" style="position:absolute;inset:0;z-index:10;opacity:0;clip-path:polygon(70% 0,100% 0,100% 100%,70% 100%)"><img src="{{ $hero_img2 }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
                                         <div style="position:absolute;inset:0;background:linear-gradient(to right,transparent 55%,rgba(4,8,20,0.95) 100%);z-index:35"></div>
                                         <div class="assemble-grid" style="position:absolute;inset:0;background-image:linear-gradient(rgba(230,126,34,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(230,126,34,0.1) 1px,transparent 1px);background-size:44px 44px;opacity:0;pointer-events:none;z-index:40"></div>
                                     </div>
@@ -485,10 +498,11 @@
                                 <div style="position:relative;height:560px;width:100%;border:1px solid rgba(16,185,129,0.18)">
                                     <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(16,185,129,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(16,185,129,0.07) 1px,transparent 1px);background-size:44px 44px;z-index:0;pointer-events:none"></div>
                                     <div class="assembly-wrapper" style="position:absolute;left:0;top:0;width:63%;height:100%;overflow:hidden;z-index:1">
+                                        @php $hero_img3 = $getD('hero', 'banner_3', 'image', asset('images/banner_home_3.jpg')); @endphp
                                         <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(16,185,129,0.12) 0%,transparent 70%)"></div>
-                                        <div class="frag frag-1" style="position:absolute;inset:0;z-index:30;opacity:0;clip-path:polygon(0 0,38% 0,38% 100%,0 100%)"><img src="{{ asset('images/banner_home_3.jpg') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
-                                        <div class="frag frag-2" style="position:absolute;inset:0;z-index:20;opacity:0;clip-path:polygon(38% 0,70% 0,70% 100%,38% 100%)"><img src="{{ asset('images/banner_home_3.jpg') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
-                                        <div class="frag frag-3" style="position:absolute;inset:0;z-index:10;opacity:0;clip-path:polygon(70% 0,100% 0,100% 100%,70% 100%)"><img src="{{ asset('images/banner_home_3.jpg') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-1" style="position:absolute;inset:0;z-index:30;opacity:0;clip-path:polygon(0 0,38% 0,38% 100%,0 100%)"><img src="{{ $hero_img3 }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-2" style="position:absolute;inset:0;z-index:20;opacity:0;clip-path:polygon(38% 0,70% 0,70% 100%,38% 100%)"><img src="{{ $hero_img3 }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-3" style="position:absolute;inset:0;z-index:10;opacity:0;clip-path:polygon(70% 0,100% 0,100% 100%,70% 100%)"><img src="{{ $hero_img3 }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
                                         <div style="position:absolute;inset:0;background:linear-gradient(to right,transparent 55%,rgba(4,8,20,0.95) 100%);z-index:35"></div>
                                         <div class="assemble-grid" style="position:absolute;inset:0;background-image:linear-gradient(rgba(16,185,129,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(16,185,129,0.1) 1px,transparent 1px);background-size:44px 44px;opacity:0;pointer-events:none;z-index:40"></div>
                                     </div>
@@ -1283,12 +1297,18 @@
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Item Ingreso 1: Glock 19X -->
+                    <!-- Item Ingreso 1 -->
+                    @php
+                        $prog1 = $getD('nuevo_ingreso', 'ingreso_1', 'progress', 92);
+                        $img1  = $getD('nuevo_ingreso', 'ingreso_1', 'image', 'https://images.unsplash.com/photo-1595101834457-fe3419097753?q=80&w=600&auto=format&fit=crop');
+                        $tit1  = $getD('nuevo_ingreso', 'ingreso_1', 'header', 'GLOCK 19X COYOTE');
+                        $desc1 = $getD('nuevo_ingreso', 'ingreso_1', 'description', 'Crossover oficial de Glock. Diseño robusto, cargadores de alta capacidad y acabado táctico nPVD.');
+                    @endphp
                     <div class="glass-card rounded-[2rem] p-6 flex flex-col gap-6 items-center border border-white/5 bg-black/40 hover:border-accent-pink/50 transition-all duration-500 mouse-glow relative overflow-hidden group/inc hover:-translate-y-2">
                         <!-- Barra de llegada progreso -->
-                        <div class="absolute bottom-0 left-0 h-1.5 bg-tactical-800 w-full"><div class="h-full bg-gradient-to-r from-red-600 to-accent-pink w-[92%] shadow-[0_0_15px_#ff2a55]"></div></div>
+                        <div class="absolute bottom-0 left-0 h-1.5 bg-tactical-800 w-full"><div class="h-full bg-gradient-to-r from-red-600 to-accent-pink w-[{{ $prog1 }}%] shadow-[0_0_15px_#ff2a55]"></div></div>
                         <div class="absolute top-4 right-6 text-accent-pink text-[9px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 bg-black/40 px-2 py-1 rounded-full border border-accent-pink/20">
-                            <span class="w-1.5 h-1.5 rounded-full bg-accent-pink animate-ping"></span> 92% TRÁNSITO
+                            <span class="w-1.5 h-1.5 rounded-full bg-accent-pink animate-ping"></span> {{ $prog1 }}% TRÁNSITO
                         </div>
 
                         <!-- Miniatura lockeada -->
@@ -1298,16 +1318,16 @@
                                     <i class='bx bx-lock-alt text-2xl text-white/50 group-hover/inc:text-accent-pink'></i>
                                 </div>
                             </div>
-                            <img src="https://images.unsplash.com/photo-1595101834457-fe3419097753?q=80&w=600&auto=format&fit=crop" class="h-full w-full object-cover filter brightness-75 group-hover/inc:brightness-100 transition-all duration-1000" alt="Glock 19X">
+                            <img src="{{ $img1 }}" class="h-full w-full object-cover filter brightness-75 group-hover/inc:brightness-100 transition-all duration-1000" alt="{{ $tit1 }}">
                         </div>
 
                         <!-- Detalles -->
                         <div class="flex-1 w-full text-center py-2 h-full flex flex-col">
                             <div class="inline-flex items-center justify-center gap-1.5 text-[9px] text-gray-500 border border-white/5 bg-white/5 px-3 py-1 rounded-full font-bold tracking-[0.2em] uppercase mb-4 w-max mx-auto">
-                                <i class='bx bx-ship'></i> ARRIBO: 04 DÍAS
+                                <i class='bx bx-ship'></i> ARRIBO: ESTIMADO
                             </div>
-                            <h4 class="font-display text-2xl font-black text-white mb-2 group-hover/inc:text-accent-pink transition-colors leading-none tracking-tight uppercase">GLOCK 19X COYOTE</h4>
-                            <p class="text-[11px] text-gray-400 font-light mb-auto leading-relaxed px-2">Crossover oficial de Glock. Diseño robusto, cargadores de alta capacidad y acabado táctico nPVD.</p>
+                            <h4 class="font-display text-2xl font-black text-white mb-2 group-hover/inc:text-accent-pink transition-colors leading-none tracking-tight uppercase">{{ $tit1 }}</h4>
+                            <p class="text-[11px] text-gray-400 font-light mb-auto leading-relaxed px-2">{{ $desc1 }}</p>
                             
                             <button class="mt-6 bg-white/5 text-white font-bold uppercase tracking-[0.2em] py-4 px-4 rounded-xl hover:bg-accent-pink hover:text-white transition-all border border-white/10 hover:border-transparent hover:shadow-[0_0_30px_rgba(255,42,85,0.3)] w-full text-[10px]">
                                 AGENDAR NOTIFICACIÓN
@@ -1315,12 +1335,18 @@
                         </div>
                     </div>
                     
-                    <!-- Item Ingreso 2: SIG SAUER MCX -->
+                    <!-- Item Ingreso 2 -->
+                    @php
+                        $prog2 = $getD('nuevo_ingreso', 'ingreso_2', 'progress', 65);
+                        $img2  = $getD('nuevo_ingreso', 'ingreso_2', 'image', 'https://images.unsplash.com/photo-1590425712124-7473a2164478?q=80&w=600&auto=format&fit=crop');
+                        $tit2  = $getD('nuevo_ingreso', 'ingreso_2', 'header', 'SIG SAUER MCX VIRTUS');
+                        $desc2 = $getD('nuevo_ingreso', 'ingreso_2', 'description', 'Sistema multi-calibre configurable. La cúspide de la ingeniería de tiro moderna y adaptable.');
+                    @endphp
                     <div class="glass-card rounded-[2rem] p-6 flex flex-col gap-6 items-center border border-white/5 bg-black/40 hover:border-accent-cyan/50 transition-all duration-500 mouse-glow relative overflow-hidden group/inc hover:-translate-y-2">
                         <!-- Barra de llegada progreso -->
-                        <div class="absolute bottom-0 left-0 h-1.5 bg-tactical-800 w-full"><div class="h-full bg-gradient-to-r from-cyan-600 to-accent-cyan w-[65%] shadow-[0_0_15px_#00e5ff]"></div></div>
+                        <div class="absolute bottom-0 left-0 h-1.5 bg-tactical-800 w-full"><div class="h-full bg-gradient-to-r from-cyan-600 to-accent-cyan w-[{{ $prog2 }}%] shadow-[0_0_15px_#00e5ff]"></div></div>
                         <div class="absolute top-4 right-6 text-accent-cyan text-[9px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 bg-black/40 px-2 py-1 rounded-full border border-accent-cyan/20">
-                            <span class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-ping"></span> 65% TRÁNSITO
+                            <span class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-ping"></span> {{ $prog2 }}% TRÁNSITO
                         </div>
 
                         <!-- Miniatura lockeada -->
@@ -1330,16 +1356,16 @@
                                     <i class='bx bx-lock-alt text-2xl text-white/50 group-hover/inc:text-accent-cyan'></i>
                                 </div>
                             </div>
-                            <img src="https://images.unsplash.com/photo-1590425712124-7473a2164478?q=80&w=600&auto=format&fit=crop" class="h-full w-full object-cover filter brightness-75 group-hover/inc:brightness-100 transition-all duration-1000" alt="SIG MCX">
+                            <img src="{{ $img2 }}" class="h-full w-full object-cover filter brightness-75 group-hover/inc:brightness-100 transition-all duration-1000" alt="{{ $tit2 }}">
                         </div>
 
                         <!-- Detalles -->
                         <div class="flex-1 w-full text-center py-2 h-full flex flex-col">
                             <div class="inline-flex items-center justify-center gap-1.5 text-[9px] text-gray-500 border border-white/5 bg-white/5 px-3 py-1 rounded-full font-bold tracking-[0.2em] uppercase mb-4 w-max mx-auto">
-                                <i class='bx bx-plane-alt'></i> ARRIBO: 15 DÍAS
+                                <i class='bx bx-plane-alt'></i> ARRIBO: ESTIMADO
                             </div>
-                            <h4 class="font-display text-2xl font-black text-white mb-2 group-hover/inc:text-accent-cyan transition-colors leading-none tracking-tight uppercase">SIG SAUER MCX VIRTUS</h4>
-                            <p class="text-[11px] text-gray-400 font-light mb-auto leading-relaxed px-2">Sistema multi-calibre configurable. La cúspide de la ingeniería de tiro moderna y adaptable.</p>
+                            <h4 class="font-display text-2xl font-black text-white mb-2 group-hover/inc:text-accent-cyan transition-colors leading-none tracking-tight uppercase">{{ $tit2 }}</h4>
+                            <p class="text-[11px] text-gray-400 font-light mb-auto leading-relaxed px-2">{{ $desc2 }}</p>
                             
                             <button class="mt-6 bg-white/5 text-white font-bold uppercase tracking-[0.2em] py-4 px-4 rounded-xl hover:bg-accent-cyan hover:text-black transition-all border border-white/10 hover:border-transparent hover:shadow-[0_0_30px_rgba(0,229,255,0.3)] w-full text-[10px]">
                                 AGENDAR NOTIFICACIÓN
@@ -1347,12 +1373,18 @@
                         </div>
                     </div>
 
-                    <!-- Item Ingreso 3: BENELI M4 -->
+                    <!-- Item Ingreso 3 -->
+                    @php
+                        $prog3 = $getD('nuevo_ingreso', 'ingreso_3', 'progress', 15);
+                        $img3  = $getD('nuevo_ingreso', 'ingreso_3', 'image', 'https://images.unsplash.com/photo-1595101834161-267591e6005c?q=80&w=600&auto=format&fit=crop');
+                        $tit3  = $getD('nuevo_ingreso', 'ingreso_3', 'header', 'BENELLI M4 TACTICAL');
+                        $desc3 = $getD('nuevo_ingreso', 'ingreso_3', 'description', 'Escopeta semi-automática de combate. Fiabilidad legendaria para cualquier escenario crítico.');
+                    @endphp
                     <div class="glass-card rounded-[2rem] p-6 flex flex-col gap-6 items-center border border-white/5 bg-black/40 hover:border-yellow-500/50 transition-all duration-500 mouse-glow relative overflow-hidden group/inc hover:-translate-y-2">
                         <!-- Barra de llegada progreso -->
-                        <div class="absolute bottom-0 left-0 h-1.5 bg-tactical-800 w-full"><div class="h-full bg-gradient-to-r from-yellow-600 to-yellow-400 w-[15%] shadow-[0_0_15px_#fbbf24]"></div></div>
+                        <div class="absolute bottom-0 left-0 h-1.5 bg-tactical-800 w-full"><div class="h-full bg-gradient-to-r from-yellow-600 to-yellow-400 w-[{{ $prog3 }}%] shadow-[0_0_15px_#fbbf24]"></div></div>
                         <div class="absolute top-4 right-6 text-yellow-500 text-[9px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 bg-black/40 px-2 py-1 rounded-full border border-yellow-500/20">
-                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-ping"></span> 15% LOGÍSTICA
+                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-ping"></span> {{ $prog3 }}% LOGÍSTICA
                         </div>
 
                         <!-- Miniatura lockeada -->
@@ -1362,16 +1394,16 @@
                                     <i class='bx bx-lock-alt text-2xl text-white/50 group-hover/inc:text-yellow-500'></i>
                                 </div>
                             </div>
-                            <img src="https://images.unsplash.com/photo-1595101834161-267591e6005c?q=80&w=600&auto=format&fit=crop" class="h-full w-full object-cover filter brightness-75 group-hover/inc:brightness-100 transition-all duration-1000" alt="Benelli M4">
+                            <img src="{{ $img3 }}" class="h-full w-full object-cover filter brightness-75 group-hover/inc:brightness-100 transition-all duration-1000" alt="{{ $tit3 }}">
                         </div>
 
                         <!-- Detalles -->
                         <div class="flex-1 w-full text-center py-2 h-full flex flex-col">
                             <div class="inline-flex items-center justify-center gap-1.5 text-[9px] text-gray-500 border border-white/5 bg-white/5 px-3 py-1 rounded-full font-bold tracking-[0.2em] uppercase mb-4 w-max mx-auto">
-                                <i class='bx bx-box'></i> ARRIBO: 45 DÍAS
+                                <i class='bx bx-box'></i> ARRIBO: ESTIMADO
                             </div>
-                            <h4 class="font-display text-2xl font-black text-white mb-2 group-hover/inc:text-yellow-500 transition-colors leading-none tracking-tight uppercase">BENELLI M4 TACTICAL</h4>
-                            <p class="text-[11px] text-gray-400 font-light mb-auto leading-relaxed px-2">Escopeta semi-automática de combate. Fiabilidad legendaria para cualquier escenario crítico.</p>
+                            <h4 class="font-display text-2xl font-black text-white mb-2 group-hover/inc:text-yellow-500 transition-colors leading-none tracking-tight uppercase">{{ $tit3 }}</h4>
+                            <p class="text-[11px] text-gray-400 font-light mb-auto leading-relaxed px-2">{{ $desc3 }}</p>
                             
                             <button class="mt-6 bg-white/5 text-white font-bold uppercase tracking-[0.2em] py-4 px-4 rounded-xl hover:bg-white hover:text-black transition-all border border-white/10 hover:border-transparent hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] w-full text-[10px]">
                                 AGENDAR NOTIFICACIÓN
@@ -1393,11 +1425,16 @@
             <div class="relative z-10 max-w-[95%] mx-auto px-6">
                 <!-- Grid de 2 Columnas para Desktop -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                    
+                    @php
+                        $nTitle = $getD('nosotros', 'nosotros_main', 'header', 'DÉCADAS DE EXCELENCIA TÁCTICA');
+                        $nDesc  = $getD('nosotros', 'nosotros_main', 'content', 'Balam Armería nació como un proyecto para proveer a los profesionales de la seguridad y entusiastas del tiro deportivo con el mejor equipamiento.');
+                        $nImg   = $getD('nosotros', 'nosotros_main', 'image', asset('images/nosotros_tigre_v2.png'));
+                    @endphp
+
                     <!-- Columna Izquierda: Imagen de Marca Táctica (Tigre) -->
                     <div class="relative order-2 lg:order-1 flex justify-center">
                         <div class="relative rounded-3xl overflow-hidden border border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.6)] group max-w-sm md:max-w-md">
-                            <img src="{{ asset('images/nosotros_tigre_v2.png') }}" alt="Balam Armería - Elite" class="w-full h-auto transform group-hover:scale-105 transition-transform duration-1000">
+                            <img src="{{ $nImg }}" alt="Balam Armería - Elite" class="w-full h-auto transform group-hover:scale-105 transition-transform duration-1000">
                         </div>
                         
                         <!-- Badge de Calidad Flotante -->
@@ -1419,10 +1456,10 @@
                             ¿QUIÉNES SOMOS?
                         </span>
                         <h2 class="font-display text-4xl md:text-6xl lg:text-7xl font-black text-white mb-8 leading-[1] uppercase tracking-tighter drop-shadow-[0_15px_30px_rgba(0,0,0,0.5)]">
-                            DÉCADAS DE <span class="text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-[#e67e22]">EXCELENCIA</span> <br> NOS RESPALDAN
+                            {{ $nTitle }}
                         </h2>
                         <p class="text-gray-300 text-lg md:text-xl max-w-2xl mx-auto lg:mx-0 leading-relaxed font-light mb-10 italic border-l-2 lg:border-l-4 border-[#e67e22]/30 pl-6">
-                            Somos líderes en la distribución de armamento de alta gama, brindando asesoría especializada a deportistas de élite, cazadores y expertos en seguridad.
+                            {{ $nDesc }}
                         </p>
 
                         <!-- Highlights Tácticos -->
@@ -1493,7 +1530,7 @@
                             <div class="relative bg-tactical-900/60 backdrop-blur-xl border border-white/5 rounded-2xl p-5 group-hover:border-accent-primary/30 transition-all duration-300">
                                 <div class="flex items-center gap-5">
                                     <div class="w-24 h-24 rounded-xl overflow-hidden shrink-0 border border-white/10 group-hover:border-accent-primary/50 transition-all relative">
-                                        <img src="{{ asset('images/sucursales/poptun.png') }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                        <img src="{{ $getD('sucursales', 'poptun', 'image', asset('images/sucursales/poptun.png')) }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                                         <div class="absolute inset-0 bg-accent-primary/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                     </div>
                                     <div class="flex-1 min-w-0">
@@ -1522,7 +1559,7 @@
                             <div class="relative bg-tactical-900/60 backdrop-blur-xl border border-white/5 rounded-2xl p-5 group-hover:border-accent-primary/30 transition-all duration-300">
                                 <div class="flex items-center gap-5">
                                     <div class="w-24 h-24 rounded-xl overflow-hidden shrink-0 border border-white/10 group-hover:border-accent-primary/50 transition-all relative">
-                                        <img src="https://images.unsplash.com/photo-1595590424283-b8f17842773f?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                        <img src="{{ $getD('sucursales', 'sanluis', 'image', 'https://images.unsplash.com/photo-1595590424283-b8f17842773f?q=80&w=600&auto=format&fit=crop') }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                                         <div class="absolute inset-0 bg-accent-primary/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                     </div>
                                     <div class="flex-1 min-w-0">
@@ -1551,7 +1588,7 @@
                             <div class="relative bg-tactical-900/60 backdrop-blur-xl border border-white/5 rounded-2xl p-5 group-hover:border-accent-primary/30 transition-all duration-300">
                                 <div class="flex items-center gap-5">
                                     <div class="w-24 h-24 rounded-xl overflow-hidden shrink-0 border border-white/10 group-hover:border-accent-primary/50 transition-all relative">
-                                        <img src="https://images.unsplash.com/photo-1584282361661-04eecb31548e?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                        <img src="{{ $getD('sucursales', 'melchor', 'image', 'https://images.unsplash.com/photo-1584282361661-04eecb31548e?q=80&w=600&auto=format&fit=crop') }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                                         <div class="absolute inset-0 bg-accent-primary/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                     </div>
                                     <div class="flex-1 min-w-0">
@@ -1741,27 +1778,27 @@
         <script>
             const branchContacts = {
                 poptun: {
-                    name: 'Sede Poptún',
-                    address: 'Barrio El Centro, Petén',
-                    coords: '16.3314,-89.4183',
+                    name: '{{ $getD('sucursales', 'poptun', 'header', 'Sede Poptún') }}',
+                    address: '{{ $getD('sucursales', 'poptun', 'description', 'Barrio El Centro, Petén') }}',
+                    coords: '{{ $getD('sucursales', 'poptun', 'content', '16.3314,-89.4183') }}',
                     wa: { num: '+502 4043 0725', link: 'https://wa.me/50240430725' },
                     fb: { alias: 'Balam Poptún',   link: 'https://www.facebook.com/share/1AuQFGQPtt/?mibextid=wwXIfr' },
                     ig: { alias: '@balampoptun',  link: 'https://www.instagram.com/balampoptun?igsh=MXNmM210ZDVxYTYzOA==' },
                     tk: { alias: '@balampoptun',  link: 'https://www.tiktok.com/@balampoptun?_r=1&_t=ZS-959MbJz25Ya' }
                 },
                 sanluis: {
-                    name: 'Sede San Luis',
-                    address: 'Calle Principal, Petén',
-                    coords: '16.1956,-89.4442',
+                    name: '{{ $getD('sucursales', 'sanluis', 'header', 'Sede San Luis') }}',
+                    address: '{{ $getD('sucursales', 'sanluis', 'description', 'Calle Principal, Petén') }}',
+                    coords: '{{ $getD('sucursales', 'sanluis', 'content', '16.1956,-89.4442') }}',
                     wa: { num: '+502 4903 8728', link: 'https://wa.me/50249038728' },
                     fb: { alias: 'Balam San Luis', link: 'https://www.facebook.com/share/1NULrBuz4A/?mibextid=wwXIfr' },
                     ig: { alias: '@balamsanluis', link: 'https://www.instagram.com/balamsanluis?igsh=enB5cHl2bTAzODd3' },
                     tk: { alias: '@balamsanluis1', link: 'https://www.tiktok.com/@balamsanluis1?_r=1&_t=ZS-959Mvvx5eeS' }
                 },
                 melchor: {
-                    name: 'Sede Melchor',
-                    address: 'Frontera, Melchor de Mencos',
-                    coords: '17.0628,-89.1558',
+                    name: '{{ $getD('sucursales', 'melchor', 'header', 'Sede Melchor') }}',
+                    address: '{{ $getD('sucursales', 'melchor', 'description', 'Frontera, Melchor de Mencos') }}',
+                    coords: '{{ $getD('sucursales', 'melchor', 'content', '17.0628,-89.1558') }}',
                     wa: { num: '+502 4499 7414', link: 'https://wa.me/50244997414' },
                     fb: { alias: 'Balam Melchor',  link: 'https://www.facebook.com/share/1DjAQtgF6N/?mibextid=wwXIfr' },
                     ig: { alias: '@balammelchordemencos', link: 'https://www.instagram.com/balammelchordemencos?igsh=MWsyNzU4djBocm51Yw==' },
