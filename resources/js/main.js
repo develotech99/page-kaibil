@@ -578,12 +578,14 @@ const initSwiper = () => {
 
     // Inicializar Carrusel de Videoteca (Premium)
     videoSwiper = new Swiper('.video-slider', {
-        slidesPerView: 4,
-        spaceBetween: 30,
-        loop: true,
-        speed: 800,
+        slidesPerView: 3,
+        spaceBetween: 28,
+        loop: false,
+        speed: 700,
+        grabCursor: true,
+        watchSlidesProgress: true,
         autoplay: {
-            delay: 4000,
+            delay: 5000,
             disableOnInteraction: false,
             pauseOnMouseEnter: true,
         },
@@ -597,14 +599,14 @@ const initSwiper = () => {
         },
         observer: true,
         observeParents: true,
-        watchOverflow: true,
         breakpoints: {
-            320: { slidesPerView: 1, spaceBetween: 20 },
-            640: { slidesPerView: 2, spaceBetween: 20 },
-            1024: { slidesPerView: 3, spaceBetween: 30 },
-            1280: { slidesPerView: 4, spaceBetween: 30 },
+            320:  { slidesPerView: 1, spaceBetween: 15, centeredSlides: true },
+            640:  { slidesPerView: 2, spaceBetween: 20, centeredSlides: false },
+            1024: { slidesPerView: 3, spaceBetween: 28, centeredSlides: false },
         },
     });
+    // Forzar recálculo en el siguiente frame para asegurar anchos correctos
+    setTimeout(() => { if (videoSwiper) videoSwiper.update(); }, 100);
 
     // Inicializar Carrusel de Arsenal Destacado (Optimizado con Loop Infinito)
     arsenalSwiper = new Swiper('.arsenal-slider', {

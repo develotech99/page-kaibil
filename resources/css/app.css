@@ -159,19 +159,19 @@
         background-image: var(--background-image-noise);
     }
 
-    /* Swiper Hero Fix Overlap */
-    .swiper-slide {
+    /* Swiper Hero Fix Overlap (Specific to Hero Carousel) */
+    .assembly-slider .swiper-slide {
         opacity: 0 !important;
         transition: opacity 1s ease-in-out;
         pointer-events: none;
-        /* Evita que clicks peguen en slides ocultas */
     }
 
-    .swiper-slide-active,
-    .videoteca-slider .swiper-slide,
+    .assembly-slider .swiper-slide-active,
+    .video-slider .swiper-slide,
     .arsenal-slider .swiper-slide {
         opacity: 1 !important;
         pointer-events: auto;
+        flex-shrink: 0;
     }
 
     /* Ocultar el paginador extra en videoteca cuando hay pocos slides */

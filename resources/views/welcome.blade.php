@@ -999,7 +999,7 @@
             <!-- Línea brillante separadora -->
             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none"></div>
 
-            <div class="max-w-7xl mx-auto px-6 relative z-20">
+            <div class="max-w-[95%] mx-auto px-6 relative z-20">
                 <div class="flex flex-col md:flex-row justify-between items-end mb-1 gsap-reveal gs-fade-up relative">
                     <div class="relative">
                         <div class="absolute -left-6 top-2 bottom-2 w-1 bg-white/50 rounded-r-md"></div>
@@ -1017,7 +1017,7 @@
                     <!-- Glowing Backdrops for the Carousel -->
                     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[50%] bg-gradient-to-r from-accent-pink/5 via-accent-cyan/10 to-accent-pink/5 blur-[80px] rounded-full pointer-events-none"></div>
                     
-                    <div class="swiper video-slider w-full py-1 !overflow-visible">
+                    <div class="swiper video-slider w-full py-1" style="overflow:hidden">
                         <div class="swiper-wrapper">
                             <div class="swiper-slide group">
                                 <div class="glass-card rounded-2xl overflow-hidden cursor-crosshair mouse-glow relative border border-white/5 hover:border-accent-pink/30 transition-all h-full flex flex-col transform group-hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(255,42,85,0.15)]">
@@ -1134,22 +1134,20 @@
                             
 
 
-                        </div>
-
-
-                        <!-- Custom Navigation Controls outside the overflow hidden box if needed, but inside container for absolute positioning -->
-                        <div class="flex items-center justify-between w-full absolute top-[40%] left-0 z-30 pointer-events-none px-2 lg:-mx-12 lg:w-[calc(100%+6rem)]">
-                            <div class="w-12 h-12 rounded-full glass-card border flex items-center justify-center text-white cursor-pointer hover:border-accent-pink hover:text-accent-pink transition-all shadow-xl swiper-button-prev-video pointer-events-auto backdrop-blur-xl">
-                                <i class='bx bx-chevron-left text-3xl'></i>
-                            </div>
-                            <div class="w-12 h-12 rounded-full glass-card border flex items-center justify-center text-white cursor-pointer hover:border-accent-pink hover:text-accent-pink transition-all shadow-xl swiper-button-next-video pointer-events-auto backdrop-blur-xl">
-                                <i class='bx bx-chevron-right text-3xl'></i>
-                            </div>
-                        </div>
-                        
-                        <!-- Premium Pagination -->
-                        <div class="swiper-pagination-video mt-2 w-full flex justify-center gap-3"></div>
                     </div>
+
+                    <!-- Custom Navigation Controls outside the overflow hidden box -->
+                    <div class="flex items-center justify-between w-full absolute top-[40%] left-0 z-30 pointer-events-none px-2 lg:-mx-12 lg:w-[calc(100%+6rem)]">
+                        <div class="w-12 h-12 rounded-full glass-card border flex items-center justify-center text-white cursor-pointer hover:border-accent-pink hover:text-accent-pink transition-all shadow-xl swiper-button-prev-video pointer-events-auto backdrop-blur-xl">
+                            <i class='bx bx-chevron-left text-3xl'></i>
+                        </div>
+                        <div class="w-12 h-12 rounded-full glass-card border flex items-center justify-center text-white cursor-pointer hover:border-accent-pink hover:text-accent-pink transition-all shadow-xl swiper-button-next-video pointer-events-auto backdrop-blur-xl">
+                            <i class='bx bx-chevron-right text-3xl'></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Premium Pagination -->
+                    <div class="swiper-pagination-video mt-2 w-full flex justify-center gap-3"></div>
                 </div>
             </div>
         </section>
