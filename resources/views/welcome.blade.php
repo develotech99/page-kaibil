@@ -61,7 +61,224 @@
             border-color: rgba(0, 240, 255, 0.4) !important;
             background-color: #0a0a0a !important;
         }
+
+        /* ============================================
+           RESPONSIVE: CAROUSEL HERO SECTION
+           ============================================ */
+
+        /* --- MÓVIL (< 640px) --- */
+        @media (max-width: 639px) {
+            /* Carrusel: altura fija pequeña */
+            .assembly-slider { height: 260px !important; }
+            .swiper-slide > div[style*="height:560px"],
+            .swiper-slide > div[style*="560px"] { height: 260px !important; }
+
+            /* Imagen recorte solo en móvil: full width */
+            .assembly-wrapper { width: 100% !important; }
+
+            /* Título y card: posición relativa apilada verticalmente */
+            .assembly-title {
+                position: absolute !important;
+                top: 10px !important;
+                right: 8px !important;
+                width: 55% !important;
+                z-index: 50 !important;
+            }
+            .assembly-title h2 { font-size: 1.1rem !important; line-height: 1.1 !important; }
+
+            .assembly-card {
+                position: absolute !important;
+                bottom: 6px !important;
+                right: 6px !important;
+                width: 58% !important;
+                padding: 8px 10px !important;
+                font-size: 9px !important;
+            }
+            .assembly-card h4 { font-size: 7px !important; margin-bottom: 6px !important; }
+            .assembly-card ul { gap: 5px !important; font-size: 9px !important; }
+            .assembly-card li { padding-bottom: 4px !important; }
+
+            /* Botones de navegación del swiper */
+            .swiper-button-prev, .swiper-button-next { display: none !important; }
+
+            /* Hero left panel: center en móvil */
+            #inicio > div > div:first-child { padding-left: 1rem !important; padding-right: 1rem !important; text-align: center; }
+            #inicio > div > div:first-child .flex.flex-wrap { justify-content: center; }
+
+            /* Logo hero */
+            .cyber-logo-container.w-36 { width: 80px !important; height: 80px !important; }
+            h2.font-display.text-6xl { font-size: 2.8rem !important; }
+            h1.font-display.text-3xl { font-size: 1.6rem !important; }
+            #inicio p.text-gray-400 { font-size: 0.875rem !important; }
+
+            /* Contenedor hero flex → column */
+            #inicio .max-w-\[95\%\] { gap: 1rem !important; }
+            #inicio .w-full.xl\:w-7\/12 { height: 260px !important; }
+        }
+
+        /* --- TABLET (640px – 767px) --- */
+        @media (min-width: 640px) and (max-width: 767px) {
+            .assembly-slider { height: 320px !important; }
+            .swiper-slide > div[style*="560px"] { height: 320px !important; }
+            .assembly-wrapper { width: 60% !important; }
+            .assembly-title { top: 12% !important; right: 4% !important; width: 42% !important; }
+            .assembly-title h2 { font-size: 1.4rem !important; }
+            .assembly-card { bottom: 8% !important; right: 3% !important; width: 45% !important; padding: 10px 12px !important; }
+            .assembly-card h4 { font-size: 8px !important; }
+            .assembly-card ul { font-size: 10px !important; gap: 6px !important; }
+            #inicio .w-full.xl\:w-7\/12 { height: 320px !important; }
+        }
+
+        /* --- TABLET GRANDE / iPad (768px – 1023px) --- */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .assembly-slider { height: 380px !important; }
+            .swiper-slide > div[style*="560px"] { height: 380px !important; }
+            .assembly-wrapper { width: 62% !important; }
+            .assembly-title { top: 15% !important; right: 4% !important; width: 40% !important; }
+            .assembly-title h2 { font-size: 1.7rem !important; }
+            .assembly-card { bottom: 9% !important; right: 3% !important; width: 44% !important; padding: 12px 14px !important; }
+            .assembly-card h4 { font-size: 8px !important; }
+            .assembly-card ul { font-size: 10px !important; }
+            #inicio .w-full.xl\:w-7\/12 { height: 380px !important; }
+        }
+
+        /* --- LAPTOP (1024px – 1279px) --- */
+        @media (min-width: 1024px) and (max-width: 1279px) {
+            .assembly-slider { height: 460px !important; }
+            .swiper-slide > div[style*="560px"] { height: 460px !important; }
+            .assembly-title { top: 16% !important; right: 4% !important; width: 37% !important; }
+            .assembly-title h2 { font-size: 2rem !important; }
+            .assembly-card { bottom: 9% !important; right: 3% !important; width: 41% !important; }
+            #inicio .w-full.xl\:w-7\/12 { height: 460px !important; }
+        }
+
+        /* --- DESKTOP (1280px – 1535px) --- */
+        @media (min-width: 1280px) and (max-width: 1535px) {
+            .assembly-slider { height: 520px !important; }
+            .swiper-slide > div[style*="560px"] { height: 520px !important; }
+            #inicio .w-full.xl\:w-7\/12 { height: 520px !important; }
+        }
+
+        /* --- WIDE (>=1536px) --- */
+        @media (min-width: 1536px) {
+            .assembly-slider { height: 620px !important; }
+            .swiper-slide > div[style*="560px"] { height: 620px !important; }
+            #inicio .w-full.xl\:w-7\/12 { height: 620px !important; }
+            .assembly-title h2 { font-size: 3.5rem !important; }
+            .assembly-card { width: 38% !important; padding: 22px 26px !important; }
+        }
+
+        /* ============================================
+           RESPONSIVE: NAVBAR MOBILE MENU
+           ============================================ */
+        @media (max-width: 767px) {
+            /* Navbar responsive: ocultar links de escritorio, mostrar hamburguesa */
+            #mobile-menu-btn { display: flex !important; }
+            #mobile-nav { transition: all 0.3s ease; }
+        }
+
+        /* ============================================
+           RESPONSIVE: CATÁLOGO Y FILTROS
+           ============================================ */
+        @media (max-width: 767px) {
+            /* Filtro lateral → colapso */
+            #catalogo .flex.gap-6, #catalogo .flex.gap-8 { flex-direction: column !important; }
+            #filter-sidebar { width: 100% !important; max-width: 100% !important; }
+        }
+
+        /* ============================================
+           RESPONSIVE: TIPOGRAFÍA GENERAL
+           ============================================ */
+        @media (max-width: 639px) {
+            h1 { font-size: 1.5rem !important; }
+            h2 { font-size: 1.25rem !important; }
+            .font-display.text-6xl { font-size: 2.5rem !important; }
+        }
+
+        /* ============================================
+           NAVBAR LINKS — HOVER + ACTIVE STATE
+           ============================================ */
+        .nav-link {
+            position: relative;
+            color: #9ca3af;
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: .03em;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 60%;
+            height: 2px;
+            background: #00f0ff;
+            border-radius: 2px;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+            opacity: 0;
+        }
+        .nav-link:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.05);
+        }
+        .nav-link:hover::after {
+            transform: translateX(-50%) scaleX(1);
+            opacity: 0.7;
+        }
+        .nav-link.nav-active {
+            color: #fff;
+            background: rgba(255,255,255,0.05);
+        }
+        .nav-link.nav-active::after {
+            transform: translateX(-50%) scaleX(1);
+            opacity: 1;
+            background: #00f0ff;
+            box-shadow: 0 0 8px rgba(0,240,255,0.6);
+        }
+        /* Mobile nav active */
+        .mob-nav-link { color: #9ca3af; }
+        .mob-nav-link.nav-active { color: #fff; background: rgba(0,240,255,0.05); }
+        .mob-nav-link.nav-active .mob-dot { background: #00f0ff; box-shadow: 0 0 6px #00f0ff; }
+        .mob-nav-link:hover { color: #e5e7eb; background: rgba(255,255,255,0.04); }
     </style>
+
+    <script>
+        /* IntersectionObserver — detecta sección activa y marca nav */
+        document.addEventListener('DOMContentLoaded', function () {
+            const sectionMap = {
+                'inicio':         ['nav-inicio',       'mnav-inicio'],
+                'catalogo':       ['nav-catalogo',     'mnav-catalogo'],
+                'empresa':        ['nav-empresa',      'mnav-empresa'],
+                'contacto':       ['nav-contacto',     'mnav-contacto'],
+                'contacto-cards': ['nav-contacto-cards','mnav-contacto-cards'],
+            };
+            const allNavIds = Object.values(sectionMap).flat();
+
+            function setActive(sectionId) {
+                allNavIds.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.remove('nav-active');
+                });
+                const ids = sectionMap[sectionId];
+                if (ids) ids.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.add('nav-active');
+                });
+            }
+
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) setActive(e.target.id);
+                });
+            }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+
+            Object.keys(sectionMap).forEach(id => {
+                const el = document.getElementById(id);
+                if (el) observer.observe(el);
+            });
+        });
+    </script>
 </head>
 <body class="font-sans antialiased text-gray-200 selection:bg-accent-primary selection:text-black">
 
@@ -106,7 +323,7 @@
     <div data-scroll-container id="scroll-wrapper" style="opacity: 0; visibility: hidden;">
         
         <!-- Navbar -->
-        <nav class="fixed w-full z-50 transition-all duration-300 backdrop-blur-md bg-tactical-900/60 border-b border-white/5 top-0" id="navbar">
+        <nav class="fixed w-full z-50 transition-all duration-300 bg-[#0c0c0c] border-b border-white/5 top-0 shadow-[0_4px_24px_4px_#0c0c0c]" id="navbar">
             <div class="max-w-[95%] mx-auto px-6 py-4 flex justify-between items-center">
                 <a href="#" class="flex items-center gap-2 group h-14 md:h-16 relative">
                     <div class="h-10 w-10 md:h-12 md:w-12 rounded-full bg-white cyber-logo-container border-2 border-[#e67e22]/30 shadow-[0_0_15px_rgba(230,126,34,0.3)] group-hover:shadow-[0_0_25px_rgba(230,126,34,0.5)] transition-all duration-500 flex items-center justify-center shrink-0">
@@ -122,17 +339,29 @@
                     </div>
                 </a>
                 
-                <div class="hidden md:flex items-center gap-8 font-medium text-sm text-gray-300">
-                    <a href="#inicio" onclick="scrollToSection('#inicio', event)" class="hover:text-accent-primary transition-colors hover-glow">Inicio</a>
-                    <a href="#catalogo" onclick="resetCatalog(); scrollToSection('#catalogo', event)" class="hover:text-accent-primary transition-colors hover-glow">Catálogo</a>
-                    <a href="#empresa" onclick="scrollToSection('#empresa', event)" class="hover:text-accent-primary transition-colors hover-glow">Nosotros (Quiénes Somos)</a>
-                    <a href="#contacto" onclick="scrollToSection('#contacto', event)" class="hover:text-accent-primary transition-colors hover-glow">Ubicaciones</a>
-                    <a href="#contacto-cards" onclick="scrollToSection('#contacto-cards', event)" class="hover:text-accent-primary transition-colors hover-glow">Contacto</a>
+                <div class="hidden md:flex items-center gap-1 font-medium text-sm">
+                    <a href="#inicio" id="nav-inicio" onclick="scrollToSection('#inicio', event)" class="nav-link px-4 py-2 rounded-lg text-gray-400 transition-all duration-200 relative">Inicio</a>
+                    <a href="#catalogo" id="nav-catalogo" onclick="resetCatalog(); scrollToSection('#catalogo', event)" class="nav-link px-4 py-2 rounded-lg text-gray-400 transition-all duration-200 relative">Catálogo</a>
+                    <a href="#empresa" id="nav-empresa" onclick="scrollToSection('#empresa', event)" class="nav-link px-4 py-2 rounded-lg text-gray-400 transition-all duration-200 relative">Nosotros</a>
+                    <a href="#contacto" id="nav-contacto" onclick="scrollToSection('#contacto', event)" class="nav-link px-4 py-2 rounded-lg text-gray-400 transition-all duration-200 relative">Ubicaciones</a>
+                    <a href="#contacto-cards" id="nav-contacto-cards" onclick="scrollToSection('#contacto-cards', event)" class="nav-link px-4 py-2 rounded-lg text-gray-400 transition-all duration-200 relative">Contacto</a>
                 </div>
 
-                <a href="#contacto" onclick="scrollToSection('#contacto', event)" class="hidden md:flex bg-white/5 hover:bg-white/10 px-5 py-2.5 rounded border border-white/10 text-white font-medium transition-colors items-center gap-2">
-                    <i class='bx bx-user-circle text-xl'></i> Mi Arsenal
-                </a>
+                <!-- Hamburger btn móvil -->
+                <button id="mobile-menu-btn" class="md:hidden flex flex-col justify-center items-center gap-[5px] w-10 h-10 rounded border border-white/10 bg-white/5 hover:bg-white/10 transition-colors" onclick="toggleMobileMenu()" aria-label="Menú">
+                    <span class="mobile-bar block w-5 h-[2px] bg-white transition-all duration-300"></span>
+                    <span class="mobile-bar block w-5 h-[2px] bg-white transition-all duration-300"></span>
+                    <span class="mobile-bar block w-5 h-[2px] bg-white transition-all duration-300"></span>
+                </button>
+            </div>
+
+            <!-- Menú móvil colapsable -->
+            <div id="mobile-nav" class="md:hidden hidden flex-col gap-0 bg-[#0c0c0c] border-t border-white/5 pb-4">
+                <a href="#inicio" id="mnav-inicio" onclick="scrollToSection('#inicio', event); closeMobileMenu()" class="mob-nav-link px-6 py-3.5 text-gray-400 font-medium text-sm border-b border-white/5 flex items-center gap-3 transition-all"><span class="mob-dot w-1.5 h-1.5 rounded-full bg-transparent transition-all"></span>Inicio</a>
+                <a href="#catalogo" id="mnav-catalogo" onclick="resetCatalog(); scrollToSection('#catalogo', event); closeMobileMenu()" class="mob-nav-link px-6 py-3.5 text-gray-400 font-medium text-sm border-b border-white/5 flex items-center gap-3 transition-all"><span class="mob-dot w-1.5 h-1.5 rounded-full bg-transparent transition-all"></span>Catálogo</a>
+                <a href="#empresa" id="mnav-empresa" onclick="scrollToSection('#empresa', event); closeMobileMenu()" class="mob-nav-link px-6 py-3.5 text-gray-400 font-medium text-sm border-b border-white/5 flex items-center gap-3 transition-all"><span class="mob-dot w-1.5 h-1.5 rounded-full bg-transparent transition-all"></span>Nosotros</a>
+                <a href="#contacto" id="mnav-contacto" onclick="scrollToSection('#contacto', event); closeMobileMenu()" class="mob-nav-link px-6 py-3.5 text-gray-400 font-medium text-sm border-b border-white/5 flex items-center gap-3 transition-all"><span class="mob-dot w-1.5 h-1.5 rounded-full bg-transparent transition-all"></span>Ubicaciones</a>
+                <a href="#contacto-cards" id="mnav-contacto-cards" onclick="scrollToSection('#contacto-cards', event); closeMobileMenu()" class="mob-nav-link px-6 py-3.5 text-gray-400 font-medium text-sm flex items-center gap-3 transition-all"><span class="mob-dot w-1.5 h-1.5 rounded-full bg-transparent transition-all"></span>Contacto</a>
             </div>
         </nav>
 
@@ -309,9 +538,9 @@
                                     <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(239,68,68,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(239,68,68,0.07) 1px,transparent 1px);background-size:44px 44px;z-index:0;pointer-events:none"></div>
                                     <div class="assembly-wrapper" style="position:absolute;left:0;top:0;width:63%;height:100%;overflow:hidden;z-index:1">
                                         <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(239,68,68,0.12) 0%,transparent 70%)"></div>
-                                        <div class="frag frag-1" style="position:absolute;inset:0;z-index:30;opacity:0;clip-path:polygon(0 0,38% 0,38% 100%,0 100%)"><img src="{{ asset('images/banner_home_5.png') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
-                                        <div class="frag frag-2" style="position:absolute;inset:0;z-index:20;opacity:0;clip-path:polygon(38% 0,70% 0,70% 100%,38% 100%)"><img src="{{ asset('images/banner_home_5.png') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
-                                        <div class="frag frag-3" style="position:absolute;inset:0;z-index:10;opacity:0;clip-path:polygon(70% 0,100% 0,100% 100%,70% 100%)"><img src="{{ asset('images/banner_home_5.png') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-1" style="position:absolute;inset:0;z-index:30;opacity:0;clip-path:polygon(0 0,38% 0,38% 100%,0 100%)"><img src="{{ asset('images/beretta.png') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-2" style="position:absolute;inset:0;z-index:20;opacity:0;clip-path:polygon(38% 0,70% 0,70% 100%,38% 100%)"><img src="{{ asset('images/beretta.png') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-3" style="position:absolute;inset:0;z-index:10;opacity:0;clip-path:polygon(70% 0,100% 0,100% 100%,70% 100%)"><img src="{{ asset('images/beretta.png') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
                                         <div style="position:absolute;inset:0;background:linear-gradient(to right,transparent 55%,rgba(4,8,20,0.95) 100%);z-index:35"></div>
                                         <div class="assemble-grid" style="position:absolute;inset:0;background-image:linear-gradient(rgba(239,68,68,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(239,68,68,0.1) 1px,transparent 1px);background-size:44px 44px;opacity:0;pointer-events:none;z-index:40"></div>
                                     </div>
@@ -346,7 +575,7 @@
         </section>
 
         <!-- Sección de Filtro y Catálogo con JS Dinámico -->
-        <section id="catalogo" class="pt-4 md:pt-6 pb-24 relative">
+        <section id="catalogo" class="pt-0 pb-24 relative">
             <!-- Lineas diagonales de decoracion -->
             <div class="absolute inset-0 w-full h-full bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.01)_25%,rgba(255,255,255,0.01)_50%,transparent_50%,transparent_75%,rgba(255,255,255,0.01)_75%,rgba(255,255,255,0.01)_100%)] bg-[length:20px_20px] pointer-events-none"></div>
 
@@ -362,8 +591,9 @@
                 </div>
 
                 <div class="flex flex-col lg:flex-row gap-8 lg:gap-10 items-start relative">
-                    <!-- Sidebar de Filtros (Izquierda) -->
-                    <aside class="w-full lg:w-1/4 xl:w-1/5 shrink-0 sticky top-[96px] z-20 pb-10 max-h-[calc(100vh-140px)] overflow-y-auto hide-scrollbar custom-scrollbar">
+
+                    <!-- Sidebar escritorio (sin cambios) -->
+                    <aside id="catalog-sidebar" class="w-full lg:w-1/4 xl:w-1/5 shrink-0 lg:sticky lg:top-[96px] z-20 pb-10 lg:max-h-[calc(100vh-140px)] lg:overflow-y-auto hide-scrollbar custom-scrollbar hidden lg:block">
                         <div class="mb-10 px-4 pt-6">
                             <h3 class="font-display text-4xl font-black text-white uppercase tracking-tighter mb-8 border-b-4 border-accent-cyan pb-2 w-max">
                                 Catálogo
@@ -416,7 +646,7 @@
                     <main class="flex-1 w-full">
                         <!-- Barra de Herramientas Superior / Top Bar Filtros -->
                         <!-- Barra de Herramientas Superior / Top Bar Filtros (Fija al Scroll) -->
-                        <div class="sticky top-[96px] z-40 bg-tactical-900/95 backdrop-blur-2xl -mx-6 px-6 py-6 mb-8 border-b border-white/10 transition-all duration-300 flex flex-col gap-6 shadow-2xl" id="catalogo-top-bar">
+                        <div class="sticky top-[64px] md:top-[80px] z-40 bg-[#0c0c0c] -mx-6 px-6 py-5 mb-8 border-b border-white/10 transition-all duration-300 flex flex-col gap-5 shadow-[0_4px_30px_6px_#0c0c0c]" id="catalogo-top-bar">
                             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                                 <h2 id="current-filter-title" class="font-display text-4xl font-black text-white uppercase tracking-tighter">
                                     ARSENAL DISPONIBLE
@@ -429,11 +659,11 @@
                                 </div>
                             </div>
 
-                            <div class="flex flex-wrap gap-6 items-end">
+                            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 items-end">
                                 <!-- Filtrar por Marca -->
-                                <div class="flex flex-col gap-2 min-w-[160px]">
+                                <div class="flex flex-col gap-1.5">
                                     <span class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] pl-1">Filtrar por Marca</span>
-                                    <select id="top-filter-brand" onchange="applyFilters()" class="bg-tactical-950/80 border border-white/10 rounded-xl py-3 px-4 text-white text-[11px] font-bold uppercase tracking-wider transition-all focus:outline-none focus:border-accent-cyan/50 cursor-pointer hover:bg-white/5">
+                                    <select id="top-filter-brand" onchange="applyFilters()" class="bg-tactical-950/80 border border-white/10 rounded-xl py-2.5 px-3 text-white text-[10px] md:text-[11px] font-bold uppercase tracking-wider transition-all focus:outline-none focus:border-accent-cyan/50 cursor-pointer hover:bg-white/5 w-full">
                                         <option value="all">TODAS LAS MARCAS</option>
                                         @if(isset($marcas))
                                             @foreach($marcas as $marca)
@@ -444,9 +674,9 @@
                                 </div>
 
                                 <!-- Filtrar por Sucursal -->
-                                <div class="flex flex-col gap-2 min-w-[160px]">
+                                <div class="flex flex-col gap-1.5">
                                     <span class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] pl-1">Por Sucursal</span>
-                                    <select id="top-filter-branch" onchange="applyFilters()" class="bg-tactical-950/80 border border-white/10 rounded-xl py-3 px-4 text-white text-[11px] font-bold uppercase tracking-wider transition-all focus:outline-none focus:border-accent-cyan/50 cursor-pointer hover:bg-white/5">
+                                    <select id="top-filter-branch" onchange="applyFilters()" class="bg-tactical-950/80 border border-white/10 rounded-xl py-2.5 px-3 text-white text-[10px] md:text-[11px] font-bold uppercase tracking-wider transition-all focus:outline-none focus:border-accent-cyan/50 cursor-pointer hover:bg-white/5 w-full">
                                         <option value="all">TODAS LAS SEDES</option>
                                         @if(isset($sucursales))
                                             @foreach($sucursales as $suc)
@@ -456,10 +686,10 @@
                                     </select>
                                 </div>
 
-                                <!-- Mostrar X (Desplazado a la derecha) -->
-                                <div class="flex flex-col gap-2 min-w-[120px] md:ml-auto">
+                                <!-- Mostrar X -->
+                                <div class="flex flex-col gap-1.5">
                                     <span class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] pl-1">Mostrar X</span>
-                                    <select id="top-items-per-page" onchange="changeItemsPerPage(this.value)" class="bg-tactical-950/80 border border-white/10 rounded-xl py-3 px-4 text-white text-[11px] font-bold uppercase tracking-wider transition-all focus:outline-none focus:border-accent-cyan/50 cursor-pointer hover:bg-white/5">
+                                    <select id="top-items-per-page" onchange="changeItemsPerPage(this.value)" class="bg-tactical-950/80 border border-white/10 rounded-xl py-2.5 px-3 text-white text-[10px] md:text-[11px] font-bold uppercase tracking-wider transition-all focus:outline-none focus:border-accent-cyan/50 cursor-pointer hover:bg-white/5 w-full">
                                         <option value="10">10 PRODUCTOS</option>
                                         <option value="20">20 PRODUCTOS</option>
                                         <option value="25" selected>25 PRODUCTOS</option>
@@ -468,9 +698,9 @@
                                 </div>
 
                                 <!-- Ordenar Por -->
-                                <div class="flex flex-col gap-2 min-w-[140px]">
+                                <div class="flex flex-col gap-1.5">
                                     <span class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] pl-1">Ordenar Por</span>
-                                    <select id="top-sort-order" onchange="applySorting()" class="bg-tactical-950/80 border border-white/10 rounded-xl py-3 px-4 text-white text-[11px] font-bold uppercase tracking-wider transition-all focus:outline-none focus:border-accent-cyan/50 cursor-pointer hover:bg-white/5">
+                                    <select id="top-sort-order" onchange="applySorting()" class="bg-tactical-950/80 border border-white/10 rounded-xl py-2.5 px-3 text-white text-[10px] md:text-[11px] font-bold uppercase tracking-wider transition-all focus:outline-none focus:border-accent-cyan/50 cursor-pointer hover:bg-white/5 w-full">
                                         <option value="default">RELEVANCIA</option>
                                         <option value="az">ALFABÉTICO A - Z</option>
                                         <option value="za">ALFABÉTICO Z - A</option>
@@ -620,6 +850,13 @@
                     </main>
                 </div>
             </div>
+
+            <!-- FAB: Botón flotante de categorías (solo móvil/tablet) -->
+            <button id="cat-fab" onclick="openCatDrawer()"
+                class="lg:hidden fixed left-3 bottom-24 z-50 flex flex-col items-center justify-center w-12 h-12 rounded-full bg-[#0c0c0c] border border-accent-cyan/40 shadow-[0_0_20px_rgba(0,240,255,0.25)] hover:shadow-[0_0_30px_rgba(0,240,255,0.45)] transition-all active:scale-95"
+                title="Filtrar por Categoría">
+                <i class='bx bx-filter-alt text-xl text-accent-cyan'></i>
+            </button>
         </section>
 
         <!-- ==============================================
@@ -1847,6 +2084,118 @@
     <!-- Canvas para el efecto de distorsión/ondas -->
     <canvas id="balam-ripple-canvas"></canvas>
 
-    <!-- 2. Los estilos y scripts fueron movidos a app.css y main.js respectivamente para mantener el orden -->
+    <!-- Mobile menu JS -->
+    <script>
+        function toggleMobileMenu() {
+            const nav = document.getElementById('mobile-nav');
+            const bars = document.querySelectorAll('.mobile-bar');
+            const isOpen = !nav.classList.contains('hidden');
+            if (isOpen) {
+                nav.classList.add('hidden');
+                nav.classList.remove('flex');
+                bars[0].style.transform = '';
+                bars[1].style.opacity = '';
+                bars[2].style.transform = '';
+            } else {
+                nav.classList.remove('hidden');
+                nav.classList.add('flex');
+                bars[0].style.transform = 'translateY(7px) rotate(45deg)';
+                bars[1].style.opacity = '0';
+                bars[2].style.transform = 'translateY(-7px) rotate(-45deg)';
+            }
+        }
+        function closeMobileMenu() {
+            const nav = document.getElementById('mobile-nav');
+            const bars = document.querySelectorAll('.mobile-bar');
+            nav.classList.add('hidden');
+            nav.classList.remove('flex');
+            bars[0].style.transform = '';
+            bars[1].style.opacity = '';
+            bars[2].style.transform = '';
+        }
+        function openCatDrawer() {
+            const drawer   = document.getElementById('cat-drawer');
+            const backdrop = document.getElementById('cat-drawer-backdrop');
+            backdrop.style.display = 'block';
+            drawer.getBoundingClientRect();
+            drawer.style.transform = 'translateX(0)';
+            document.body.style.overflow = 'hidden';
+        }
+        function closeCatDrawer() {
+            const drawer   = document.getElementById('cat-drawer');
+            const backdrop = document.getElementById('cat-drawer-backdrop');
+            drawer.style.transform = 'translateX(-100%)';
+            setTimeout(() => { backdrop.style.display = 'none'; }, 300);
+            document.body.style.overflow = '';
+        }
+        function toggleDrawerAccordion(listId, iconId) {
+            const list = document.getElementById(listId);
+            const icon = document.getElementById(iconId);
+            if (!list) return;
+            const isOpen = list.style.display === 'flex';
+            list.style.display = isOpen ? 'none' : 'flex';
+            if (icon) icon.className = isOpen ? 'bx bx-plus' : 'bx bx-minus';
+        }
+        // Mostrar FAB solo cuando el usuario está sobre la sección #catalogo
+        document.addEventListener('DOMContentLoaded', function() {
+            const fab     = document.getElementById('cat-fab');
+            const section = document.getElementById('catalogo');
+            if (!fab || !section) return;
+            // Solo en móvil/tablet (< 1024px)
+            const mq = window.matchMedia('(max-width:1023px)');
+            if (!mq.matches) return;
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    fab.style.display = e.isIntersecting ? 'flex' : 'none';
+                });
+            }, { threshold: 0.05 });
+            observer.observe(section);
+        });
+    </script>
+
+    <!-- ===== DRAWER CATEGORÍAS MÓVIL (body-level para que fixed funcione) ===== -->
+    <div id="cat-drawer-backdrop" onclick="closeCatDrawer()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);z-index:9000"></div>
+    <div id="cat-drawer" style="position:fixed;top:0;left:0;height:100%;width:288px;max-width:85vw;background:#0c0c0c;border-right:1px solid rgba(255,255,255,0.08);z-index:9100;transform:translateX(-100%);transition:transform 0.3s ease;overflow-y:auto">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.08)">
+            <span style="font-family:inherit;font-weight:900;font-size:1.25rem;color:#fff;text-transform:uppercase;letter-spacing:.05em">Categorías</span>
+            <button onclick="closeCatDrawer()" style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.05);border:none;color:#9ca3af;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.25rem">
+                <i class='bx bx-x'></i>
+            </button>
+        </div>
+        <div style="padding:12px 16px">
+            <ul style="list-style:none;padding:0;margin:0;border-top:1px solid rgba(255,255,255,0.05)">
+                <li>
+                    <a href="#catalogo" onclick="showAllProducts();closeCatDrawer()" style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:#fff;text-decoration:none;font-weight:700;font-size:.8rem;text-transform:uppercase;letter-spacing:.07em">
+                        Todos los Productos <i class='bx bx-check-circle' style="color:#00f0ff;font-size:1.1rem"></i>
+                    </a>
+                </li>
+                @if(isset($menuCategorias))
+                    @foreach($menuCategorias as $cat)
+                    <li style="border-bottom:1px solid rgba(255,255,255,0.05)">
+                        <div onclick="toggleDrawerAccordion('dcat-{{ $cat['slug'] }}','dico-{{ $cat['slug'] }}')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;cursor:pointer;color:#fff;font-weight:700;font-size:.8rem;text-transform:uppercase;letter-spacing:.07em">
+                            {{ $cat['nombre'] }} <i class='bx bx-plus' id="dico-{{ $cat['slug'] }}" style="color:#6b7280;font-size:1.1rem"></i>
+                        </div>
+                        <ul id="dcat-{{ $cat['slug'] }}" style="display:none;flex-direction:column;padding:0 0 10px 12px;margin:0;list-style:none;gap:2px">
+                            <li>
+                                <a href="#catalogo" onclick="updateProductsByFilter('{{ $cat['slug'] }}','cat',this);closeCatDrawer()" style="display:block;padding:8px 0;color:#9ca3af;text-decoration:none;font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;font-family:monospace">Ver Todo de {{ $cat['nombre'] }}</a>
+                            </li>
+                            @foreach($cat['subcategorias'] as $sub)
+                            <li>
+                                <a href="#catalogo" onclick="updateProductsByFilter('{{ $sub['slug'] }}','subcat',this);closeCatDrawer()" style="display:block;padding:8px 0;color:#6b7280;text-decoration:none;font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;font-family:monospace">{{ $sub['nombre'] }}</a>
+                            </li>
+                            @endforeach
+                        </ul>
+                    </li>
+                    @endforeach
+                @endif
+            </ul>
+        </div>
+    </div>
+
+    <!-- FAB flotante categorías (body-level) -->
+    <button id="cat-fab" onclick="openCatDrawer()" style="display:none;position:fixed;left:12px;bottom:96px;z-index:8900;width:48px;height:48px;border-radius:50%;background:#0c0c0c;border:1px solid rgba(0,240,255,0.4);color:#00f0ff;font-size:1.35rem;cursor:pointer;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(0,240,255,0.25);transition:box-shadow 0.3s,transform 0.15s" title="Filtrar por Categoría">
+        <i class='bx bx-filter-alt'></i>
+    </button>
+
 </body>
 </html>
