@@ -191,80 +191,149 @@
                 </div>
 
                 <!-- Carrusel de Armas (Fragmentos) Lado Derecho -->
-                <div class="w-full xl:w-7/12 relative min-h-[550px] md:min-h-[700px] flex items-center justify-center">
+                <div class="w-full xl:w-7/12 relative" style="height:560px">
                     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-600/10 rounded-full blur-[120px] pointer-events-none"></div>
 
-                    <div class="swiper assembly-slider w-full h-full relative z-10 overflow-hidden">
+                    <div class="swiper assembly-slider w-full overflow-hidden" style="height:100%">
                         <div class="swiper-wrapper">
-                            
-                            <!-- Slide 1: Sniper -->
-                            <div class="swiper-slide flex flex-col md:flex-row items-center justify-center w-full px-4">
-                                <!-- Área Visual (Izquierda/Arriba dentro del slide) -->
-                                <div class="w-full h-[350px] md:h-[500px] relative assembly-wrapper perspective-[1200px] transition-transform duration-700">
-                                    <div class="frag frag-1 absolute inset-0 z-30 opacity-0" style="clip-path: polygon(0 0, 38% 0, 38% 100%, 0 100%);">
-                                        <img src="{{ asset('images/sniper.png') }}" class="w-full h-full object-contain filter drop-shadow-[15px_15px_20px_rgba(0,0,0,0.9)]">
-                                    </div>
-                                    <div class="frag frag-2 absolute inset-0 z-20 opacity-0" style="clip-path: polygon(38% 0, 70% 0, 70% 100%, 38% 100%);">
-                                        <img src="{{ asset('images/sniper.png') }}" class="w-full h-full object-contain filter drop-shadow-[0_15px_20px_rgba(0,0,0,0.9)]">
-                                    </div>
-                                    <div class="frag frag-3 absolute inset-0 z-10 opacity-0" style="clip-path: polygon(70% 0, 100% 0, 100% 100%, 70% 100%);">
-                                        <img src="{{ asset('images/sniper.png') }}" class="w-full h-full object-contain filter drop-shadow-[-15px_15px_20px_rgba(0,0,0,0.9)]">
-                                    </div>
-                                    <div class="assemble-grid absolute inset-0 border border-cyan-500/20 rounded-xl bg-[linear-gradient(rgba(0,240,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(0,240,255,0.05)_1px,transparent_1px)] bg-[size:40px_40px] opacity-0 pointer-events-none"></div>
-                                </div>
 
-                                <!-- Textos HUD -->
-                                <div class="w-full mt-[-60px] md:mt-0 md:absolute md:bottom-10 md:right-4 lg:right-12 md:max-w-xs flex flex-col justify-end z-40 pointer-events-none px-2 lg:px-0">
-                                    <h2 class="assembly-title font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight opacity-0 text-right drop-shadow-xl break-words">Precisión<br><span class="text-transparent bg-clip-text bg-gradient-to-l from-cyan-400 to-blue-600 drop-shadow-[0_0_10px_rgba(0,240,255,0.5)]">Táctica</span></h2>
-                                    
-                                    <div class="assembly-card glass-card p-6 rounded-2xl border border-cyan-500/30 relative overflow-hidden group opacity-0 shadow-[0_20px_50px_rgba(0,0,0,0.8)] bg-tactical-800/90 backdrop-blur-xl pointer-events-auto w-full">
-                                        <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-transparent"></div>
-                                        <h4 class="font-mono text-white mb-4 text-[10px] md:text-xs tracking-widest border-l-2 border-cyan-500 pl-3 relative z-10 w-full overflow-hidden text-ellipsis whitespace-nowrap">MÓDULO SENSOR</h4>
-                                        <ul class="space-y-4 text-gray-400 font-mono text-[10px] md:text-[11px] relative z-10 w-full">
-                                            <li class="flex justify-between border-b border-white/5 pb-1 w-full"><span class="text-white shrink-0">CHASIS</span> <span class="text-white font-bold tracking-wider text-right pl-2 truncate">AERONÁUTICA</span></li>
-                                            <li class="flex justify-between border-b border-white/5 pb-1 w-full"><span class="text-white shrink-0">ALCANCE</span> <span class="text-white font-bold tracking-wider text-right pl-2 truncate">1,500 METROS</span></li>
-                                            <li class="flex justify-between border-b border-white/5 pb-1 w-full"><span class="text-white shrink-0">VEL. BOCA</span> <span class="text-white font-bold tracking-wider text-right pl-2 truncate">850 M/S</span></li>
+                            <!-- Slide 1: Calidad Garantizada -->
+                            <div class="swiper-slide">
+                                <div style="position:relative;height:560px;width:100%;border:1px solid rgba(0,240,255,0.18)">
+                                    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(0,240,255,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,0.07) 1px,transparent 1px);background-size:44px 44px;z-index:0;pointer-events:none"></div>
+                                    <div class="assembly-wrapper" style="position:absolute;left:0;top:0;width:63%;height:100%;overflow:hidden;z-index:1">
+                                        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(0,240,255,0.12) 0%,transparent 70%)"></div>
+                                        <div class="frag frag-1" style="position:absolute;inset:0;z-index:30;opacity:0;clip-path:polygon(0 0,38% 0,38% 100%,0 100%)"><img src="{{ asset('images/banner_home_1.jpg') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-2" style="position:absolute;inset:0;z-index:20;opacity:0;clip-path:polygon(38% 0,70% 0,70% 100%,38% 100%)"><img src="{{ asset('images/banner_home_1.jpg') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-3" style="position:absolute;inset:0;z-index:10;opacity:0;clip-path:polygon(70% 0,100% 0,100% 100%,70% 100%)"><img src="{{ asset('images/banner_home_1.jpg') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div style="position:absolute;inset:0;background:linear-gradient(to right,transparent 55%,rgba(4,8,20,0.95) 100%);z-index:35"></div>
+                                        <div class="assemble-grid" style="position:absolute;inset:0;background-image:linear-gradient(rgba(0,240,255,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,0.1) 1px,transparent 1px);background-size:44px 44px;opacity:0;pointer-events:none;z-index:40"></div>
+                                    </div>
+                                    <!-- Title top-right -->
+                                    <div class="assembly-title" style="position:absolute;top:18%;right:5%;width:38%;z-index:50;opacity:0">
+                                        <h2 class="font-display" style="font-size:clamp(2rem,3.2vw,3.2rem);font-weight:700;color:white;line-height:1.1;margin:0;text-align:right">Calidad<br><span style="background:linear-gradient(to right,#22d3ee,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Garantizada</span></h2>
+                                    </div>
+                                    <!-- Card bottom-right overlapping image -->
+                                    <div class="assembly-card" style="position:absolute;bottom:10%;right:3%;width:42%;z-index:50;opacity:0;padding:18px 20px;border-radius:8px;border:1px solid rgba(0,240,255,0.3);background:rgba(3,6,16,0.88);backdrop-filter:blur(20px);box-shadow:0 16px 50px rgba(0,0,0,0.9)">
+                                        <h4 style="color:#22d3ee;font-family:monospace;font-size:9px;letter-spacing:.2em;border-left:2px solid #22d3ee;padding-left:10px;margin:0 0 12px;text-transform:uppercase">ESTÁNDAR BALAM-01</h4>
+                                        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px;font-family:monospace;font-size:11px">
+                                            <li style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:7px"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">CERTIFICACIÓN</span><span style="color:white;font-weight:700;text-transform:uppercase">MIL-SPEC</span></li>
+                                            <li style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:7px"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">VIDA ÚTIL</span><span style="color:white;font-weight:700;text-transform:uppercase">EXTREMA</span></li>
+                                            <li style="display:flex;justify-content:space-between"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">CONTROL</span><span style="color:white;font-weight:700;text-transform:uppercase">RIGUROSO</span></li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <!-- Slide 2: AR15 -->
-                            <div class="swiper-slide flex flex-col md:flex-row items-center justify-center w-full px-4">
-                                <div class="w-full h-[350px] md:h-[500px] relative assembly-wrapper perspective-[1200px] transition-transform duration-700">
-                                    <div class="frag frag-1 absolute inset-0 z-30 opacity-0" style="clip-path: polygon(0 0, 38% 0, 38% 100%, 0 100%);">
-                                        <img src="{{ asset('images/ar15.png') }}" class="w-full h-full object-contain filter drop-shadow-[15px_15px_20px_rgba(0,0,0,0.9)]">
-                                    </div>
-                                    <div class="frag frag-2 absolute inset-0 z-20 opacity-0" style="clip-path: polygon(38% 0, 70% 0, 70% 100%, 38% 100%);">
-                                        <img src="{{ asset('images/ar15.png') }}" class="w-full h-full object-contain filter drop-shadow-[0_15px_20px_rgba(0,0,0,0.9)]">
-                                    </div>
-                                    <div class="frag frag-3 absolute inset-0 z-10 opacity-0" style="clip-path: polygon(70% 0, 100% 0, 100% 100%, 70% 100%);">
-                                        <img src="{{ asset('images/ar15.png') }}" class="w-full h-full object-contain filter drop-shadow-[-15px_15px_20px_rgba(0,0,0,0.9)]">
-                                    </div>
-                                    <!-- Use a slightly different color (green) mapping for AR15 grid -->
-                                    <div class="assemble-grid absolute inset-0 border border-[#00ff66]/20 rounded-xl bg-[linear-gradient(rgba(0,255,102,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,102,0.05)_1px,transparent_1px)] bg-[size:40px_40px] opacity-0 pointer-events-none"></div>
-                                </div>
 
-                                <div class="w-full mt-[-60px] md:mt-0 md:absolute md:bottom-10 md:right-4 lg:right-12 md:max-w-xs flex flex-col justify-end z-40 pointer-events-none px-2 lg:px-0">
-                                    <h2 class="assembly-title font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight opacity-0 text-right drop-shadow-xl break-words">Plataforma<br><span class="text-transparent bg-clip-text bg-gradient-to-l from-[#00ff66] to-[#008833] drop-shadow-[0_0_10px_rgba(0,255,102,0.5)]">Modular</span></h2>
-                                    
-                                    <div class="assembly-card glass-card p-6 rounded-2xl border border-[#00ff66]/30 relative overflow-hidden group opacity-0 shadow-[0_20px_50px_rgba(0,0,0,0.8)] bg-tactical-800/90 backdrop-blur-xl pointer-events-auto w-full">
-                                        <div class="absolute inset-0 bg-gradient-to-br from-[#00ff66]/10 to-transparent"></div>
-                                        <h4 class="font-mono text-white mb-4 text-[10px] md:text-xs tracking-widest border-l-2 border-[#00ff66] pl-3 relative z-10 w-full overflow-hidden text-ellipsis whitespace-nowrap">MÓDULO SENSOR</h4>
-                                        <ul class="space-y-4 text-gray-400 font-mono text-[10px] md:text-[11px] relative z-10 w-full">
-                                            <li class="flex justify-between border-b border-white/5 pb-1 w-full"><span class="text-white shrink-0">SISTEMA</span> <span class="text-white font-bold tracking-wider text-right pl-2 truncate">GAS DIRECTO</span></li>
-                                            <li class="flex justify-between border-b border-white/5 pb-1 w-full"><span class="text-white shrink-0">CALIBRE</span> <span class="text-white font-bold tracking-wider text-right pl-2 truncate">5.56x45mm</span></li>
-                                            <li class="flex justify-between border-b border-white/5 pb-1 w-full"><span class="text-white shrink-0">FIRE RATE</span> <span class="text-white font-bold tracking-wider text-right pl-2 truncate">800 RPM</span></li>
+                            <!-- Slide 2: Precisión Táctica -->
+                            <div class="swiper-slide">
+                                <div style="position:relative;height:560px;width:100%;border:1px solid rgba(230,126,34,0.18)">
+                                    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(230,126,34,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(230,126,34,0.07) 1px,transparent 1px);background-size:44px 44px;z-index:0;pointer-events:none"></div>
+                                    <div class="assembly-wrapper" style="position:absolute;left:0;top:0;width:63%;height:100%;overflow:hidden;z-index:1">
+                                        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(230,126,34,0.12) 0%,transparent 70%)"></div>
+                                        <div class="frag frag-1" style="position:absolute;inset:0;z-index:30;opacity:0;clip-path:polygon(0 0,38% 0,38% 100%,0 100%)"><img src="{{ asset('images/banner_home_2.jpg') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-2" style="position:absolute;inset:0;z-index:20;opacity:0;clip-path:polygon(38% 0,70% 0,70% 100%,38% 100%)"><img src="{{ asset('images/banner_home_2.jpg') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-3" style="position:absolute;inset:0;z-index:10;opacity:0;clip-path:polygon(70% 0,100% 0,100% 100%,70% 100%)"><img src="{{ asset('images/banner_home_2.jpg') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div style="position:absolute;inset:0;background:linear-gradient(to right,transparent 55%,rgba(4,8,20,0.95) 100%);z-index:35"></div>
+                                        <div class="assemble-grid" style="position:absolute;inset:0;background-image:linear-gradient(rgba(230,126,34,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(230,126,34,0.1) 1px,transparent 1px);background-size:44px 44px;opacity:0;pointer-events:none;z-index:40"></div>
+                                    </div>
+                                    <div class="assembly-title" style="position:absolute;top:18%;right:5%;width:38%;z-index:50;opacity:0">
+                                        <h2 class="font-display" style="font-size:clamp(2rem,3.2vw,3.2rem);font-weight:700;color:white;line-height:1.1;margin:0;text-align:right">Precisión<br><span style="background:linear-gradient(to right,#e67e22,#ea580c);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Táctica</span></h2>
+                                    </div>
+                                    <div class="assembly-card" style="position:absolute;bottom:10%;right:3%;width:42%;z-index:50;opacity:0;padding:18px 20px;border-radius:8px;border:1px solid rgba(230,126,34,0.3);background:rgba(3,6,16,0.88);backdrop-filter:blur(20px);box-shadow:0 16px 50px rgba(0,0,0,0.9)">
+                                        <h4 style="color:#e67e22;font-family:monospace;font-size:9px;letter-spacing:.2em;border-left:2px solid #e67e22;padding-left:10px;margin:0 0 12px;text-transform:uppercase">MÓDULO DE TIRO</h4>
+                                        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px;font-family:monospace;font-size:11px">
+                                            <li style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:7px"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">ALCANCE</span><span style="color:white;font-weight:700;text-transform:uppercase">MÁXIMO</span></li>
+                                            <li style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:7px"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">ESTABILIDAD</span><span style="color:white;font-weight:700;text-transform:uppercase">PROFESIONAL</span></li>
+                                            <li style="display:flex;justify-content:space-between"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">RECORRIDO</span><span style="color:white;font-weight:700;text-transform:uppercase">MATCH GRADE</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Slide 3: Rendimiento Superior -->
+                            <div class="swiper-slide">
+                                <div style="position:relative;height:560px;width:100%;border:1px solid rgba(16,185,129,0.18)">
+                                    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(16,185,129,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(16,185,129,0.07) 1px,transparent 1px);background-size:44px 44px;z-index:0;pointer-events:none"></div>
+                                    <div class="assembly-wrapper" style="position:absolute;left:0;top:0;width:63%;height:100%;overflow:hidden;z-index:1">
+                                        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(16,185,129,0.12) 0%,transparent 70%)"></div>
+                                        <div class="frag frag-1" style="position:absolute;inset:0;z-index:30;opacity:0;clip-path:polygon(0 0,38% 0,38% 100%,0 100%)"><img src="{{ asset('images/banner_home_3.jpg') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-2" style="position:absolute;inset:0;z-index:20;opacity:0;clip-path:polygon(38% 0,70% 0,70% 100%,38% 100%)"><img src="{{ asset('images/banner_home_3.jpg') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-3" style="position:absolute;inset:0;z-index:10;opacity:0;clip-path:polygon(70% 0,100% 0,100% 100%,70% 100%)"><img src="{{ asset('images/banner_home_3.jpg') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div style="position:absolute;inset:0;background:linear-gradient(to right,transparent 55%,rgba(4,8,20,0.95) 100%);z-index:35"></div>
+                                        <div class="assemble-grid" style="position:absolute;inset:0;background-image:linear-gradient(rgba(16,185,129,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(16,185,129,0.1) 1px,transparent 1px);background-size:44px 44px;opacity:0;pointer-events:none;z-index:40"></div>
+                                    </div>
+                                    <div class="assembly-title" style="position:absolute;top:18%;right:5%;width:38%;z-index:50;opacity:0">
+                                        <h2 class="font-display" style="font-size:clamp(2rem,3.2vw,3.2rem);font-weight:700;color:white;line-height:1.1;margin:0;text-align:right">Rendimiento<br><span style="background:linear-gradient(to right,#34d399,#22c55e);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Superior</span></h2>
+                                    </div>
+                                    <div class="assembly-card" style="position:absolute;bottom:10%;right:3%;width:42%;z-index:50;opacity:0;padding:18px 20px;border-radius:8px;border:1px solid rgba(16,185,129,0.3);background:rgba(3,6,16,0.88);backdrop-filter:blur(20px);box-shadow:0 16px 50px rgba(0,0,0,0.9)">
+                                        <h4 style="color:#34d399;font-family:monospace;font-size:9px;letter-spacing:.2em;border-left:2px solid #34d399;padding-left:10px;margin:0 0 12px;text-transform:uppercase">MÓDULO DE PODER</h4>
+                                        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px;font-family:monospace;font-size:11px">
+                                            <li style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:7px"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">VELOCIDAD</span><span style="color:white;font-weight:700;text-transform:uppercase">ALTA</span></li>
+                                            <li style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:7px"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">ERGONOMÍA</span><span style="color:white;font-weight:700;text-transform:uppercase">ADAPTATIVA</span></li>
+                                            <li style="display:flex;justify-content:space-between"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">CONFIABILIDAD</span><span style="color:white;font-weight:700;text-transform:uppercase">ÓPTIMA</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Slide 4: Equipo Profesional -->
+                            <div class="swiper-slide">
+                                <div style="position:relative;height:560px;width:100%;border:1px solid rgba(59,130,246,0.18)">
+                                    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(59,130,246,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,0.07) 1px,transparent 1px);background-size:44px 44px;z-index:0;pointer-events:none"></div>
+                                    <div class="assembly-wrapper" style="position:absolute;left:0;top:0;width:63%;height:100%;overflow:hidden;z-index:1">
+                                        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(59,130,246,0.12) 0%,transparent 70%)"></div>
+                                        <div class="frag frag-1" style="position:absolute;inset:0;z-index:30;opacity:0;clip-path:polygon(0 0,38% 0,38% 100%,0 100%)"><img src="{{ asset('images/banner_home_4.jpg') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-2" style="position:absolute;inset:0;z-index:20;opacity:0;clip-path:polygon(38% 0,70% 0,70% 100%,38% 100%)"><img src="{{ asset('images/banner_home_4.jpg') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-3" style="position:absolute;inset:0;z-index:10;opacity:0;clip-path:polygon(70% 0,100% 0,100% 100%,70% 100%)"><img src="{{ asset('images/banner_home_4.jpg') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div style="position:absolute;inset:0;background:linear-gradient(to right,transparent 55%,rgba(4,8,20,0.95) 100%);z-index:35"></div>
+                                        <div class="assemble-grid" style="position:absolute;inset:0;background-image:linear-gradient(rgba(59,130,246,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,0.1) 1px,transparent 1px);background-size:44px 44px;opacity:0;pointer-events:none;z-index:40"></div>
+                                    </div>
+                                    <div class="assembly-title" style="position:absolute;top:18%;right:5%;width:38%;z-index:50;opacity:0">
+                                        <h2 class="font-display" style="font-size:clamp(2rem,3.2vw,3.2rem);font-weight:700;color:white;line-height:1.1;margin:0;text-align:right">Equipo<br><span style="background:linear-gradient(to right,#60a5fa,#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Profesional</span></h2>
+                                    </div>
+                                    <div class="assembly-card" style="position:absolute;bottom:10%;right:3%;width:42%;z-index:50;opacity:0;padding:18px 20px;border-radius:8px;border:1px solid rgba(59,130,246,0.3);background:rgba(3,6,16,0.88);backdrop-filter:blur(20px);box-shadow:0 16px 50px rgba(0,0,0,0.9)">
+                                        <h4 style="color:#60a5fa;font-family:monospace;font-size:9px;letter-spacing:.2em;border-left:2px solid #60a5fa;padding-left:10px;margin:0 0 12px;text-transform:uppercase">MÓDULO ÉLITE</h4>
+                                        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px;font-family:monospace;font-size:11px">
+                                            <li style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:7px"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">DISEÑO</span><span style="color:white;font-weight:700;text-transform:uppercase">SOLO-OP</span></li>
+                                            <li style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:7px"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">MATERIAL</span><span style="color:white;font-weight:700;text-transform:uppercase">ALTO GRADO</span></li>
+                                            <li style="display:flex;justify-content:space-between"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">DESEMPEÑO</span><span style="color:white;font-weight:700;text-transform:uppercase">COMPROBADO</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Slide 5: Seguridad Total -->
+                            <div class="swiper-slide">
+                                <div style="position:relative;height:560px;width:100%;border:1px solid rgba(239,68,68,0.18)">
+                                    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(239,68,68,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(239,68,68,0.07) 1px,transparent 1px);background-size:44px 44px;z-index:0;pointer-events:none"></div>
+                                    <div class="assembly-wrapper" style="position:absolute;left:0;top:0;width:63%;height:100%;overflow:hidden;z-index:1">
+                                        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(239,68,68,0.12) 0%,transparent 70%)"></div>
+                                        <div class="frag frag-1" style="position:absolute;inset:0;z-index:30;opacity:0;clip-path:polygon(0 0,38% 0,38% 100%,0 100%)"><img src="{{ asset('images/banner_home_5.png') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-2" style="position:absolute;inset:0;z-index:20;opacity:0;clip-path:polygon(38% 0,70% 0,70% 100%,38% 100%)"><img src="{{ asset('images/banner_home_5.png') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-3" style="position:absolute;inset:0;z-index:10;opacity:0;clip-path:polygon(70% 0,100% 0,100% 100%,70% 100%)"><img src="{{ asset('images/banner_home_5.png') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div style="position:absolute;inset:0;background:linear-gradient(to right,transparent 55%,rgba(4,8,20,0.95) 100%);z-index:35"></div>
+                                        <div class="assemble-grid" style="position:absolute;inset:0;background-image:linear-gradient(rgba(239,68,68,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(239,68,68,0.1) 1px,transparent 1px);background-size:44px 44px;opacity:0;pointer-events:none;z-index:40"></div>
+                                    </div>
+                                    <div class="assembly-title" style="position:absolute;top:18%;right:5%;width:38%;z-index:50;opacity:0">
+                                        <h2 class="font-display" style="font-size:clamp(2rem,3.2vw,3.2rem);font-weight:700;color:white;line-height:1.1;margin:0;text-align:right">Seguridad<br><span style="background:linear-gradient(to right,#f87171,#fb7185);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Total</span></h2>
+                                    </div>
+                                    <div class="assembly-card" style="position:absolute;bottom:10%;right:3%;width:42%;z-index:50;opacity:0;padding:18px 20px;border-radius:8px;border:1px solid rgba(239,68,68,0.3);background:rgba(3,6,16,0.88);backdrop-filter:blur(20px);box-shadow:0 16px 50px rgba(0,0,0,0.9)">
+                                        <h4 style="color:#f87171;font-family:monospace;font-size:9px;letter-spacing:.2em;border-left:2px solid #f87171;padding-left:10px;margin:0 0 12px;text-transform:uppercase">MÓDULO DE CONTROL</h4>
+                                        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px;font-family:monospace;font-size:11px">
+                                            <li style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:7px"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">PROTOCOLO</span><span style="color:white;font-weight:700;text-transform:uppercase">ACTIVO</span></li>
+                                            <li style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:7px"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">SISTEMA</span><span style="color:white;font-weight:700;text-transform:uppercase">SEGURO</span></li>
+                                            <li style="display:flex;justify-content:space-between"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">BLOQUEO</span><span style="color:white;font-weight:700;text-transform:uppercase">INTEGRADO</span></li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
 
                         </div>
-                        
+
                         <!-- Navegacion custom swiper -->
-                        <div class="swiper-button-prev !text-white opacity-40 hover:opacity-100 !left-0 md:!-left-8 scale-75 transition-opacity drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]"></div>
-                        <div class="swiper-button-next !text-white opacity-40 hover:opacity-100 !right-0 md:!-right-8 scale-75 transition-opacity drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]"></div>
+                        <div class="swiper-button-prev !text-white opacity-40 hover:opacity-100 !left-0 scale-75 transition-opacity drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]"></div>
+                        <div class="swiper-button-next !text-white opacity-40 hover:opacity-100 !right-0 scale-75 transition-opacity drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]"></div>
                     </div>
                 </div>
             </div>
