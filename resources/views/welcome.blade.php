@@ -369,12 +369,23 @@
         @php
             // Helper para obtener contenido del dashboard con fallback
             $getD = function($section, $key, $field = 'content', $fallback = '') use ($web) {
+                // Buscamos el ítem en la colección aplanada
                 $item = collect($web)->where('section', $section)->where('key', $key)->first();
-                if ($field === 'image') return $item['image_url'] ?? $fallback;
-                if ($field === 'header') return $item['header'] ?? $fallback;
-                if ($field === 'description') return $item['description'] ?? $fallback;
-                if ($field === 'progress') return $item['progress'] ?? $fallback;
-                return $item['content'] ?? $fallback;
+                
+                // Si no hay ítem, devolvemos el fallback directo
+                if (!$item) return $fallback;
+
+                // Seleccionamos el valor según el campo solicitado
+                $val = match($field) {
+                    'image'       => $item['image_url'] ?? null,
+                    'header'      => $item['header']    ?? null,
+                    'description' => $item['description'] ?? null,
+                    'progress'    => $item['progress']    ?? null,
+                    default       => $item['content']     ?? null,
+                };
+
+                // Si el valor es nulo o es una cadena vacía, usamos el fallback
+                return (!is_null($val) && $val !== '') ? $val : $fallback;
             };
         @endphp
         <section id="inicio" class="relative w-full min-h-screen bg-tactical-900 flex items-center overflow-hidden pt-24 pb-12">

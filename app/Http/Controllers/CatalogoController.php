@@ -149,12 +149,14 @@ class CatalogoController extends Controller
         try {
             $response = Http::withoutVerifying()
                 ->withHeader('X-API-KEY', env('CATALOGO_API_KEY'))
-                ->timeout(3)
+                ->timeout(10)
                 ->get($apiUrl . '/website-content');
             
             if ($response->successful()) {
                 $data = $response->json();
-                return collect($data['data'] ?? []);
+                // Aplanamos el array (flatten) para que todas las secciones queden en una sola lista
+                // Esto permite que el where('section', ...) de la vista funcione correctamente.
+                return collect($data['data'] ?? [])->flatten(1);
             }
         } catch (\Exception $e) {
             Log::warning("No se pudo conectar con el Dashboard CMS: " . $e->getMessage());
