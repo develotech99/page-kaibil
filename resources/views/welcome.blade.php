@@ -1012,8 +1012,21 @@
                                     <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent z-20"></div>
                                     <div class="absolute bottom-0 left-0 right-0 p-8 z-30">
                                         <div class="inline-block px-3 py-1 bg-[#e67e22]/20 border border-[#e67e22]/40 text-[#f39c12] text-[10px] font-bold tracking-widest uppercase rounded mb-3 shadow-[0_0_15px_rgba(230,126,34,0.3)]"><i class='bx bx-star'></i> DESTACADO</div>
-                                        <h3 class="font-display text-3xl font-black text-white uppercase tracking-tighter mb-2">{{ $getD('promociones', 'banner_principal', 'header', 'Oportunidad de Élite') }}</h3>
-                                        <p class="text-gray-300 text-sm font-mono uppercase tracking-widest leading-tight opacity-70">{{ $getD('promociones', 'banner_principal', 'description', 'Explora las ofertas del momento.') }}</p>
+                                        @php
+                                            $mainHeader = $getD('promociones', 'banner_principal', 'header', 'Oportunidad de Élite');
+                                            $mainWaMsg = urlencode("Hola Balam Armería, me interesa obtener información sobre la promoción destacada: " . $mainHeader);
+                                        @endphp
+                                        <h3 class="font-display text-3xl font-black text-white uppercase tracking-tighter mb-4">{{ $mainHeader }}</h3>
+                                        
+                                        <div class="flex gap-4">
+                                            <a href="https://wa.me/50251736991?text={{ $mainWaMsg }}" target="_blank" onclick="event.stopPropagation();"
+                                               class="inline-flex items-center gap-2 px-6 py-3 bg-[#25D366] text-white rounded-xl text-[11px] font-bold uppercase tracking-widest hover:bg-[#20c35b] transition-all shadow-[0_0_20px_rgba(37,211,102,0.4)]">
+                                                <i class='bx bxl-whatsapp text-lg'></i> WHATSAPP
+                                            </a>
+                                            <button class="px-6 py-3 bg-white/5 border border-white/10 text-white rounded-xl text-[11px] font-bold uppercase tracking-widest hover:bg-white/10 transition-all">
+                                                VER DETALLES
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1029,7 +1042,11 @@
                                         </div>
                                         <h4 class="text-white font-display text-3xl font-black uppercase tracking-tighter mb-2">PRÓXIMAMENTE</h4>
                                         <div class="h-[2px] w-8 bg-[#e67e22] mx-auto mb-4 rounded-full shadow-[0_0_10px_#e67e22]"></div>
-                                        <p class="text-gray-400 text-[9px] font-mono tracking-[0.4em] uppercase max-w-[220px] mx-auto opacity-70">Operaciones de Élite • Sorteos • Novedades</p>
+                                        <p class="text-gray-400 text-[9px] font-mono tracking-[0.4em] uppercase max-w-[220px] mx-auto opacity-70 mb-8">Operaciones de Élite • Sorteos • Novedades</p>
+                                        
+                                        <a href="#contacto-cards" onclick="scrollToSection('#contacto-cards', event)" class="inline-flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-[11px] font-bold uppercase tracking-widest hover:bg-[#e67e22] hover:text-black transition-all">
+                                            <i class='bx bxs-contact'></i> CONTÁCTANOS
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -1092,10 +1109,21 @@
                                         @endif
 
                                         <div class="px-2 mt-auto">
-                                            <button onclick="event.stopPropagation(); @if(!$tActive) alert('Contenido en preparación. Vuelve pronto.'); @else window.openLightbox('{{ $tImg }}', '{{ $td['label'] }}'); @endif" 
-                                                    class="block w-full py-4 bg-white/5 border border-white/10 rounded-xl text-white text-center text-[10px] font-bold uppercase tracking-widest hover:bg-[#e67e22] hover:text-black transition-all">
-                                                @if($tActive) Consultar Información @else Avisarme @endif
-                                            </button>
+                                            @if($tActive)
+                                                @php
+                                                    $tHeader = $getD('promociones', $td['key'], 'header', $td['label']);
+                                                    $waMsg = urlencode("Hola Balam Armería, me interesa obtener información sobre la promoción/evento: " . $tHeader);
+                                                @endphp
+                                                <a href="https://wa.me/50251736991?text={{ $waMsg }}" target="_blank"
+                                                   class="flex items-center justify-center gap-2 w-full py-4 bg-[#25D366]/10 border border-[#25D366]/20 rounded-xl text-[#25D366] text-center text-[10px] font-bold uppercase tracking-widest hover:bg-[#25D366] hover:text-white transition-all shadow-[0_0_15px_rgba(37,211,102,0.1)]">
+                                                    <i class='bx bxl-whatsapp text-lg'></i> WHATSAPP
+                                                </a>
+                                            @else
+                                                <a href="#contacto-cards" onclick="scrollToSection('#contacto-cards', event)"
+                                                   class="block w-full py-4 bg-white/5 border border-white/10 rounded-xl text-white text-center text-[10px] font-bold uppercase tracking-widest hover:bg-[#e67e22] hover:text-black transition-all">
+                                                    CONTÁCTANOS
+                                                </a>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -1458,9 +1486,9 @@
                             <h4 class="font-display text-2xl font-black text-white mb-2 group-hover/inc:text-accent-pink transition-colors leading-none tracking-tight uppercase">{{ $tit1 }}</h4>
                             <p class="text-[11px] text-gray-400 font-light mb-auto leading-relaxed px-2 line-clamp-2">{{ $desc1 }}</p>
                             
-                            <button class="mt-6 bg-white/5 text-white font-bold uppercase tracking-[0.3em] py-4 px-4 rounded-xl hover:bg-accent-pink hover:text-white transition-all border border-white/10 hover:border-transparent hover:shadow-[0_0_30px_rgba(255,42,85,0.3)] w-full text-[10px]">
-                                AGENDAR NOTIFICACIÓN
-                            </button>
+                            <a href="#contacto-cards" onclick="scrollToSection('#contacto-cards', event)" class="mt-6 bg-white/5 text-white font-bold uppercase tracking-[0.3em] py-4 px-4 rounded-xl hover:bg-accent-pink hover:text-white transition-all border border-white/10 hover:border-transparent hover:shadow-[0_0_30px_rgba(255,42,85,0.3)] w-full text-[10px] text-center">
+                                RESERVAR AHORA
+                            </a>
                         </div>
                     </div>
                     
@@ -1502,9 +1530,9 @@
                              <h4 class="font-display text-2xl font-black text-white mb-2 group-hover/inc:text-accent-cyan transition-colors leading-none tracking-tight uppercase">{{ $tit2 }}</h4>
                              <p class="text-[11px] text-gray-400 font-light mb-auto leading-relaxed px-2 line-clamp-2">{{ $desc2 }}</p>
                              
-                             <button class="mt-6 bg-white/5 text-white font-bold uppercase tracking-[0.3em] py-4 px-4 rounded-xl hover:bg-accent-cyan hover:text-black transition-all border border-white/10 hover:border-transparent hover:shadow-[0_0_30px_rgba(0,229,255,0.3)] w-full text-[10px]">
-                                 AGENDAR NOTIFICACIÓN
-                             </button>
+                             <a href="#contacto-cards" onclick="scrollToSection('#contacto-cards', event)" class="mt-6 bg-white/5 text-white font-bold uppercase tracking-[0.3em] py-4 px-4 rounded-xl hover:bg-accent-cyan hover:text-black transition-all border border-white/10 hover:border-transparent hover:shadow-[0_0_30px_rgba(0,229,255,0.3)] w-full text-[10px] text-center">
+                                 RESERVAR AHORA
+                             </a>
                          </div>
                      </div>
 
@@ -1547,9 +1575,9 @@
                              <h4 class="font-display text-2xl font-black text-white mb-2 group-hover/inc:text-yellow-500 transition-colors leading-none tracking-tight uppercase">{{ $tit3 }}</h4>
                              <p class="text-[11px] text-gray-400 font-light mb-auto leading-relaxed px-2 line-clamp-2">{{ $desc3 }}</p>
                              
-                             <button class="mt-6 bg-white/5 text-white font-bold uppercase tracking-[0.3em] py-4 px-4 rounded-xl hover:bg-white hover:text-black transition-all border border-white/10 hover:border-transparent hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] w-full text-[10px]">
-                                 AGENDAR NOTIFICACIÓN
-                             </button>
+                             <a href="#contacto-cards" onclick="scrollToSection('#contacto-cards', event)" class="mt-6 bg-white/5 text-white font-bold uppercase tracking-[0.3em] py-4 px-4 rounded-xl hover:bg-white hover:text-black transition-all border border-white/10 hover:border-transparent hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] w-full text-[10px] text-center">
+                                 RESERVAR AHORA
+                             </a>
                          </div>
                      </div>
                 </div>
@@ -1900,8 +1928,8 @@
             <!-- Selector de Sucursales -->
             <div class="flex flex-wrap justify-center gap-3 md:gap-6 mb-12">
                 <button onclick="switchContactBranch('poptun')" id="btn-poptun" class="contact-tab px-6 py-2.5 rounded-full border border-accent-primary bg-accent-primary/10 text-white font-mono text-[11px] font-bold uppercase tracking-widest shadow-[0_0_15px_rgba(234,179,8,0.3)] transition-all hover:scale-105 active:scale-95"><i class='bx bx-map mr-1'></i> Poptún</button>
-                <button onclick="switchContactBranch('sanluis_image')" id="btn-sanluis" class="contact-tab px-6 py-2.5 rounded-full border border-white/10 bg-white/5 text-gray-400 font-mono text-[11px] font-bold uppercase tracking-widest transition-all hover:bg-white/10 hover:text-white hover:scale-105 active:scale-95"><i class='bx bx-map mr-1'></i> San Luis</button>
-                <button onclick="switchContactBranch('melchor_image')" id="btn-melchor" class="contact-tab px-6 py-2.5 rounded-full border border-white/10 bg-white/5 text-gray-400 font-mono text-[11px] font-bold uppercase tracking-widest transition-all hover:bg-white/10 hover:text-white hover:scale-105 active:scale-95"><i class='bx bx-map mr-1'></i> Melchor</button>
+                <button onclick="switchContactBranch('sanluis')" id="btn-sanluis" class="contact-tab px-6 py-2.5 rounded-full border border-white/10 bg-white/5 text-gray-400 font-mono text-[11px] font-bold uppercase tracking-widest transition-all hover:bg-white/10 hover:text-white hover:scale-105 active:scale-95"><i class='bx bx-map mr-1'></i> San Luis</button>
+                <button onclick="switchContactBranch('melchor')" id="btn-melchor" class="contact-tab px-6 py-2.5 rounded-full border border-white/10 bg-white/5 text-gray-400 font-mono text-[11px] font-bold uppercase tracking-widest transition-all hover:bg-white/10 hover:text-white hover:scale-105 active:scale-95"><i class='bx bx-map mr-1'></i> Melchor</button>
             </div>
 
             <!-- Grid de Redes Sociales y Contacto -->
@@ -2040,17 +2068,51 @@
                 }
             };
 
+            window.showLocation = function(coords, name, address) {
+                const mapIframe = document.getElementById('google-map-iframe');
+                const mapMsg = document.getElementById('map-msg');
+                const loaderBar = document.getElementById('map-loader-bar');
+                const statusSub = document.getElementById('map-status-sub');
+                const coordDisplay = document.getElementById('map-coord-display');
+
+                if (!mapIframe || !coords) return;
+
+                mapMsg.style.opacity = "1";
+                mapMsg.style.pointerEvents = "auto";
+                loaderBar.style.width = "0%";
+                statusSub.innerText = "Sincronizando con satélite...";
+                
+                if (coordDisplay) {
+                    const [lat, lng] = coords.split(',');
+                    coordDisplay.innerText = `LAT: ${lat} | LONG: ${lng}`;
+                }
+
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 5;
+                    loaderBar.style.width = progress + "%";
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            mapMsg.style.opacity = "0";
+                            mapMsg.style.pointerEvents = "none";
+                        }, 500);
+                    }
+                }, 30);
+
+                const cleanCoords = coords.trim();
+                const mapUrl = `https://www.google.com/maps?q=${cleanCoords}&hl=es&z=17&output=embed`;
+                mapIframe.src = mapUrl;
+            };
+
             function switchContactBranch(trigger) {
                 let branchName = "";
-                
                 if (typeof trigger === 'object') {
-                    // Usar el nuevo ID táctico para evitar problemas con tildes o espacios
                     branchName = trigger.getAttribute('data-branch-id'); 
                 } else {
                     branchName = trigger;
                 }
 
-                // 1. Apagar todos los efectos en botones y tarjetas
                 document.querySelectorAll('.contact-tab').forEach(btn => {
                     btn.classList.remove('bg-[#e67e22]/20', 'border-[#e67e22]', 'text-white', 'shadow-[0_0_15px_rgba(230,126,34,0.3)]');
                     btn.classList.add('bg-white/5', 'border-white/10', 'text-gray-400');
@@ -2058,9 +2120,11 @@
                 
                 document.querySelectorAll('.location-card').forEach(card => {
                     card.classList.remove('border-[#e67e22]/50', 'bg-tactical-800');
+                    if(card.getAttribute('data-branch-id') === branchName) {
+                        card.classList.add('border-[#e67e22]/50', 'bg-tactical-800');
+                    }
                 });
 
-                // 2. Encender la seleccionada
                 let activeBtn = document.getElementById('btn-' + branchName);
                 if (activeBtn) {
                     activeBtn.classList.remove('bg-white/5', 'border-white/10', 'text-gray-400');
@@ -2070,12 +2134,10 @@
                 const data = branchContacts[branchName];
                 if (!data) return;
 
-                // 3. Sincronizar Mapa (El mapa de la derecha)
                 if (window.showLocation) {
                     window.showLocation(data.coords, data.name, data.address);
                 }
 
-                // 4. Actualizar Visualización de Contacto (GSAP)
                 const dynElements = ['dyn-wa-link', 'dyn-fb-link', 'dyn-ig-link', 'dyn-tk-link'];
                 const waLink = "https://wa.me/" + data.wa.num.replace(/\D/g, '');
 
@@ -2101,6 +2163,7 @@
                     }
                 });
             }
+
             window.switchContactBranch = switchContactBranch;
 
             // Inicialización
