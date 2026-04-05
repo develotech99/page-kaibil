@@ -180,21 +180,24 @@ window.scrollToSection = function(selector, event) {
     const section = document.querySelector(selector);
     if (!section) return;
 
-    const navHeight = 55; 
-    const targetScrollPos = section.offsetTop - navHeight;
+    // Calculamos posición absoluta
+    const offsetTop = section.getBoundingClientRect().top + window.pageYOffset;
+    
+    // Un margen mínimo de 20px para que la sección quede bien arriba ("suba más")
+    const navMargin = 20;
 
     window.scrollTo({
-        top: targetScrollPos,
+        top: offsetTop - navMargin,
         behavior: 'smooth'
     });
 
     // Activar scanning si se navega a contacto
     if (selector === '#contacto') {
-        const scanLine = document.querySelector('.animate-scanner');
+        const scanLine = document.querySelector('.animate-scan-y');
         if (scanLine) {
             scanLine.style.animation = 'none';
-            void scanLine.offsetWidth; // trigger reflow
-            scanLine.style.animation = 'scanner 4s linear infinite';
+            void scanLine.offsetWidth; 
+            scanLine.style.animation = 'scan-y 4s linear infinite';
         }
     }
 };
