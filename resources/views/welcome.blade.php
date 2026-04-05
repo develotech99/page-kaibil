@@ -863,8 +863,17 @@
                                                 VER DETALLE
                                             </button>
 
-                                            <!-- Botón Circular WhatsApp Táctico con Color Original -->
-                                            <a href="https://wa.me/50244445555?text={{ urlencode('Hola, me interesa comprar ' . $producto['nombre']) }}" 
+                                            <!-- Botón Circular WhatsApp Táctico (Corregido) -->
+                                            @php
+                                                $waCentral = '50251736991';
+                                                $catWaMsg = "Hola Balam Armería, deseo solicitar información sobre el siguiente artículo:\n\n" .
+                                                            "*ARTÍCULO:* " . $producto['nombre'] . "\n" .
+                                                            "*CATEGORÍA:* " . $catName . "\n" .
+                                                            "*SEDE:* " . $branchName . "\n\n" .
+                                                            "Quedo a la espera de su asesoramiento profesional.";
+                                                $catWaFullLink = "https://wa.me/" . $waCentral . "?text=" . urlencode($catWaMsg);
+                                            @endphp
+                                            <a href="{{ $catWaFullLink }}" 
                                                onclick="event.stopPropagation();" 
                                                target="_blank" 
                                                class="w-10 h-10 bg-[#25D366]/10 border border-[#25D366]/30 text-[#25D366] rounded-full flex items-center justify-center hover:bg-[#25D366] hover:text-white transition-all shadow-[0_0_15px_rgba(37,211,102,0.2)] hover:shadow-[0_0_20px_rgba(37,211,102,0.4)] active:scale-95 relative" 
@@ -1404,12 +1413,21 @@
                                             Ver detalle
                                         </button>
 
-                                        <!-- WhatsApp Directo -->
-                                        <a href="https://wa.me/50244445555?text={{ urlencode('Hola, vi en lo destacado el producto: ' . $item['nombre']) }}" 
+                                        <!-- WhatsApp Directo (Corregido con Número Central y Mensaje Táctico) -->
+                                        @php
+                                            $waCentral = '50251736991';
+                                            $linkMsg = "Hola Balam Armería, deseo solicitar información sobre el siguiente equipo de Élite:\n\n" .
+                                                       "*EQUIPO:* " . $item['nombre'] . "\n" .
+                                                       "*CATEGORÍA:* " . $iCat . "\n" .
+                                                       "*SEDE:* " . $iSede . "\n\n" .
+                                                       "Quedo a la espera de su asesoramiento profesional.";
+                                            $waFullLink = "https://wa.me/" . $waCentral . "?text=" . urlencode($linkMsg);
+                                        @endphp
+                                        <a href="{{ $waFullLink }}" 
                                            onclick="event.stopPropagation();" 
                                            target="_blank" 
-                                           class="w-9 h-9 bg-[#25D366]/10 border border-[#25D366]/20 text-[#25D366] rounded-full flex items-center justify-center hover:bg-[#25D366] hover:text-white transition-all shadow-[0_0_10px_rgba(37,211,102,0.15)] active:scale-95 group/wa">
-                                            <i class='bx bxl-whatsapp text-xl'></i>
+                                           class="w-10 h-10 bg-[#25D366]/10 border border-[#25D366]/20 text-[#25D366] rounded-full flex items-center justify-center hover:bg-[#25D366] hover:text-white transition-all shadow-[0_0_15px_rgba(37,211,102,0.15)] active:scale-95 group/wa">
+                                            <i class='bx bxl-whatsapp text-2xl'></i>
                                         </a>
                                     </div>
                                 </div>
@@ -2372,7 +2390,7 @@
                     <!-- Precio oculto -->
                 </div>
                 
-                <a id="modal-whatsapp" href="#" target="_blank" class="w-full bg-tactical-950 border border-[#25D366]/30 hover:bg-[#25D366]/10 text-[#25D366] hover:text-white py-4 rounded-xl font-bold tracking-widest transition-all hover:border-[#25D366] shadow-[0_0_15px_rgba(37,211,102,0.05)] hover:shadow-[0_0_25px_rgba(37,211,102,0.2)] flex items-center justify-center gap-3 hover:-translate-y-1">
+                <a id="modal-whatsapp" href="#" data-base-url="https://wa.me/50251736991" target="_blank" class="w-full bg-tactical-950 border border-[#25D366]/30 hover:bg-[#25D366]/10 text-[#25D366] hover:text-white py-4 rounded-xl font-bold tracking-widest transition-all hover:border-[#25D366] shadow-[0_0_15px_rgba(37,211,102,0.05)] hover:shadow-[0_0_25px_rgba(37,211,102,0.2)] flex items-center justify-center gap-3 hover:-translate-y-1">
                     <i class='bx bxl-whatsapp text-2xl'></i>
                     SOLICITAR DISPONIBILIDAD
                 </a>

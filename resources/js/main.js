@@ -526,9 +526,24 @@ window.openProductModal = function (title, imgSources, category, branch, descrip
         });
     }
 
-    // Enlace de WhatsApp codificado
-    const waBase = document.getElementById('modal-whatsapp').getAttribute('data-base-url') || 'https://wa.me/50244445555';
-    document.getElementById('modal-whatsapp').href = `${waBase}?text=${encodeURIComponent(wsText)}`;
+    // Construcción de mensaje profesional estructurado
+    let professionalMsg = `Hola Balam Armería, deseo solicitar información sobre el siguiente artículo:\n\n` +
+                          `*ARTÍCULO:* ${title}\n` +
+                          `*CATEGORÍA:* ${category}\n` +
+                          `*SEDE:* ${branch}\n`;
+
+    if (tech && Object.keys(tech).length > 0) {
+        if (tech.marca && tech.marca !== 'undefined') professionalMsg += `*MARCA:* ${tech.marca}\n`;
+        if (tech.modelo && tech.modelo !== 'undefined') professionalMsg += `*MODELO:* ${tech.modelo}\n`;
+        if (tech.calibre && tech.calibre !== 'undefined') professionalMsg += `*CALIBRE:* ${tech.calibre}\n`;
+        if (tech.pais && tech.pais !== 'undefined') professionalMsg += `*ORIGEN:* ${tech.pais}\n`;
+    }
+
+    professionalMsg += `\nQuedo a la espera de su asesoramiento profesional.`;
+
+    // Enlace de WhatsApp con número central correcto (+502 5173 6991)
+    const waBase = document.getElementById('modal-whatsapp').getAttribute('data-base-url') || 'https://wa.me/50251736991';
+    document.getElementById('modal-whatsapp').href = `${waBase}?text=${encodeURIComponent(professionalMsg)}`;
 
     // Mostrar modal
     modal.classList.remove('opacity-0', 'pointer-events-none');
