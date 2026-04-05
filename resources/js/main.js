@@ -347,8 +347,11 @@ window.showLocation = function (coords, name, address) {
     // 1. Resetear UI y mostrar protocolo de carga
     mapMsg.style.display = 'flex';
     mapMsg.style.opacity = '1';
+    const safeCoords = (coords && coords.includes(',')) ? coords : '0,0';
+    const splitCoords = safeCoords.split(',');
+    
     if (loaderBar) loaderBar.style.width = '0%';
-    if (coordDisplay) coordDisplay.innerText = `LAT: ${coords.split(',')[0]} | LONG: ${coords.split(',')[1]}`;
+    if (coordDisplay) coordDisplay.innerText = `LAT: ${splitCoords[0]} | LONG: ${splitCoords[1] || '0'}`;
     
     // 2. Animación de barra de carga (Simulada para UI)
     gsap.to(loaderBar, {
@@ -361,8 +364,8 @@ window.showLocation = function (coords, name, address) {
         onComplete: () => {
             if (subStatus) subStatus.innerText = "CONEXIÓN ESTABLECIDA. CARGANDO VISUAL...";
             
-            // 3. Cargar Mapa e iniciar transición
-            iframe.src = `https://maps.google.com/maps?q=${coords}&hl=es&z=14&t=m&output=embed`;
+            // 3. Cargar Mapa e iniciar transición (URL estándar para evitar errores de Google)
+            iframe.src = `https://maps.google.com/maps?q=${coords}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
             
             setTimeout(() => {
                 gsap.to(mapMsg, {
@@ -384,26 +387,83 @@ window.showLocation = function (coords, name, address) {
     });
 };
 
-// 8. LÓGICA LIGHTBOX IMÁGENES
+// 8. LÓGICA LIGHTBOX IMÁGENES (CONSOLIDADA)
 window.openLightbox = function (imgSrc, title) {
-    const lightbox = document.getElementById('image-lightbox');
-    const img = document.getElementById('lightbox-img');
-    const titleEl = document.getElementById('lightbox-title');
+    try {
+        console.log('BALAM // INTENTO DE APERTURA:', { url: imgSrc, titulo: title });
+        const lightbox = document.getElementById('image-lightbox');
+        const img      = document.getElementById('lightbox-img');
+        const ph       = document.getElementById('lightbox-placeholder');
+        const titleEl  = document.getElementById('lightbox-title');
 
-    img.src = imgSrc;
-    titleEl.innerText = title;
+        if (!lightbox || !img || !ph) return;
 
-    lightbox.classList.remove('opacity-0', 'pointer-events-none');
-    // GSAP para entrada elegante
-    gsap.fromTo(img,
-        { scale: 0.8, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.6, ease: "expo.out" }
-    );
+        // Reset
+        img.src = '';
+        img.onerror = null;
+        ph.style.display = 'none';
+        img.style.display = 'none';
+
+        // Validación Blindada
+        let hasImage = false;
+        if (imgSrc && typeof imgSrc === 'string' && imgSrc.length > 5) {
+            if (imgSrc !== 'null' && !imgSrc.includes('undefined')) {
+                hasImage = true;
+            }
+        }
+
+        const fallback = 'https://plus.unsplash.com/premium_photo-1664110691115-790130ee9493?q=80&w=1200&auto=format&fit=crop';
+        let fallbackUsed = false;
+
+        if (hasImage) {
+            img.style.display = 'block';
+            ph.style.display  = 'none';
+            img.onerror = function() {
+                if (!fallbackUsed) {
+                    fallbackUsed = true;
+                    img.src = 'https://plus.unsplash.com/premium_photo-1664110691115-790130ee9493?q=80&w=1200&auto=format&fit=crop'; 
+                } else {
+                    img.style.display = 'none';
+                    ph.style.display  = 'flex';
+                }
+            };
+            img.src = imgSrc;
+        } else {
+            // SI NO HAY IMAGEN: MOSTRAR MENSAJE PROFESIONAL (PLACEHOLDER)
+            console.log('BALAM // SIN IMAGEN: MOSTRANDO PLACEHOLDER');
+            img.style.display = 'none';
+            ph.style.display  = 'flex';
+            img.src = ''; 
+        }
+
+        if (titleEl) titleEl.innerText = title;
+        
+        // Abrir (QUITAR HIDDEN PRIMERO)
+        lightbox.classList.remove('hidden');
+        
+        // Pequeño retardo para que la transición de opacidad funcione
+        setTimeout(() => {
+            lightbox.classList.remove('opacity-0', 'pointer-events-none');
+        }, 10);
+        
+        if (window.gsap) {
+            const target = (hasImage && img.style.display !== 'none') ? img : ph;
+            gsap.fromTo(target, { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4 });
+        }
+    } catch (e) {
+        console.error('BALAM // ERROR CRÍTICO:', e);
+    }
 };
 
 window.closeLightbox = function () {
     const lightbox = document.getElementById('image-lightbox');
-    lightbox.classList.add('opacity-0', 'pointer-events-none');
+    if (lightbox) {
+        lightbox.classList.add('opacity-0', 'pointer-events-none');
+        // Quitarlo físicamente tras la transición (300ms)
+        setTimeout(() => {
+            lightbox.classList.add('hidden');
+        }, 300);
+    }
 };
 
 // 9. LÓGICA MODAL CATÁLOGO PRODUCTOS

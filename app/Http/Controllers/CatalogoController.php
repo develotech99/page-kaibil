@@ -154,9 +154,11 @@ class CatalogoController extends Controller
             
             if ($response->successful()) {
                 $data = $response->json();
-                // Aplanamos el array (flatten) para que todas las secciones queden en una sola lista
-                // Esto permite que el where('section', ...) de la vista funcione correctamente.
-                return collect($data['data'] ?? [])->flatten(1);
+                // DEBUG TEMPORAL
+                $flat = collect($data['data'] ?? [])->flatten(1);
+                Log::info('BALAM_DEBUG total_items: ' . $flat->count());
+                $flat->each(fn($i) => Log::info("  [{$i['section']}] key={$i['key']} type={$i['type']} img=" . ($i['image_url'] ?? 'null')));
+                return $flat;
             }
         } catch (\Exception $e) {
             Log::warning("No se pudo conectar con el Dashboard CMS: " . $e->getMessage());

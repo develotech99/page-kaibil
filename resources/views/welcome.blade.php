@@ -370,7 +370,12 @@
             // Helper para obtener contenido del dashboard con fallback
             $getD = function($section, $key, $field = 'content', $fallback = '') use ($web) {
                 // Buscamos el ítem en la colección aplanada
-                $item = collect($web)->where('section', $section)->where('key', $key)->first();
+                // Si buscamos una imagen, filtramos por type='image' para evitar coger el registro de texto
+                if ($field === 'image') {
+                    $item = collect($web)->where('section', $section)->where('key', $key)->where('type', 'image')->first();
+                } else {
+                    $item = collect($web)->where('section', $section)->where('key', $key)->first();
+                }
                 
                 // Si no hay ítem, devolvemos el fallback directo
                 if (!$item) return $fallback;
@@ -384,7 +389,16 @@
                     default       => $item['content']     ?? null,
                 };
 
-                // Si el valor es nulo o es una cadena vacía, usamos el fallback
+                // LÓGICA ANTIBALAS PARA IMÁGENES DEL HERO:
+                // Solo aplica para la sección 'inicio' (Banners Hero con imágenes semilla).
+                // Las imágenes de otras secciones (sucursales, nosotros, etc.) se muestran siempre.
+                if ($field === 'image' && $section === 'inicio') {
+                    if (!$val || str_contains($val, 'nosotros_tigre_v2.png') || str_contains($val, 'banner_home') || str_contains($val, 'beretta.png')) {
+                        return $fallback;
+                    }
+                }
+
+                // Para otros campos, si el valor es nulo o es una cadena vacía, usamos el fallback
                 return (!is_null($val) && $val !== '') ? $val : $fallback;
             };
         @endphp
@@ -427,12 +441,17 @@
                         </div>
                     </div>
                     
-                    <span class="px-3 py-1 bg-white/5 text-gray-300 border border-white/20 rounded text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase mb-6 inline-block w-max">Innovación en Seguridad y Deporte</span>
+                    @php 
+                        $heroBadge = $getD('inicio', 'hero_badge', 'content', 'Innovación en Seguridad y Deporte');
+                        $heroTitle = $getD('inicio', 'hero_title', 'content', 'Pasión por la Precisión.');
+                        $heroDesc  = $getD('inicio', 'hero_description', 'content', 'Explora una selección curada para el tirador moderno, desde atletas deportivos hasta entusiastas de la seguridad personal. Calidad sin compromisos para cada disciplina.');
+                    @endphp
+                    <span class="px-3 py-1 bg-white/5 text-gray-300 border border-white/20 rounded text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase mb-6 inline-block w-max">{{ $heroBadge }}</span>
                     <h1 class="font-display text-3xl md:text-5xl font-black mb-6 text-white leading-[1] uppercase tracking-tighter">
-                        Pasión por la <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-cyan-400 drop-shadow-[0_0_15px_rgba(0,240,255,0.2)]">Precisión.</span> 
+                        {!! str_replace(['.', 'Precisión'], ['','<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-cyan-400 drop-shadow-[0_0_15px_rgba(0,240,255,0.2)]">Precisión.</span>'], $heroTitle) !!}
                     </h1>
                     <p class="text-gray-400 text-lg mb-10 font-light max-w-xl leading-relaxed">
-                        Explora una selección curada para el tirador moderno, desde atletas deportivos hasta entusiastas de la seguridad personal. Calidad sin compromisos para cada disciplina.
+                        {{ $heroDesc }}
                     </p>
                     <div class="flex flex-wrap gap-4">
                         <a href="#catalogo" class="btn-crystal">
@@ -453,7 +472,11 @@
                                 <div style="position:relative;height:560px;width:100%;border:1px solid rgba(0,240,255,0.18)">
                                     <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(0,240,255,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,0.07) 1px,transparent 1px);background-size:44px 44px;z-index:0;pointer-events:none"></div>
                                     <div class="assembly-wrapper" style="position:absolute;left:0;top:0;width:63%;height:100%;overflow:hidden;z-index:1">
-                                        @php $hero_img1 = $getD('hero', 'banner_1', 'image', asset('images/banner_home_1.jpg')); @endphp
+                                        @php 
+                                            $hero_img1 = $getD('inicio', 'banner_1', 'image', asset('images/banner_home_1.jpg')); 
+                                            $hero_title1 = $getD('inicio', 'banner_1', 'header', 'Calidad Garantizada');
+                                            $hero_tag1 = $getD('inicio', 'banner_1', 'description', 'MIL-SPEC 01');
+                                        @endphp
                                         <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(0,240,255,0.12) 0%,transparent 70%)"></div>
                                         <div class="frag frag-1" style="position:absolute;inset:0;z-index:30;opacity:0;clip-path:polygon(0 0,38% 0,38% 100%,0 100%)"><img src="{{ $hero_img1 }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
                                         <div class="frag frag-2" style="position:absolute;inset:0;z-index:20;opacity:0;clip-path:polygon(38% 0,70% 0,70% 100%,38% 100%)"><img src="{{ $hero_img1 }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
@@ -463,11 +486,13 @@
                                     </div>
                                     <!-- Title top-right -->
                                     <div class="assembly-title" style="position:absolute;top:18%;right:5%;width:38%;z-index:50;opacity:0">
-                                        <h2 class="font-display" style="font-size:clamp(2rem,3.2vw,3.2rem);font-weight:700;color:white;line-height:1.1;margin:0;text-align:right">Calidad<br><span style="background:linear-gradient(to right,#22d3ee,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Garantizada</span></h2>
+                                        <h2 class="font-display" style="font-size:clamp(2rem,3.2vw,3.2rem);font-weight:700;color:white;line-height:1.1;margin:0;text-align:right">
+                                            {!! str_replace(' ', '<br><span style="background:linear-gradient(to right,#22d3ee,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent">', $hero_title1) . '</span>' !!}
+                                        </h2>
                                     </div>
                                     <!-- Card bottom-right overlapping image -->
                                     <div class="assembly-card" style="position:absolute;bottom:10%;right:3%;width:42%;z-index:50;opacity:0;padding:18px 20px;border-radius:8px;border:1px solid rgba(0,240,255,0.3);background:rgba(3,6,16,0.88);backdrop-filter:blur(20px);box-shadow:0 16px 50px rgba(0,0,0,0.9)">
-                                        <h4 style="color:#22d3ee;font-family:monospace;font-size:9px;letter-spacing:.2em;border-left:2px solid #22d3ee;padding-left:10px;margin:0 0 12px;text-transform:uppercase">ESTÁNDAR BALAM-01</h4>
+                                        <h4 style="color:#22d3ee;font-family:monospace;font-size:9px;letter-spacing:.2em;border-left:2px solid #22d3ee;padding-left:10px;margin:0 0 12px;text-transform:uppercase">ESTÁNDAR {{ $hero_tag1 }}</h4>
                                         <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px;font-family:monospace;font-size:11px">
                                             <li style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:7px"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">CERTIFICACIÓN</span><span style="color:white;font-weight:700;text-transform:uppercase">MIL-SPEC</span></li>
                                             <li style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:7px"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">VIDA ÚTIL</span><span style="color:white;font-weight:700;text-transform:uppercase">EXTREMA</span></li>
@@ -482,7 +507,11 @@
                                 <div style="position:relative;height:560px;width:100%;border:1px solid rgba(230,126,34,0.18)">
                                     <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(230,126,34,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(230,126,34,0.07) 1px,transparent 1px);background-size:44px 44px;z-index:0;pointer-events:none"></div>
                                     <div class="assembly-wrapper" style="position:absolute;left:0;top:0;width:63%;height:100%;overflow:hidden;z-index:1">
-                                        @php $hero_img2 = $getD('hero', 'banner_2', 'image', asset('images/banner_home_2.jpg')); @endphp
+                                        @php 
+                                            $hero_img2 = $getD('inicio', 'banner_2', 'image', asset('images/banner_home_2.jpg')); 
+                                            $hero_title2 = $getD('inicio', 'banner_2', 'header', 'Precisión Táctica');
+                                            $hero_tag2 = $getD('inicio', 'banner_2', 'description', 'MATCH GRADE');
+                                        @endphp
                                         <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(230,126,34,0.12) 0%,transparent 70%)"></div>
                                         <div class="frag frag-1" style="position:absolute;inset:0;z-index:30;opacity:0;clip-path:polygon(0 0,38% 0,38% 100%,0 100%)"><img src="{{ $hero_img2 }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
                                         <div class="frag frag-2" style="position:absolute;inset:0;z-index:20;opacity:0;clip-path:polygon(38% 0,70% 0,70% 100%,38% 100%)"><img src="{{ $hero_img2 }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
@@ -491,10 +520,12 @@
                                         <div class="assemble-grid" style="position:absolute;inset:0;background-image:linear-gradient(rgba(230,126,34,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(230,126,34,0.1) 1px,transparent 1px);background-size:44px 44px;opacity:0;pointer-events:none;z-index:40"></div>
                                     </div>
                                     <div class="assembly-title" style="position:absolute;top:18%;right:5%;width:38%;z-index:50;opacity:0">
-                                        <h2 class="font-display" style="font-size:clamp(2rem,3.2vw,3.2rem);font-weight:700;color:white;line-height:1.1;margin:0;text-align:right">Precisión<br><span style="background:linear-gradient(to right,#e67e22,#ea580c);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Táctica</span></h2>
+                                        <h2 class="font-display" style="font-size:clamp(2rem,3.2vw,3.2rem);font-weight:700;color:white;line-height:1.1;margin:0;text-align:right">
+                                            {!! str_replace(' ', '<br><span style="background:linear-gradient(to right,#e67e22,#ea580c);-webkit-background-clip:text;-webkit-text-fill-color:transparent">', $hero_title2) . '</span>' !!}
+                                        </h2>
                                     </div>
                                     <div class="assembly-card" style="position:absolute;bottom:10%;right:3%;width:42%;z-index:50;opacity:0;padding:18px 20px;border-radius:8px;border:1px solid rgba(230,126,34,0.3);background:rgba(3,6,16,0.88);backdrop-filter:blur(20px);box-shadow:0 16px 50px rgba(0,0,0,0.9)">
-                                        <h4 style="color:#e67e22;font-family:monospace;font-size:9px;letter-spacing:.2em;border-left:2px solid #e67e22;padding-left:10px;margin:0 0 12px;text-transform:uppercase">MÓDULO DE TIRO</h4>
+                                        <h4 style="color:#e67e22;font-family:monospace;font-size:9px;letter-spacing:.2em;border-left:2px solid #e67e22;padding-left:10px;margin:0 0 12px;text-transform:uppercase">MÓDULO {{ $hero_tag2 }}</h4>
                                         <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px;font-family:monospace;font-size:11px">
                                             <li style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:7px"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">ALCANCE</span><span style="color:white;font-weight:700;text-transform:uppercase">MÁXIMO</span></li>
                                             <li style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:7px"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">ESTABILIDAD</span><span style="color:white;font-weight:700;text-transform:uppercase">PROFESIONAL</span></li>
@@ -509,7 +540,11 @@
                                 <div style="position:relative;height:560px;width:100%;border:1px solid rgba(16,185,129,0.18)">
                                     <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(16,185,129,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(16,185,129,0.07) 1px,transparent 1px);background-size:44px 44px;z-index:0;pointer-events:none"></div>
                                     <div class="assembly-wrapper" style="position:absolute;left:0;top:0;width:63%;height:100%;overflow:hidden;z-index:1">
-                                        @php $hero_img3 = $getD('hero', 'banner_3', 'image', asset('images/banner_home_3.jpg')); @endphp
+                                        @php 
+                                            $hero_img3 = $getD('inicio', 'banner_3', 'image', asset('images/banner_home_3.jpg')); 
+                                            $hero_title3 = $getD('inicio', 'banner_3', 'header', 'Rendimiento Superior');
+                                            $hero_tag3 = $getD('inicio', 'banner_3', 'description', 'ERGONOMÍA');
+                                        @endphp
                                         <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(16,185,129,0.12) 0%,transparent 70%)"></div>
                                         <div class="frag frag-1" style="position:absolute;inset:0;z-index:30;opacity:0;clip-path:polygon(0 0,38% 0,38% 100%,0 100%)"><img src="{{ $hero_img3 }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
                                         <div class="frag frag-2" style="position:absolute;inset:0;z-index:20;opacity:0;clip-path:polygon(38% 0,70% 0,70% 100%,38% 100%)"><img src="{{ $hero_img3 }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
@@ -518,10 +553,12 @@
                                         <div class="assemble-grid" style="position:absolute;inset:0;background-image:linear-gradient(rgba(16,185,129,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(16,185,129,0.1) 1px,transparent 1px);background-size:44px 44px;opacity:0;pointer-events:none;z-index:40"></div>
                                     </div>
                                     <div class="assembly-title" style="position:absolute;top:18%;right:5%;width:38%;z-index:50;opacity:0">
-                                        <h2 class="font-display" style="font-size:clamp(2rem,3.2vw,3.2rem);font-weight:700;color:white;line-height:1.1;margin:0;text-align:right">Rendimiento<br><span style="background:linear-gradient(to right,#34d399,#22c55e);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Superior</span></h2>
+                                        <h2 class="font-display" style="font-size:clamp(2rem,3.2vw,3.2rem);font-weight:700;color:white;line-height:1.1;margin:0;text-align:right">
+                                            {!! str_replace(' ', '<br><span style="background:linear-gradient(to right,#34d399,#22c55e);-webkit-background-clip:text;-webkit-text-fill-color:transparent">', $hero_title3) . '</span>' !!}
+                                        </h2>
                                     </div>
                                     <div class="assembly-card" style="position:absolute;bottom:10%;right:3%;width:42%;z-index:50;opacity:0;padding:18px 20px;border-radius:8px;border:1px solid rgba(16,185,129,0.3);background:rgba(3,6,16,0.88);backdrop-filter:blur(20px);box-shadow:0 16px 50px rgba(0,0,0,0.9)">
-                                        <h4 style="color:#34d399;font-family:monospace;font-size:9px;letter-spacing:.2em;border-left:2px solid #34d399;padding-left:10px;margin:0 0 12px;text-transform:uppercase">MÓDULO DE PODER</h4>
+                                        <h4 style="color:#34d399;font-family:monospace;font-size:9px;letter-spacing:.2em;border-left:2px solid #34d399;padding-left:10px;margin:0 0 12px;text-transform:uppercase">MÓDULO {{ $hero_tag3 }}</h4>
                                         <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px;font-family:monospace;font-size:11px">
                                             <li style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:7px"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">VELOCIDAD</span><span style="color:white;font-weight:700;text-transform:uppercase">ALTA</span></li>
                                             <li style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:7px"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">ERGONOMÍA</span><span style="color:white;font-weight:700;text-transform:uppercase">ADAPTATIVA</span></li>
@@ -536,18 +573,25 @@
                                 <div style="position:relative;height:560px;width:100%;border:1px solid rgba(59,130,246,0.18)">
                                     <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(59,130,246,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,0.07) 1px,transparent 1px);background-size:44px 44px;z-index:0;pointer-events:none"></div>
                                     <div class="assembly-wrapper" style="position:absolute;left:0;top:0;width:63%;height:100%;overflow:hidden;z-index:1">
+                                        @php 
+                                            $hero_img4 = $getD('inicio', 'banner_4', 'image', asset('images/banner_home_4.jpg')); 
+                                            $hero_title4 = $getD('inicio', 'banner_4', 'header', 'Equipo Profesional');
+                                            $hero_tag4 = $getD('inicio', 'banner_4', 'description', 'ALTO GRADO');
+                                        @endphp
                                         <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(59,130,246,0.12) 0%,transparent 70%)"></div>
-                                        <div class="frag frag-1" style="position:absolute;inset:0;z-index:30;opacity:0;clip-path:polygon(0 0,38% 0,38% 100%,0 100%)"><img src="{{ asset('images/banner_home_4.jpg') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
-                                        <div class="frag frag-2" style="position:absolute;inset:0;z-index:20;opacity:0;clip-path:polygon(38% 0,70% 0,70% 100%,38% 100%)"><img src="{{ asset('images/banner_home_4.jpg') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
-                                        <div class="frag frag-3" style="position:absolute;inset:0;z-index:10;opacity:0;clip-path:polygon(70% 0,100% 0,100% 100%,70% 100%)"><img src="{{ asset('images/banner_home_4.jpg') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-1" style="position:absolute;inset:0;z-index:30;opacity:0;clip-path:polygon(0 0,38% 0,38% 100%,0 100%)"><img src="{{ $hero_img4 }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-2" style="position:absolute;inset:0;z-index:20;opacity:0;clip-path:polygon(38% 0,70% 0,70% 100%,38% 100%)"><img src="{{ $hero_img4 }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-3" style="position:absolute;inset:0;z-index:10;opacity:0;clip-path:polygon(70% 0,100% 0,100% 100%,70% 100%)"><img src="{{ $hero_img4 }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
                                         <div style="position:absolute;inset:0;background:linear-gradient(to right,transparent 55%,rgba(4,8,20,0.95) 100%);z-index:35"></div>
                                         <div class="assemble-grid" style="position:absolute;inset:0;background-image:linear-gradient(rgba(59,130,246,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,0.1) 1px,transparent 1px);background-size:44px 44px;opacity:0;pointer-events:none;z-index:40"></div>
                                     </div>
                                     <div class="assembly-title" style="position:absolute;top:18%;right:5%;width:38%;z-index:50;opacity:0">
-                                        <h2 class="font-display" style="font-size:clamp(2rem,3.2vw,3.2rem);font-weight:700;color:white;line-height:1.1;margin:0;text-align:right">Equipo<br><span style="background:linear-gradient(to right,#60a5fa,#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Profesional</span></h2>
+                                        <h2 class="font-display" style="font-size:clamp(2rem,3.2vw,3.2rem);font-weight:700;color:white;line-height:1.1;margin:0;text-align:right">
+                                            {!! str_replace(' ', '<br><span style="background:linear-gradient(to right,#60a5fa,#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent">', $hero_title4) . '</span>' !!}
+                                        </h2>
                                     </div>
                                     <div class="assembly-card" style="position:absolute;bottom:10%;right:3%;width:42%;z-index:50;opacity:0;padding:18px 20px;border-radius:8px;border:1px solid rgba(59,130,246,0.3);background:rgba(3,6,16,0.88);backdrop-filter:blur(20px);box-shadow:0 16px 50px rgba(0,0,0,0.9)">
-                                        <h4 style="color:#60a5fa;font-family:monospace;font-size:9px;letter-spacing:.2em;border-left:2px solid #60a5fa;padding-left:10px;margin:0 0 12px;text-transform:uppercase">MÓDULO ÉLITE</h4>
+                                        <h4 style="color:#60a5fa;font-family:monospace;font-size:9px;letter-spacing:.2em;border-left:2px solid #60a5fa;padding-left:10px;margin:0 0 12px;text-transform:uppercase">MÓDULO {{ $hero_tag4 }}</h4>
                                         <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px;font-family:monospace;font-size:11px">
                                             <li style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:7px"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">DISEÑO</span><span style="color:white;font-weight:700;text-transform:uppercase">SOLO-OP</span></li>
                                             <li style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:7px"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">MATERIAL</span><span style="color:white;font-weight:700;text-transform:uppercase">ALTO GRADO</span></li>
@@ -562,18 +606,25 @@
                                 <div style="position:relative;height:560px;width:100%;border:1px solid rgba(239,68,68,0.18)">
                                     <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(239,68,68,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(239,68,68,0.07) 1px,transparent 1px);background-size:44px 44px;z-index:0;pointer-events:none"></div>
                                     <div class="assembly-wrapper" style="position:absolute;left:0;top:0;width:63%;height:100%;overflow:hidden;z-index:1">
+                                        @php 
+                                            $hero_img5 = $getD('inicio', 'banner_5', 'image', asset('images/beretta.png')); 
+                                            $hero_title5 = $getD('inicio', 'banner_5', 'header', 'Seguridad Total');
+                                            $hero_tag5 = $getD('inicio', 'banner_5', 'description', 'PROTOCOLO ACTIVO');
+                                        @endphp
                                         <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(239,68,68,0.12) 0%,transparent 70%)"></div>
-                                        <div class="frag frag-1" style="position:absolute;inset:0;z-index:30;opacity:0;clip-path:polygon(0 0,38% 0,38% 100%,0 100%)"><img src="{{ asset('images/beretta.png') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
-                                        <div class="frag frag-2" style="position:absolute;inset:0;z-index:20;opacity:0;clip-path:polygon(38% 0,70% 0,70% 100%,38% 100%)"><img src="{{ asset('images/beretta.png') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
-                                        <div class="frag frag-3" style="position:absolute;inset:0;z-index:10;opacity:0;clip-path:polygon(70% 0,100% 0,100% 100%,70% 100%)"><img src="{{ asset('images/beretta.png') }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-1" style="position:absolute;inset:0;z-index:30;opacity:0;clip-path:polygon(0 0,38% 0,38% 100%,0 100%)"><img src="{{ $hero_img5 }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-2" style="position:absolute;inset:0;z-index:20;opacity:0;clip-path:polygon(38% 0,70% 0,70% 100%,38% 100%)"><img src="{{ $hero_img5 }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
+                                        <div class="frag frag-3" style="position:absolute;inset:0;z-index:10;opacity:0;clip-path:polygon(70% 0,100% 0,100% 100%,70% 100%)"><img src="{{ $hero_img5 }}" style="width:100%;height:100%;object-fit:cover;object-position:center"></div>
                                         <div style="position:absolute;inset:0;background:linear-gradient(to right,transparent 55%,rgba(4,8,20,0.95) 100%);z-index:35"></div>
                                         <div class="assemble-grid" style="position:absolute;inset:0;background-image:linear-gradient(rgba(239,68,68,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(239,68,68,0.1) 1px,transparent 1px);background-size:44px 44px;opacity:0;pointer-events:none;z-index:40"></div>
                                     </div>
                                     <div class="assembly-title" style="position:absolute;top:18%;right:5%;width:38%;z-index:50;opacity:0">
-                                        <h2 class="font-display" style="font-size:clamp(2rem,3.2vw,3.2rem);font-weight:700;color:white;line-height:1.1;margin:0;text-align:right">Seguridad<br><span style="background:linear-gradient(to right,#f87171,#fb7185);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Total</span></h2>
+                                        <h2 class="font-display" style="font-size:clamp(2rem,3.2vw,3.2rem);font-weight:700;color:white;line-height:1.1;margin:0;text-align:right">
+                                            {!! str_replace(' ', '<br><span style="background:linear-gradient(to right,#f87171,#fb7185);-webkit-background-clip:text;-webkit-text-fill-color:transparent">', $hero_title5) . '</span>' !!}
+                                        </h2>
                                     </div>
                                     <div class="assembly-card" style="position:absolute;bottom:10%;right:3%;width:42%;z-index:50;opacity:0;padding:18px 20px;border-radius:8px;border:1px solid rgba(239,68,68,0.3);background:rgba(3,6,16,0.88);backdrop-filter:blur(20px);box-shadow:0 16px 50px rgba(0,0,0,0.9)">
-                                        <h4 style="color:#f87171;font-family:monospace;font-size:9px;letter-spacing:.2em;border-left:2px solid #f87171;padding-left:10px;margin:0 0 12px;text-transform:uppercase">MÓDULO DE CONTROL</h4>
+                                        <h4 style="color:#f87171;font-family:monospace;font-size:9px;letter-spacing:.2em;border-left:2px solid #f87171;padding-left:10px;margin:0 0 12px;text-transform:uppercase">MÓDULO {{ $hero_tag5 }}</h4>
                                         <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px;font-family:monospace;font-size:11px">
                                             <li style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:7px"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">PROTOCOLO</span><span style="color:white;font-weight:700;text-transform:uppercase">ACTIVO</span></li>
                                             <li style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:7px"><span style="color:#6b7280;text-transform:uppercase;letter-spacing:.05em">SISTEMA</span><span style="color:white;font-weight:700;text-transform:uppercase">SEGURO</span></li>
@@ -885,126 +936,192 @@
         </section>
 
         <!-- ==============================================
-             PROMOCIONES Y EVENTOS
+                <!-- ==============================================
+             PROMOCIONES & EVENTOS (ULTRA-DESIGN AAA)
         =================================================== -->
-        <section id="promociones" class="py-16 md:py-24 relative overflow-hidden border-t border-b border-white/10 bg-tactical-950">
-            <!-- Capas de Background Cinemático y de Cristal -->
-            <div class="absolute inset-0 z-0 select-none pointer-events-none">
-                <img src="https://images.unsplash.com/photo-1595590424283-b8f1784cb2c8?q=80&w=1920&auto=format&fit=crop" class="w-full h-full object-cover opacity-10 filter grayscale blur-sm">
-                <div class="absolute inset-0 bg-tactical-950/80 backdrop-blur-3xl"></div>
-                <!-- Glowing orbs tacticos -->
-                <div class="absolute top-[10%] left-[-5%] w-[600px] h-[600px] bg-[#e67e22]/10 rounded-full blur-[150px] mix-blend-screen pointer-events-none"></div>
-                <div class="absolute bottom-[-10%] right-[-5%] w-[600px] h-[600px] bg-accent-cyan/10 rounded-full blur-[150px] mix-blend-screen pointer-events-none"></div>
+        <section id="promociones" class="py-20 md:py-32 relative overflow-hidden bg-[#020202]">
+            <!-- CAPA 0: Fondo de Mapa Topográfico Profundo -->
+            <div class="absolute inset-0 z-0 opacity-5 select-none pointer-events-none grayscale invert contrast-150">
+                <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1920&auto=format&fit=crop" class="w-full h-full object-cover">
             </div>
 
+            <!-- CAPA 1: Grid de Coordenadas Tácticas -->
+            <div class="absolute inset-0 z-0 bg-[linear-gradient(rgba(0,240,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,240,255,0.03)_1px,transparent_1px)] bg-[size:100px_100px] pointer-events-none"></div>
+            <div class="absolute inset-0 z-0 bg-[linear-gradient(rgba(0,240,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,240,255,0.02)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none"></div>
+
+            <!-- CAPA 2: Constelación de Destellos (Bi-tonal Distribuido) -->
+            <div class="absolute top-0 left-0 w-[800px] h-[800px] bg-[#00f0ff]/10 blur-[150px] rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none animate-pulse"></div>
+            <div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-[#e67e22]/10 blur-[150px] rounded-full translate-x-1/3 translate-y-1/3 pointer-events-none"></div>
+            
+            <!-- Nuevos Puntos de Energía Centrales -->
+            <div class="absolute top-1/2 left-1/4 w-[400px] h-[400px] bg-[#00f0ff]/5 blur-[120px] rounded-full pointer-events-none"></div>
+            <div class="absolute top-1/3 right-1/4 w-[300px] h-[300px] bg-[#e67e22]/5 blur-[100px] rounded-full pointer-events-none"></div>
+
+            <!-- CAPA 3: Iconografía HUD (Puntos de Interés) -->
+            <div class="absolute top-20 right-[15%] text-accent-cyan/20 animate-pulse select-none pointer-events-none"><i class='bx bx-target-lock text-4xl'></i></div>
+            <div class="absolute bottom-40 left-[10%] text-[#e67e22]/20 select-none pointer-events-none"><i class='bx bx-scan text-3xl'></i></div>
+            <div class="absolute top-1/2 right-10 text-white/5 font-mono text-[10px] tracking-tighter select-none pointer-events-none origin-right rotate-90">SECURE_CHANNEL // BALAM_OPS</div>
+
+            <!-- CAPA 4: Hilos de Escaneo y Grid Profundo -->
+            <div class="absolute inset-0 z-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:100%_8px] pointer-events-none"></div>
+            <div class="absolute top-1/2 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-accent-cyan/20 to-transparent pointer-events-none"></div>
+
             <div class="max-w-[95%] mx-auto px-4 z-10 relative">
-                <!-- Título Mejorado con Glowing Effect -->
-                <div class="flex flex-col md:flex-row justify-between items-end mb-12 gsap-reveal gs-fade-up">
-                    <div class="relative pl-6">
-                        <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-[#e67e22] to-transparent rounded-full shadow-[0_0_15px_#e67e22]"></div>
-                        <h2 class="font-display text-4xl md:text-5xl font-black text-white mb-2 tracking-tighter uppercase relative z-10 inline-block">
-                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#e67e22] to-yellow-500 drop-shadow-[0_0_10px_rgba(230,126,34,0.5)]">Promociones</span> 
-                            <span class="text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">& Eventos</span>
-                            <div class="absolute inset-0 bg-[#e67e22]/20 blur-3xl z-[-1]"></div>
+                <div class="flex flex-col md:flex-row justify-between items-end mb-20 px-8">
+                    <div class="relative">
+                        <!-- Indicador de Sección Táctico -->
+                        <div class="flex items-center gap-4 mb-4">
+                            <span class="px-3 py-1 border border-accent-cyan/30 text-accent-cyan text-[10px] font-black uppercase tracking-[0.4em] bg-accent-cyan/10 rounded backdrop-blur-md shadow-[0_0_15px_rgba(0,240,255,0.1)]">Tactical // HUB</span>
+                            <div class="h-[1px] w-24 bg-gradient-to-r from-accent-cyan/50 to-transparent"></div>
+                        </div>
+                        
+                        <h2 class="font-display text-5xl md:text-8xl font-black text-white mb-2 tracking-tighter uppercase relative group">
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#e67e22] via-white to-accent-cyan bg-[length:200%_auto] animate-shimmer">Promociones</span> 
+                            <span class="text-white">& Eventos</span>
+                            <div class="absolute -bottom-4 left-0 w-48 h-[2px] bg-gradient-to-r from-accent-cyan to-transparent shadow-[0_0_20px_#00f0ff]"></div>
                         </h2>
-                        <p class="text-gray-400 font-mono text-sm tracking-widest uppercase mt-1">Sorteos • Oportunidades • Novedades</p>
                     </div>
                 </div>
 
-                <div class="flex flex-col lg:flex-row gap-8 items-stretch pt-2">
-                    <!-- Banner Promocional Principal (Izquierda) -->
-                    <div class="w-full lg:w-5/12 xl:w-5/12 flex flex-col gsap-reveal gs-slide-right h-[450px] md:h-[500px]">
-                        <div class="glass-card rounded-2xl overflow-hidden p-2 relative w-full h-full flex flex-col group mouse-glow shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/5 hover:border-[#e67e22]/50 transition-all duration-500 bg-[#0a0a0ce6] cursor-pointer" onclick="event.stopPropagation(); window.openLightbox('{{ asset('images/promociones/rifa.jpg') }}', 'Destacados del Mes')">
-                            <!-- Glow effect -->
-                            <div class="absolute inset-0 bg-[#e67e22]/10 rounded-full blur-[80px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
-                            
-                            <div class="relative w-full h-full rounded-xl overflow-hidden group-hover:shadow-[0_0_30px_rgba(230,126,34,0.3)] transition-all bg-[#050505]">
-                                <img src="{{ asset('images/promociones/rifa.jpg') }}" class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100" alt="Promoción Principal" onerror="this.onerror=null; this.src='{{ asset('images/logo.jpg') }}'">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent pointer-events-none"></div>
-                                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                                    <div class="bg-black/50 backdrop-blur-sm rounded-full p-4 border border-white/20 shadow-[0_0_15px_rgba(230,126,34,0.5)]"><i class='bx bx-zoom-in text-white text-3xl'></i></div>
-                                </div>
-                                <div class="absolute bottom-0 left-0 right-0 p-6 z-20 md:p-8 pointer-events-none">
-                                    <div class="inline-block px-3 py-1 bg-[#e67e22]/20 border border-[#e67e22]/40 text-[#f39c12] text-[10px] font-bold tracking-widest uppercase rounded mb-3 backdrop-blur-md shadow-[0_0_15px_rgba(230,126,34,0.3)]"><i class='bx bx-time-five'></i> OPORTUNIDAD LIMITADA</div>
-                                    <h3 class="font-display text-3xl font-black text-white uppercase tracking-tighter mb-2 drop-shadow-lg">Destacados del Mes</h3>
-                                    <p class="text-gray-300 text-sm font-mono uppercase tracking-widest w-full">Equipamiento táctico, descuentos exclusivos y novedades.</p>
-                                    <div class="mt-4 px-6 py-2 bg-white/10 text-white text-xs font-bold uppercase tracking-[0.2em] rounded border border-white/20 transition-colors shadow-lg flex items-center gap-2 w-max group-hover:bg-[#e67e22] group-hover:border-[#e67e22]">Ampliar Vista <i class='bx bx-zoom-in text-lg'></i></div>
+                @php
+                    $rawPromo = $getD('promociones', 'banner_principal', 'image', '');
+                    $isPromoActive = !empty($rawPromo) && (str_contains($rawPromo, 'http') || str_contains($rawPromo, 'images/'));
+                    
+                    $promoT1 = $getD('promociones', 'tendencia_1', 'image', '');
+                    $promoT2 = $getD('promociones', 'tendencia_2', 'image', '');
+
+                    // Backup Táctico Premium (Nítido y Profesional)
+                    $fallbackMain = "https://images.unsplash.com/photo-1595052144729-19fc2f8b548f?q=80&w=1200&auto=format&fit=crop";
+                    $fallbackT1 = "https://images.unsplash.com/photo-1595101834457-fe3419097753?q=80&w=800&auto=format&fit=crop";
+                    $fallbackT2 = "https://images.unsplash.com/photo-1605364802013-176840742514?q=80&w=800&auto=format&fit=crop";
+                @endphp
+
+                <div class="flex flex-col lg:flex-row gap-12 items-stretch pt-2">
+                    <!-- Banner Principal -->
+                    <div class="w-full lg:w-5/12 xl:w-5/12 flex flex-col h-[550px] relative">
+                        <!-- Destello de resalte para la tarjeta principal -->
+                        <div class="absolute -inset-4 bg-accent-cyan/5 blur-[40px] rounded-[3rem] pointer-events-none"></div>
+
+                        @if($isPromoActive)
+                            <!-- ESTADO ACTIVO: CON CONTENIDO -->
+                            <div class="glass-card rounded-2xl overflow-hidden p-2 relative w-full h-full flex flex-col group mouse-glow shadow-2xl border border-white/5 bg-[#0a0a0ce6] cursor-pointer" onclick="event.stopPropagation(); window.openLightbox('{{ $rawPromo }}', 'Promoción Destacada')">
+                                <div class="relative w-full h-full rounded-xl overflow-hidden bg-black">
+                                    <img src="{{ $fallbackMain }}" class="absolute inset-0 w-full h-full object-cover opacity-30 filter grayscale">
+                                    <img src="{{ $rawPromo }}" class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-all duration-700 z-10" onerror="this.src='{{ $fallbackMain }}'; this.style.opacity='0.5'">
+                                    
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent z-20"></div>
+                                    <div class="absolute bottom-0 left-0 right-0 p-8 z-30">
+                                        <div class="inline-block px-3 py-1 bg-[#e67e22]/20 border border-[#e67e22]/40 text-[#f39c12] text-[10px] font-bold tracking-widest uppercase rounded mb-3 shadow-[0_0_15px_rgba(230,126,34,0.3)]"><i class='bx bx-star'></i> DESTACADO</div>
+                                        <h3 class="font-display text-3xl font-black text-white uppercase tracking-tighter mb-2">{{ $getD('promociones', 'banner_principal', 'header', 'Oportunidad de Élite') }}</h3>
+                                        <p class="text-gray-300 text-sm font-mono uppercase tracking-widest leading-tight opacity-70">{{ $getD('promociones', 'banner_principal', 'description', 'Explora las ofertas del momento.') }}</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        @else
+                            <!-- ESTADO PROFESIONAL: PRÓXIMAMENTE -->
+                            <div class="glass-card rounded-3xl overflow-hidden p-1 relative w-full h-full flex flex-col shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-white/5 bg-black group">
+                                <div class="relative w-full h-full rounded-2xl overflow-hidden flex flex-col items-center justify-center text-center p-12">
+                                    <img src="{{ $fallbackMain }}" class="absolute inset-0 w-full h-full object-cover opacity-40 filter grayscale blur-[10px] group-hover:scale-110 transition-transform duration-[10s]">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/90"></div>
+                                    <div class="relative z-10">
+                                        <div class="w-16 h-16 rounded-full border border-[#e67e22]/30 flex items-center justify-center text-[#e67e22] mb-6 mx-auto bg-[#e67e22]/5 shadow-[0_0_40px_rgba(230,126,34,0.1)]">
+                                            <i class='bx bx-time-five text-3xl animate-pulse'></i>
+                                        </div>
+                                        <h4 class="text-white font-display text-3xl font-black uppercase tracking-tighter mb-2">PRÓXIMAMENTE</h4>
+                                        <div class="h-[2px] w-8 bg-[#e67e22] mx-auto mb-4 rounded-full shadow-[0_0_10px_#e67e22]"></div>
+                                        <p class="text-gray-400 text-[9px] font-mono tracking-[0.4em] uppercase max-w-[220px] mx-auto opacity-70">Operaciones de Élite • Sorteos • Novedades</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                     </div>
 
                     <!-- Carrusel de Tendencias (Derecha) -->
-                    <div class="w-full lg:w-7/12 xl:w-7/12 flex flex-col justify-center relative gsap-reveal gs-slide-left h-[450px] md:h-[500px]">
+                    <div class="w-full lg:w-7/12 xl:w-7/12 flex flex-col justify-center relative h-[500px]">
                         <div class="flex items-center justify-between mb-4 shrink-0 px-2 lg:px-0">
-                            <h4 class="text-white font-black uppercase tracking-widest text-lg font-display flex items-center gap-2 drop-shadow-md">
-                                <i class='bx bx-radar text-[#e67e22] animate-pulse'></i> EN TENDENCIA
+                            <h4 class="text-white font-black uppercase tracking-widest text-lg font-display flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[#e67e22] shadow-[0_0_10px_#e67e22]"></span> EN TENDENCIA
                             </h4>
                             <div class="flex gap-2">
-                                <button onclick="document.getElementById('native-promo-slider').scrollBy({left: -350, behavior: 'smooth'})" class="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-[#e67e22] hover:border-[#e67e22] transition-all cursor-pointer"><i class='bx bx-chevron-left text-xl pointer-events-none'></i></button>
-                                <button onclick="document.getElementById('native-promo-slider').scrollBy({left: 350, behavior: 'smooth'})" class="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-[#e67e22] hover:border-[#e67e22] transition-all cursor-pointer"><i class='bx bx-chevron-right text-xl pointer-events-none'></i></button>
+                                <button onclick="promoScrollLeft()" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-[#e67e22] transition-all cursor-pointer shadow-lg group">
+                                    <i class='bx bx-chevron-left text-xl group-active:-translate-x-1 transition-transform'></i>
+                                </button>
+                                <button onclick="promoScrollRight()" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-[#e67e22] transition-all cursor-pointer shadow-lg group">
+                                    <i class='bx bx-chevron-right text-xl group-active:translate-x-1 transition-transform'></i>
+                                </button>
                             </div>
                         </div>
 
-                        <!-- Carrusel JS/CSS Robusto Permanente -->
-                        <div id="native-promo-slider" class="w-full h-full pb-0 overflow-x-auto overflow-y-hidden snap-x snap-mandatory flex gap-4 hide-scrollbar scroll-smooth">
-                                <!-- Elemento 1 -->
-                                <div class="shrink-0 w-[85%] sm:w-[calc(50%-0.5rem)] lg:w-[calc(50%-0.5rem)] snap-start h-full pb-2">
-                                    <div class="glass-card rounded-2xl overflow-hidden p-2 flex flex-col h-full bg-tactical-800/80 border border-white/5 mouse-glow group shadow-lg">
-                                        <div class="relative w-full shrink-0 h-[85%] bg-[#0a0a0c] rounded-xl overflow-hidden mb-3 border border-white/5 cursor-pointer group-hover:border-accent-cyan/30 transition-all" onclick="event.stopPropagation(); window.openLightbox('{{ asset('images/promociones/premio1.jpg') }}', 'Alta Demanda')">
-                                            <div class="absolute inset-0 bg-accent-cyan/5 opacity-0 group-hover:opacity-100 blur-xl transition-all pointer-events-none"></div>
-                                            <img src="{{ asset('images/promociones/premio1.jpg') }}" alt="Equipo" class="absolute inset-0 w-full h-full object-cover filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] group-hover:scale-110 transition-transform duration-700" onerror="this.onerror=null; this.src='{{ asset('images/logo.jpg') }}'">
-                                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent pointer-events-none"></div>
-                                            <div class="absolute top-3 left-3 bg-white/10 backdrop-blur-md border border-white/20 text-white text-[9px] font-bold px-2 py-1 rounded-sm tracking-widest font-mono uppercase shadow-lg z-10"><i class='bx bx-crosshair'></i> ALTA DEMANDA</div>
-                                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20">
-                                                <div class="bg-black/50 backdrop-blur-sm rounded-full p-3 border border-white/20"><i class='bx bx-zoom-in text-white text-2xl'></i></div>
-                                            </div>
-                                        </div>
-                                        <div class="px-3 flex flex-col flex-1 pb-1 justify-center relative">
-                                            <a href="#contacto-cards" class="mt-auto px-4 py-2 border border-white/10 rounded-lg text-white/80 text-[10px] font-bold uppercase tracking-[0.2em] group-hover:border-accent-cyan/50 group-hover:text-accent-cyan group-hover:bg-accent-cyan/10 transition-colors bg-white/5 text-left relative flex justify-between items-center w-full shadow-sm">Consultar <i class='bx bx-message-rounded-dots text-lg'></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Elemento 2 -->
-                                <div class="shrink-0 w-[85%] sm:w-[calc(50%-0.5rem)] lg:w-[calc(50%-0.5rem)] snap-start h-full pb-2">
-                                    <div class="glass-card rounded-2xl overflow-hidden p-2 flex flex-col h-full bg-tactical-800/80 border border-white/5 mouse-glow group shadow-lg">
-                                        <div class="relative w-full shrink-0 h-[85%] bg-[#0a0a0c] rounded-xl overflow-hidden mb-3 border border-white/5 cursor-pointer group-hover:border-accent-cyan/30 transition-all" onclick="event.stopPropagation(); window.openLightbox('{{ asset('images/promociones/premio2.jpg') }}', 'Exclusivo')">
-                                            <div class="absolute inset-0 bg-accent-cyan/5 opacity-0 group-hover:opacity-100 blur-xl transition-all pointer-events-none"></div>
-                                            <img src="{{ asset('images/promociones/premio2.jpg') }}" alt="Equipo" class="absolute inset-0 w-full h-full object-cover filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] group-hover:scale-110 transition-transform duration-700" onerror="this.onerror=null; this.src='{{ asset('images/logo.jpg') }}'">
-                                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent pointer-events-none"></div>
-                                            <div class="absolute top-3 left-3 bg-white/10 backdrop-blur-md border border-white/20 text-white text-[9px] font-bold px-2 py-1 rounded-sm tracking-widest font-mono uppercase shadow-lg z-10"><i class='bx bx-shield-quarter'></i> EXCLUSIVO</div>
-                                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20">
-                                                <div class="bg-black/50 backdrop-blur-sm rounded-full p-3 border border-white/20"><i class='bx bx-zoom-in text-white text-2xl'></i></div>
-                                            </div>
-                                        </div>
-                                        <div class="px-3 flex flex-col flex-1 pb-1 justify-center relative">
-                                            <a href="#contacto-cards" class="mt-auto px-4 py-2 border border-white/10 rounded-lg text-white/80 text-[10px] font-bold uppercase tracking-[0.2em] group-hover:border-accent-cyan/50 group-hover:text-accent-cyan group-hover:bg-accent-cyan/10 transition-colors bg-white/5 text-left relative flex justify-between items-center w-full shadow-sm">Consultar <i class='bx bx-message-rounded-dots text-lg'></i></a>
-                                        </div>
-                                    </div>
-                                </div>
+                        @php
+                            $fallbackT3 = "https://images.unsplash.com/photo-1595101210101-70973a9e34e5?q=80&w=800&auto=format&fit=crop";
 
-                                <!-- Elemento 3 -->
-                                <div class="shrink-0 w-[85%] sm:w-[calc(50%-0.5rem)] lg:w-[calc(50%-0.5rem)] snap-start h-full pb-2">
-                                    <div class="glass-card rounded-2xl overflow-hidden p-2 flex flex-col h-full bg-tactical-800/80 border border-white/5 mouse-glow group shadow-lg">
-                                        <div class="relative w-full shrink-0 h-[85%] bg-[#0a0a0c] rounded-xl overflow-hidden mb-3 border border-white/5 cursor-pointer group-hover:border-accent-cyan/30 transition-all" onclick="event.stopPropagation(); window.openLightbox('{{ asset('images/promociones/premio3.png') }}', 'Imperdible')">
-                                            <div class="absolute inset-0 bg-accent-cyan/5 opacity-0 group-hover:opacity-100 blur-xl transition-all pointer-events-none"></div>
-                                            <img src="{{ asset('images/promociones/premio3.png') }}" alt="Equipo" class="absolute inset-0 w-full h-full object-cover filter drop-shadow-[0_15px_15px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700" onerror="this.onerror=null; this.src='{{ asset('images/logo.jpg') }}'">
-                                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent pointer-events-none"></div>
-                                            <div class="absolute top-3 left-3 bg-white/10 backdrop-blur-md border border-white/20 text-white text-[9px] font-bold px-2 py-1 rounded-sm tracking-widest font-mono uppercase shadow-lg z-10"><i class='bx bxs-hot'></i> IMPERDIBLE</div>
-                                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20">
-                                                <div class="bg-black/50 backdrop-blur-sm rounded-full p-3 border border-white/20"><i class='bx bx-zoom-in text-white text-2xl'></i></div>
+                            $tendenciasData = [
+                                ['key' => 'tendencia_1', 'label' => 'Alta Demanda', 'def' => $fallbackT1],
+                                ['key' => 'tendencia_2', 'label' => 'Exclusivo', 'def' => $fallbackT2],
+                                ['key' => 'tendencia_3', 'label' => 'Novedad', 'def' => $fallbackT3]
+                            ];
+                        @endphp
+                        <div id="promo-slider-final" class="w-full h-full flex gap-4 overflow-x-auto hide-scrollbar snap-x snap-mandatory pb-4 scroll-smooth">
+                            @foreach($tendenciasData as $td)
+                                @php 
+                                    $tImg = $getD('promociones', $td['key'], 'image', '');
+                                    $tActive = !empty($tImg) && (str_contains($tImg, 'http') || str_contains($tImg, 'images/'));
+                                @endphp
+                                <div class="shrink-0 w-[85%] sm:w-[calc(50%-0.75rem)] lg:w-[calc(50%-0.5rem)] snap-start h-full">
+                                    <div class="glass-card rounded-2xl overflow-hidden p-2 flex flex-col h-full bg-tactical-800 border border-white/5 group shadow-xl">
+                                        
+                                        @if($tActive)
+                                            <!-- ESTADO ACTIVO: CON IMAGEN -->
+                                            <div class="relative w-full h-[80%] rounded-xl overflow-hidden bg-black shadow-inner cursor-pointer" onclick="window.openLightbox('{{ $tImg }}', '{{ $td['label'] }}')">
+                                                <img src="{{ $td['def'] }}" class="absolute inset-0 w-full h-full object-cover">
+                                                <img src="{{ $tImg }}" alt="{{ $td['label'] }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 z-10" onerror="this.style.display='none'">
+                                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-20"></div>
+                                                <div class="absolute top-3 left-3 bg-[#e67e22] px-2 py-1 rounded-sm text-[9px] font-bold text-black uppercase z-30 shadow-lg">{{ $td['label'] }}</div>
                                             </div>
-                                        </div>
-                                        <div class="px-3 flex flex-col flex-1 pb-1 justify-center relative">
-                                            <a href="#contacto-cards" class="mt-auto px-4 py-2 border border-white/10 rounded-lg text-white/80 text-[10px] font-bold uppercase tracking-[0.2em] group-hover:border-accent-cyan/50 group-hover:text-accent-cyan group-hover:bg-accent-cyan/10 transition-colors bg-white/5 text-left relative flex justify-between items-center w-full shadow-sm">Consultar <i class='bx bx-message-rounded-dots text-lg'></i></a>
+                                        @else
+                                            <!-- ESTADO PROFESIONAL: PRÓXIMAMENTE -->
+                                            <div class="relative w-full h-[80%] rounded-xl overflow-hidden bg-black shadow-inner flex flex-col items-center justify-center text-center p-6 border border-white/5">
+                                                <img src="{{ $td['def'] }}" class="absolute inset-0 w-full h-full object-cover opacity-20 filter grayscale blur-[5px]">
+                                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/80"></div>
+                                                <div class="relative z-10">
+                                                    <i class='bx bx-time-five text-3xl text-[#e67e22]/50 mb-3 animate-pulse'></i>
+                                                    <h5 class="text-white font-display text-sm font-black uppercase tracking-widest mb-1 opacity-80">PRÓXIMAMENTE</h5>
+                                                    <p class="text-[8px] text-gray-500 font-mono tracking-widest uppercase truncate px-2">OPERACIÓN EN CURSO</p>
+                                                </div>
+                                            </div>
+                                        @endif
+
+                                        <div class="px-2 mt-auto">
+                                            <button onclick="event.stopPropagation(); @if(!$tActive) alert('Contenido en preparación. Vuelve pronto.'); @else window.openLightbox('{{ $tImg }}', '{{ $td['label'] }}'); @endif" 
+                                                    class="block w-full py-4 bg-white/5 border border-white/10 rounded-xl text-white text-center text-[10px] font-bold uppercase tracking-widest hover:bg-[#e67e22] hover:text-black transition-all">
+                                                @if($tActive) Consultar Información @else Avisarme @endif
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            @endforeach
                         </div>
+                        <script>
+                            function promoScrollRight() {
+                                const s = document.getElementById('promo-slider-final');
+                                const step = s.offsetWidth / 2;
+                                if (s.scrollLeft + s.offsetWidth >= s.scrollWidth - 10) {
+                                    s.scrollTo({ left: 0, behavior: 'smooth' });
+                                } else {
+                                    s.scrollBy({ left: step, behavior: 'smooth' });
+                                }
+                            }
+                            function promoScrollLeft() {
+                                const s = document.getElementById('promo-slider-final');
+                                const step = s.offsetWidth / 2;
+                                s.scrollBy({ left: -step, behavior: 'smooth' });
+                            }
+                            setInterval(promoScrollRight, 4000);
+                        </script>
                     </div>
-                </section>
+                </div>
+            </div>
+        </section>
 
         <!-- ==============================================
              1. VIDEOTECA TÁCTICA (VIDEOS)
@@ -1016,10 +1133,6 @@
                 <div class="absolute inset-0 bg-tactical-950/70 backdrop-blur-2xl"></div>
                 <div class="absolute inset-0 bg-gradient-to-b from-tactical-900 via-transparent to-tactical-900"></div>
             </div>
-
-            <!-- Efectos de Luces Dinámicas Desenfocadas (Orbes) -->
-            <div class="absolute top-[10%] left-[-10%] w-[600px] h-[600px] bg-accent-pink/10 rounded-full blur-[150px] mix-blend-screen animate-pulse pointer-events-none" style="animation-duration: 6s;"></div>
-            <div class="absolute bottom-[-20%] right-[-5%] w-[800px] h-[800px] bg-accent-cyan/10 rounded-full blur-[180px] mix-blend-screen animate-pulse pointer-events-none" style="animation-duration: 8s;"></div>
             
             <!-- Línea brillante separadora -->
             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none"></div>
@@ -1288,34 +1401,32 @@
         </section>
 
         <!-- ==============================================
-             3. PRÓXIMOS INGRESOS (SOON)
+             3. PRÓXIMOS INGRESOS (RADAR TÁCTICO)
         =================================================== -->
-        <section class="py-24 bg-tactical-900 relative z-10 overflow-hidden border-t border-b border-white/5">
-            <!-- Background con efecto radar/escaneo -->
-            <div class="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.8)),url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] pointer-events-none"></div>
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-white/5 rounded-full pointer-events-none"></div>
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-white/5 rounded-full pointer-events-none"></div>
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-accent-cyan/5 border border-accent-cyan/20 rounded-full blur-[80px] pointer-events-none animate-pulse"></div>
-            <div class="absolute top-0 bottom-0 left-1/2 w-[1px] bg-white/5 pointer-events-none"></div>
+        <section id="ingresos" class="py-24 bg-[#03060a] relative z-10 overflow-hidden border-t border-b border-white/5">
+            <!-- CAPA 0: Fondo de Operaciones HUD -->
+            <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1526778545894-62b4797c1c73?q=80&w=1600&auto=format&fit=crop')] opacity-[0.05] grayscale invert pointer-events-none mix-blend-screen scale-110"></div>
+            <div class="absolute inset-0 bg-[linear-gradient(rgba(0,240,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,240,255,0.03)_1px,transparent_1px)] bg-[size:50px_50px] pointer-events-none"></div>
+            <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#00f0ff]/40 to-transparent shadow-[0_0_15px_#00f0ff] animate-scan-y pointer-events-none z-10"></div>
 
             <div class="max-w-7xl mx-auto px-6 relative z-20">
-                <div class="flex flex-col text-center items-center mb-16 gsap-reveal gs-fade-up">
+                <div class="flex flex-col text-center items-center mb-16">
                     <span class="text-accent-cyan font-bold tracking-[0.4em] uppercase text-[10px] md:text-sm mb-4 block">Radar de Importaciones</span>
                     <h2 class="font-display text-4xl md:text-5xl font-black text-white mb-6 uppercase tracking-tight">Próximos <span class="text-transparent bg-clip-text bg-gradient-to-r from-gray-400 to-white">Ingresos</span></h2>
                     <p class="text-gray-400 text-base md:text-lg max-w-2xl font-light">
-                        Asegura tu equipo táctico antes de que pise suelo y llegue a nuestras bóvedas. Evita el <span class="text-white border-b border-white border-dashed">Sold Out</span>.
+                        Reserva con anticipación tu equipo táctico y sé de los primeros en recibirlo. <span class="text-white border-b border-white border-dashed">No te quedes sin el tuyo</span>.
                     </p>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <!-- Item Ingreso 1 -->
                     @php
-                        $prog1 = $getD('nuevo_ingreso', 'ingreso_1', 'progress', 92);
-                        $img1  = $getD('nuevo_ingreso', 'ingreso_1', 'image', 'https://images.unsplash.com/photo-1595101834457-fe3419097753?q=80&w=600&auto=format&fit=crop');
-                        $tit1  = $getD('nuevo_ingreso', 'ingreso_1', 'header', 'GLOCK 19X COYOTE');
-                        $desc1 = $getD('nuevo_ingreso', 'ingreso_1', 'description', 'Crossover oficial de Glock. Diseño robusto, cargadores de alta capacidad y acabado táctico nPVD.');
+                        $prog1 = $getD('ingresos', 'ingreso_1', 'progress', 90);
+                        $img1  = $getD('ingresos', 'ingreso_1', 'image', null);
+                        $tit1  = $getD('ingresos', 'ingreso_1', 'header', 'ARSENAL EN REPOSICIÓN');
+                        $desc1 = $getD('ingresos', 'ingreso_1', 'description', 'RADAR ACTIVO / PRÓXIMO ABASTECIMIENTO');
                     @endphp
-                    <div class="glass-card rounded-[2rem] p-6 flex flex-col gap-6 items-center border border-white/5 bg-black/40 hover:border-accent-pink/50 transition-all duration-500 mouse-glow relative overflow-hidden group/inc hover:-translate-y-2">
+                    <div class="glass-card rounded-[2.5rem] p-6 flex flex-col gap-6 items-center border border-white/5 bg-black/40 hover:border-accent-pink/50 transition-all duration-500 mouse-glow relative overflow-hidden group/inc">
                         <!-- Barra de llegada progreso -->
                         <div class="absolute bottom-0 left-0 h-1.5 bg-tactical-800 w-full"><div class="h-full bg-gradient-to-r from-red-600 to-accent-pink w-[{{ $prog1 }}%] shadow-[0_0_15px_#ff2a55]"></div></div>
                         <div class="absolute top-4 right-6 text-accent-pink text-[9px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 bg-black/40 px-2 py-1 rounded-full border border-accent-pink/20">
@@ -1324,12 +1435,19 @@
 
                         <!-- Miniatura lockeada -->
                         <div class="w-full h-48 bg-tactical-950/80 rounded-2xl flex items-center justify-center p-4 relative overflow-hidden border border-white/5 shrink-0">
-                            <div class="absolute inset-0 bg-black/60 z-10 flex items-center justify-center rounded-2xl backdrop-blur-[2px] group-hover/inc:backdrop-blur-none transition-all duration-700">
-                                <div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center bg-black/50 group-hover/inc:border-accent-pink/50 group-hover/inc:shadow-[0_0_20px_rgba(255,42,85,0.3)] transition-all">
-                                    <i class='bx bx-lock-alt text-2xl text-white/50 group-hover/inc:text-accent-pink'></i>
+                            @if($img1)
+                                <div class="absolute inset-0 bg-black/60 z-10 flex items-center justify-center rounded-2xl backdrop-blur-[2px] group-hover/inc:backdrop-blur-none transition-all duration-700">
+                                    <div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center bg-black/50 group-hover/inc:border-accent-pink/50 group-hover/inc:shadow-[0_0_20px_rgba(255,42,85,0.3)] transition-all">
+                                        <i class='bx bx-lock-alt text-2xl text-white/50 group-hover/inc:text-accent-pink'></i>
+                                    </div>
                                 </div>
-                            </div>
-                            <img src="{{ $img1 }}" class="h-full w-full object-cover filter brightness-75 group-hover/inc:brightness-100 transition-all duration-1000" alt="{{ $tit1 }}">
+                                <img src="{{ $img1 }}" class="h-full w-full object-cover filter brightness-75 group-hover/inc:brightness-100 transition-all duration-1000" alt="{{ $tit1 }}">
+                            @else
+                                <div class="flex flex-col items-center justify-center p-4 text-center">
+                                    <i class='bx bx-package text-3xl text-white/10 mb-2'></i>
+                                    <span class="text-[10px] font-mono text-gray-500 uppercase tracking-widest">LOGÍSTICA EN CURSO</span>
+                                </div>
+                            @endif
                         </div>
 
                         <!-- Detalles -->
@@ -1338,93 +1456,105 @@
                                 <i class='bx bx-ship'></i> ARRIBO: ESTIMADO
                             </div>
                             <h4 class="font-display text-2xl font-black text-white mb-2 group-hover/inc:text-accent-pink transition-colors leading-none tracking-tight uppercase">{{ $tit1 }}</h4>
-                            <p class="text-[11px] text-gray-400 font-light mb-auto leading-relaxed px-2">{{ $desc1 }}</p>
+                            <p class="text-[11px] text-gray-400 font-light mb-auto leading-relaxed px-2 line-clamp-2">{{ $desc1 }}</p>
                             
-                            <button class="mt-6 bg-white/5 text-white font-bold uppercase tracking-[0.2em] py-4 px-4 rounded-xl hover:bg-accent-pink hover:text-white transition-all border border-white/10 hover:border-transparent hover:shadow-[0_0_30px_rgba(255,42,85,0.3)] w-full text-[10px]">
+                            <button class="mt-6 bg-white/5 text-white font-bold uppercase tracking-[0.3em] py-4 px-4 rounded-xl hover:bg-accent-pink hover:text-white transition-all border border-white/10 hover:border-transparent hover:shadow-[0_0_30px_rgba(255,42,85,0.3)] w-full text-[10px]">
                                 AGENDAR NOTIFICACIÓN
                             </button>
                         </div>
                     </div>
                     
                     <!-- Item Ingreso 2 -->
-                    @php
-                        $prog2 = $getD('nuevo_ingreso', 'ingreso_2', 'progress', 65);
-                        $img2  = $getD('nuevo_ingreso', 'ingreso_2', 'image', 'https://images.unsplash.com/photo-1590425712124-7473a2164478?q=80&w=600&auto=format&fit=crop');
-                        $tit2  = $getD('nuevo_ingreso', 'ingreso_2', 'header', 'SIG SAUER MCX VIRTUS');
-                        $desc2 = $getD('nuevo_ingreso', 'ingreso_2', 'description', 'Sistema multi-calibre configurable. La cúspide de la ingeniería de tiro moderna y adaptable.');
-                    @endphp
-                    <div class="glass-card rounded-[2rem] p-6 flex flex-col gap-6 items-center border border-white/5 bg-black/40 hover:border-accent-cyan/50 transition-all duration-500 mouse-glow relative overflow-hidden group/inc hover:-translate-y-2">
-                        <!-- Barra de llegada progreso -->
-                        <div class="absolute bottom-0 left-0 h-1.5 bg-tactical-800 w-full"><div class="h-full bg-gradient-to-r from-cyan-600 to-accent-cyan w-[{{ $prog2 }}%] shadow-[0_0_15px_#00e5ff]"></div></div>
-                        <div class="absolute top-4 right-6 text-accent-cyan text-[9px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 bg-black/40 px-2 py-1 rounded-full border border-accent-cyan/20">
-                            <span class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-ping"></span> {{ $prog2 }}% TRÁNSITO
-                        </div>
+                     @php
+                         $prog2 = $getD('ingresos', 'ingreso_2', 'progress', 60);
+                         $img2  = $getD('ingresos', 'ingreso_2', 'image', null);
+                        $tit2  = $getD('ingresos', 'ingreso_2', 'header', 'ARSENAL EN REPOSICIÓN');
+                        $desc2 = $getD('ingresos', 'ingreso_2', 'description', 'RADAR ACTIVO / PRÓXIMO ABASTECIMIENTO');
+                     @endphp
+                    <div class="glass-card rounded-[2.5rem] p-6 flex flex-col gap-6 items-center border border-white/5 bg-black/40 hover:border-accent-cyan/50 transition-all duration-500 mouse-glow relative overflow-hidden group/inc">
+                         <!-- Barra de llegada progreso -->
+                         <div class="absolute bottom-0 left-0 h-1.5 bg-tactical-800 w-full"><div class="h-full bg-gradient-to-r from-cyan-600 to-accent-cyan w-[{{ $prog2 }}%] shadow-[0_0_15px_#00e5ff]"></div></div>
+                         <div class="absolute top-4 right-6 text-accent-cyan text-[9px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 bg-black/40 px-2 py-1 rounded-full border border-accent-cyan/20">
+                             <span class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-ping"></span> {{ $prog2 }}% TRÁNSITO
+                         </div>
 
-                        <!-- Miniatura lockeada -->
-                        <div class="w-full h-48 bg-tactical-950/80 rounded-2xl flex items-center justify-center p-4 relative overflow-hidden border border-white/5 shrink-0">
-                            <div class="absolute inset-0 bg-black/60 z-10 flex items-center justify-center rounded-2xl backdrop-blur-[2px] group-hover/inc:backdrop-blur-none transition-all duration-700">
-                                <div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center bg-black/50 group-hover/inc:border-accent-cyan/50 group-hover/inc:shadow-[0_0_20px_rgba(0,229,255,0.3)] transition-all">
-                                    <i class='bx bx-lock-alt text-2xl text-white/50 group-hover/inc:text-accent-cyan'></i>
+                         <!-- Miniatura lockeada -->
+                         <div class="w-full h-48 bg-tactical-950/80 rounded-2xl flex items-center justify-center p-4 relative overflow-hidden border border-white/5 shrink-0">
+                             @if($img2)
+                                <div class="absolute inset-0 bg-black/60 z-10 flex items-center justify-center rounded-2xl backdrop-blur-[2px] group-hover/inc:backdrop-blur-none transition-all duration-700">
+                                        <i class='bx bx-lock-alt text-2xl text-white/50 group-hover/inc:text-accent-cyan'></i>
+                                    </div>
                                 </div>
-                            </div>
-                            <img src="{{ $img2 }}" class="h-full w-full object-cover filter brightness-75 group-hover/inc:brightness-100 transition-all duration-1000" alt="{{ $tit2 }}">
-                        </div>
-
-                        <!-- Detalles -->
-                        <div class="flex-1 w-full text-center py-2 h-full flex flex-col">
-                            <div class="inline-flex items-center justify-center gap-1.5 text-[9px] text-gray-500 border border-white/5 bg-white/5 px-3 py-1 rounded-full font-bold tracking-[0.2em] uppercase mb-4 w-max mx-auto">
-                                <i class='bx bx-plane-alt'></i> ARRIBO: ESTIMADO
-                            </div>
-                            <h4 class="font-display text-2xl font-black text-white mb-2 group-hover/inc:text-accent-cyan transition-colors leading-none tracking-tight uppercase">{{ $tit2 }}</h4>
-                            <p class="text-[11px] text-gray-400 font-light mb-auto leading-relaxed px-2">{{ $desc2 }}</p>
-                            
-                            <button class="mt-6 bg-white/5 text-white font-bold uppercase tracking-[0.2em] py-4 px-4 rounded-xl hover:bg-accent-cyan hover:text-black transition-all border border-white/10 hover:border-transparent hover:shadow-[0_0_30px_rgba(0,229,255,0.3)] w-full text-[10px]">
-                                AGENDAR NOTIFICACIÓN
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Item Ingreso 3 -->
-                    @php
-                        $prog3 = $getD('nuevo_ingreso', 'ingreso_3', 'progress', 15);
-                        $img3  = $getD('nuevo_ingreso', 'ingreso_3', 'image', 'https://images.unsplash.com/photo-1595101834161-267591e6005c?q=80&w=600&auto=format&fit=crop');
-                        $tit3  = $getD('nuevo_ingreso', 'ingreso_3', 'header', 'BENELLI M4 TACTICAL');
-                        $desc3 = $getD('nuevo_ingreso', 'ingreso_3', 'description', 'Escopeta semi-automática de combate. Fiabilidad legendaria para cualquier escenario crítico.');
-                    @endphp
-                    <div class="glass-card rounded-[2rem] p-6 flex flex-col gap-6 items-center border border-white/5 bg-black/40 hover:border-yellow-500/50 transition-all duration-500 mouse-glow relative overflow-hidden group/inc hover:-translate-y-2">
-                        <!-- Barra de llegada progreso -->
-                        <div class="absolute bottom-0 left-0 h-1.5 bg-tactical-800 w-full"><div class="h-full bg-gradient-to-r from-yellow-600 to-yellow-400 w-[{{ $prog3 }}%] shadow-[0_0_15px_#fbbf24]"></div></div>
-                        <div class="absolute top-4 right-6 text-yellow-500 text-[9px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 bg-black/40 px-2 py-1 rounded-full border border-yellow-500/20">
-                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-ping"></span> {{ $prog3 }}% LOGÍSTICA
-                        </div>
-
-                        <!-- Miniatura lockeada -->
-                        <div class="w-full h-48 bg-tactical-950/80 rounded-2xl flex items-center justify-center p-4 relative overflow-hidden border border-white/5 shrink-0">
-                            <div class="absolute inset-0 bg-black/60 z-10 flex items-center justify-center rounded-2xl backdrop-blur-[2px] group-hover/inc:backdrop-blur-none transition-all duration-700">
-                                <div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center bg-black/50 group-hover/inc:border-yellow-500/50 group-hover/inc:shadow-[0_0_20px_rgba(251,191,36,0.3)] transition-all">
-                                    <i class='bx bx-lock-alt text-2xl text-white/50 group-hover/inc:text-yellow-500'></i>
+                                <img src="{{ $img2 }}" class="h-full w-full object-cover filter brightness-75 group-hover/inc:brightness-100 transition-all duration-1000" alt="{{ $tit2 }}">
+                             @else
+                                <div class="flex flex-col items-center justify-center p-4 text-center">
+                                    <i class='bx bx-plane-alt text-3xl text-white/10 mb-2'></i>
+                                    <span class="text-[10px] font-mono text-gray-500 uppercase tracking-widest">LOGÍSTICA EN CURSO</span>
                                 </div>
-                            </div>
-                            <img src="{{ $img3 }}" class="h-full w-full object-cover filter brightness-75 group-hover/inc:brightness-100 transition-all duration-1000" alt="{{ $tit3 }}">
-                        </div>
+                             @endif
+                         </div>
 
-                        <!-- Detalles -->
-                        <div class="flex-1 w-full text-center py-2 h-full flex flex-col">
-                            <div class="inline-flex items-center justify-center gap-1.5 text-[9px] text-gray-500 border border-white/5 bg-white/5 px-3 py-1 rounded-full font-bold tracking-[0.2em] uppercase mb-4 w-max mx-auto">
-                                <i class='bx bx-box'></i> ARRIBO: ESTIMADO
-                            </div>
-                            <h4 class="font-display text-2xl font-black text-white mb-2 group-hover/inc:text-yellow-500 transition-colors leading-none tracking-tight uppercase">{{ $tit3 }}</h4>
-                            <p class="text-[11px] text-gray-400 font-light mb-auto leading-relaxed px-2">{{ $desc3 }}</p>
-                            
-                            <button class="mt-6 bg-white/5 text-white font-bold uppercase tracking-[0.2em] py-4 px-4 rounded-xl hover:bg-white hover:text-black transition-all border border-white/10 hover:border-transparent hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] w-full text-[10px]">
-                                AGENDAR NOTIFICACIÓN
-                            </button>
-                        </div>
-                    </div>
+                         <!-- Detalles -->
+                         <div class="flex-1 w-full text-center py-2 h-full flex flex-col">
+                             <div class="inline-flex items-center justify-center gap-1.5 text-[9px] text-gray-500 border border-white/5 bg-white/5 px-3 py-1 rounded-full font-bold tracking-[0.2em] uppercase mb-4 w-max mx-auto">
+                                 <i class='bx bx-plane-alt'></i> ARRIBO: ESTIMADO
+                             </div>
+                             <h4 class="font-display text-2xl font-black text-white mb-2 group-hover/inc:text-accent-cyan transition-colors leading-none tracking-tight uppercase">{{ $tit2 }}</h4>
+                             <p class="text-[11px] text-gray-400 font-light mb-auto leading-relaxed px-2 line-clamp-2">{{ $desc2 }}</p>
+                             
+                             <button class="mt-6 bg-white/5 text-white font-bold uppercase tracking-[0.3em] py-4 px-4 rounded-xl hover:bg-accent-cyan hover:text-black transition-all border border-white/10 hover:border-transparent hover:shadow-[0_0_30px_rgba(0,229,255,0.3)] w-full text-[10px]">
+                                 AGENDAR NOTIFICACIÓN
+                             </button>
+                         </div>
+                     </div>
+
+                     <!-- Item Ingreso 3 -->
+                     @php
+                         $prog3 = $getD('ingresos', 'ingreso_3', 'progress', 15);
+                         $img3  = $getD('ingresos', 'ingreso_3', 'image', null);
+                        $tit3  = $getD('ingresos', 'ingreso_3', 'header', 'ARSENAL EN REPOSICIÓN');
+                        $desc3 = $getD('ingresos', 'ingreso_3', 'description', 'RADAR ACTIVO / PRÓXIMO ABASTECIMIENTO');
+                     @endphp
+                    <div class="glass-card rounded-[2.5rem] p-6 flex flex-col gap-6 items-center border border-white/5 bg-black/40 hover:border-yellow-500/50 transition-all duration-500 mouse-glow relative overflow-hidden group/inc">
+                         <!-- Barra de llegada progreso -->
+                         <div class="absolute bottom-0 left-0 h-1.5 bg-tactical-800 w-full"><div class="h-full bg-gradient-to-r from-yellow-600 to-yellow-400 w-[{{ $prog3 }}%] shadow-[0_0_15px_#fbbf24]"></div></div>
+                         <div class="absolute top-4 right-6 text-yellow-500 text-[9px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 bg-black/40 px-2 py-1 rounded-full border border-yellow-500/20">
+                             <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-ping"></span> {{ $prog3 }}% LOGÍSTICA
+                         </div>
+
+                         <!-- Miniatura lockeada -->
+                         <div class="w-full h-48 bg-tactical-950/80 rounded-2xl flex items-center justify-center p-4 relative overflow-hidden border border-white/5 shrink-0">
+                             @if($img3)
+                                <div class="absolute inset-0 bg-black/60 z-10 flex items-center justify-center rounded-2xl backdrop-blur-[2px] group-hover/inc:backdrop-blur-none transition-all duration-700">
+                                    <div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center bg-black/50 group-hover/inc:border-yellow-500/50 group-hover/inc:shadow-[0_0_20px_rgba(251,191,36,0.3)] transition-all">
+                                        <i class='bx bx-lock-alt text-2xl text-white/50 group-hover/inc:text-yellow-500'></i>
+                                    </div>
+                                </div>
+                                <img src="{{ $img3 }}" class="h-full w-full object-cover filter brightness-75 group-hover/inc:brightness-100 transition-all duration-1000" alt="{{ $tit3 }}">
+                             @else
+                                <div class="flex flex-col items-center justify-center p-4 text-center">
+                                    <i class='bx bx-package text-3xl text-white/10 mb-2'></i>
+                                    <span class="text-[10px] font-mono text-gray-500 uppercase tracking-widest">LOGÍSTICA EN CURSO</span>
+                                </div>
+                             @endif
+                         </div>
+
+                         <!-- Detalles -->
+                         <div class="flex-1 w-full text-center py-2 h-full flex flex-col">
+                             <div class="inline-flex items-center justify-center gap-1.5 text-[9px] text-gray-500 border border-white/5 bg-white/5 px-3 py-1 rounded-full font-bold tracking-[0.2em] uppercase mb-4 w-max mx-auto">
+                                 <i class='bx bx-box'></i> ARRIBO: ESTIMADO
+                             </div>
+                             <h4 class="font-display text-2xl font-black text-white mb-2 group-hover/inc:text-yellow-500 transition-colors leading-none tracking-tight uppercase">{{ $tit3 }}</h4>
+                             <p class="text-[11px] text-gray-400 font-light mb-auto leading-relaxed px-2 line-clamp-2">{{ $desc3 }}</p>
+                             
+                             <button class="mt-6 bg-white/5 text-white font-bold uppercase tracking-[0.3em] py-4 px-4 rounded-xl hover:bg-white hover:text-black transition-all border border-white/10 hover:border-transparent hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] w-full text-[10px]">
+                                 AGENDAR NOTIFICACIÓN
+                             </button>
+                         </div>
+                     </div>
                 </div>
             </div>
-        </section>
- 
+  
         <!-- Empresa: Quienes Somos (Rediseño Moderno) -->
         <section id="empresa" class="relative py-24 md:py-32 flex flex-col items-center bg-tactical-900 overflow-hidden border-b border-white/5">
             <!-- Background Image con Overlay Cinematográfico -->
@@ -1439,13 +1569,27 @@
                     @php
                         $nTitle = $getD('nosotros', 'nosotros_main', 'header', 'DÉCADAS DE EXCELENCIA TÁCTICA');
                         $nDesc  = $getD('nosotros', 'nosotros_main', 'content', 'Balam Armería nació como un proyecto para proveer a los profesionales de la seguridad y entusiastas del tiro deportivo con el mejor equipamiento.');
-                        $nImg   = $getD('nosotros', 'nosotros_main', 'image', asset('images/nosotros_tigre_v2.png'));
+                        
+                        $rawNosotrosImg = $getD('nosotros', 'nosotros_main', 'image', '');
+                        $hasNosotrosImg = !empty($rawNosotrosImg) && (str_contains($rawNosotrosImg, 'http') || str_contains($rawNosotrosImg, 'images/'));
+                        
+                        // Respaldo Oficial de Balam (Tigre Original)
+                        $nFallback = asset('images/nosotros_tigre_v2.png'); 
                     @endphp
 
-                    <!-- Columna Izquierda: Imagen de Marca Táctica (Tigre) -->
+                    <!-- Columna Izquierda: Imagen de Marca Oficial (El Tigre de Balam) -->
                     <div class="relative order-2 lg:order-1 flex justify-center">
-                        <div class="relative rounded-3xl overflow-hidden border border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.6)] group max-w-sm md:max-w-md">
-                            <img src="{{ $nImg }}" alt="Balam Armería - Elite" class="w-full h-auto transform group-hover:scale-105 transition-transform duration-1000">
+                        <div class="relative rounded-3xl overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.8)] group max-w-sm md:max-w-md bg-transparent">
+                            <!-- Imagen Oficial de Respaldo: COLOR Y NITIDEZ TOTAL -->
+                            <img src="{{ $nFallback }}" alt="Balam Armería - Elite" 
+                                 class="w-full h-auto transform group-hover:scale-105 transition-transform duration-1000 object-contain">
+                            
+                            <!-- Imagen Dinámica (Solo si se sube una nueva en Dashboard) -->
+                            @if($hasNosotrosImg)
+                            <img src="{{ $rawNosotrosImg }}" 
+                                 class="absolute inset-0 w-full h-full object-cover z-10"
+                                 onerror="this.style.display='none'">
+                            @endif
                         </div>
                         
                         <!-- Badge de Calidad Flotante -->
@@ -1498,20 +1642,30 @@
             </div>
         </section>
 
-        <!-- Red de Sedes y Contacto (Mapas Integrados) -->
-        <section id="contacto" class="py-16 bg-[#050505] relative z-10 overflow-hidden border-t border-white/5">
-            <!-- 1. Capas de Fondo de Nivel Profesional / Elite Tactical -->
+        <!-- Red de Sedes y Contacto (Mapas Integrados - Tactical Command Hub) -->
+        <section id="contacto" class="py-24 bg-[#020406] relative z-10 overflow-hidden border-t border-white/5">
+            <!-- CAPA 0: Fondo Táctico Multicapa -->
             
-            <!-- Ruido y Textura Base (Obsidian Noise) -->
-            <div class="absolute inset-0 bg-noise opacity-[0.03] pointer-events-none"></div>
+            <!-- 0.1 Mapa Topográfico Base (Alta Resolución) -->
+            <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1526778545894-62b4797c1c73?q=80&w=1600&auto=format&fit=crop')] opacity-[0.04] grayscale invert pointer-events-none mix-blend-screen"></div>
             
-            <!-- Topografía Digital (Ultra-Sutil) -->
-            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/binding-dark.png')] opacity-20 pointer-events-none"></div>
+            <!-- 0.2 Grid de Coordenadas Láser -->
+            <div class="absolute inset-0 bg-[linear-gradient(rgba(0,240,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,240,255,0.03)_1px,transparent_1px)] bg-[size:60px_60px] pointer-events-none"></div>
+            <div class="absolute inset-0 bg-[linear-gradient(rgba(230,126,34,0.02)_2px,transparent_2px),linear-gradient(90deg,rgba(230,126,34,0.02)_2px,transparent_2px)] bg-[size:300px_300px] pointer-events-none"></div>
+
+            <!-- 0.3 Ambi-Glow: El contraste de Balam (Cian vs Naranja) -->
+            <div class="absolute -top-[20%] -left-[10%] w-[60%] h-[60%] bg-[#00f0ff]/10 blur-[150px] rounded-full pointer-events-none animate-pulse-slow"></div>
+            <div class="absolute -bottom-[20%] -right-[10%] w-[60%] h-[60%] bg-[#e67e22]/10 blur-[150px] rounded-full pointer-events-none animate-pulse-slow" style="animation-delay: 2s;"></div>
+
+            <!-- 0.4 Scanning Line (Barra de Escaneo Digital) -->
+            <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#00f0ff]/30 to-transparent shadow-[0_0_15px_#00f0ff] animate-scan-y pointer-events-none z-10"></div>
             
-            <!-- Grid de fondo tecnológico de precisión -->
-            <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:100px_100px] pointer-events-none"></div>
-            
-            <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black to-transparent z-0 pointer-events-none"></div>
+            <!-- 0.5 Digital Dust (Partículas de Interfaz) -->
+            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.1] pointer-events-none"></div>
+
+            <!-- 0.6 HUD Markers (Crucetas de Precisión) -->
+            <div class="absolute top-10 right-10 w-24 h-24 border-t-2 border-r-2 border-[#00f0ff]/20 rounded-tr-3xl pointer-events-none"></div>
+            <div class="absolute bottom-10 left-10 w-24 h-24 border-b-2 border-l-2 border-[#e67e22]/20 rounded-bl-3xl pointer-events-none"></div>
 
             <div class="max-w-[95%] mx-auto px-4 z-10 relative">
                 <!-- Título y Subtítulo Estratégico -->
@@ -1536,26 +1690,46 @@
                     <div class="lg:col-span-4 flex flex-col gap-6 max-h-[550px] overflow-y-auto px-2 custom-scrollbar">
                         
                         <!-- Sede Poptún -->
-                        <div class="location-card relative group cursor-pointer" onclick="switchContactBranch('poptun')">
+                        <div class="location-card relative group cursor-pointer" 
+                             data-branch-id="poptun"
+                             data-coords="{{ $getD('sucursales', 'poptun_maps', 'content', '16.3314,-89.4183') }}"
+                             data-name="Sede Poptún"
+                             data-address="{{ $getD('sucursales', 'poptun_address', 'content', 'Barrio El Centro, Petén') }}"
+                             onclick="switchContactBranch(this)">
                             <div class="absolute -inset-0.5 bg-gradient-to-r from-accent-primary/0 to-accent-primary/0 group-hover:from-accent-primary/30 group-hover:to-transparent rounded-2xl blur opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                             <div class="relative bg-tactical-900/60 backdrop-blur-xl border border-white/5 rounded-2xl p-5 group-hover:border-accent-primary/30 transition-all duration-300">
                                 <div class="flex items-center gap-5">
-                                    <div class="w-24 h-24 rounded-xl overflow-hidden shrink-0 border border-white/10 group-hover:border-accent-primary/50 transition-all relative">
-                                        <img src="{{ $getD('sucursales', 'poptun', 'image', asset('images/sucursales/poptun.png')) }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                    <div class="w-24 h-24 rounded-xl overflow-hidden shrink-0 border border-white/10 group-hover:border-accent-primary/50 transition-all relative bg-tactical-950 flex items-center justify-center">
+                                        @php 
+                                            $poptunFacadeImg = $getD('sucursales', 'poptun_image', 'image', null); 
+                                        @endphp
+                                        @if($poptunFacadeImg)
+                                            <img src="{{ $poptunFacadeImg }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                        @else
+                                            <div class="flex flex-col items-center justify-center p-2 text-center">
+                                                <i class='bx bx-camera text-2xl text-accent-primary/40 mb-1'></i>
+                                                <span class="text-[7px] font-mono text-gray-500 uppercase tracking-tighter leading-tight">PRÓXIMAMENTE<br>FOTO DEL LOCAL</span>
+                                            </div>
+                                        @endif
                                         <div class="absolute inset-0 bg-accent-primary/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center justify-between mb-1">
                                             <span class="text-[10px] font-black text-accent-primary tracking-widest uppercase">BALAM 01</span>
                                         </div>
-                                        <h4 class="text-2xl font-bold text-white group-hover:text-accent-primary transition-colors leading-tight">Sede Poptún</h4>
-                                        <p class="text-gray-300 text-xs tracking-wide opacity-80 mt-1 font-medium">Barrio El Centro, Petén</p>
+                                        <h4 class="text-2xl font-bold text-white group-hover:text-accent-primary transition-colors leading-tight">{{ $getD('sucursales', 'poptun_image', 'header', 'Sede Poptún') }}</h4>
+                                        <p class="text-gray-300 text-xs tracking-wide opacity-80 mt-1 font-medium">{{ $getD('sucursales', 'poptun_address', 'content', 'Barrio El Centro, Petén') }}</p>
                                         
                                         <div class="flex gap-2 mt-4">
-                                            <button onclick="event.stopPropagation(); window.open('https://www.google.com/maps/search/?api=1&query=16.3314,-89.4183','_blank')" class="flex-1 bg-white/5 hover:bg-accent-primary hover:text-black py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 hover:border-accent-primary">
+                                            @php 
+                                                $poptunCoords = $getD('sucursales', 'poptun_maps', 'content', '16.3314,-89.4183');
+                                                $poptunMapLink = "https://www.google.com/maps/search/?api=1&query=$poptunCoords";
+                                                $poptunFacadeImg = $getD('sucursales', 'poptun_image', 'image', null);
+                                            @endphp
+                                            <button onclick="event.stopPropagation(); window.open('{{ $poptunMapLink }}','_blank')" class="flex-1 bg-white/5 hover:bg-[#e67e22] hover:text-black py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 hover:border-[#e67e22]">
                                                 <i class='bx bxs-map'></i> MAPS
                                             </button>
-                                            <button onclick="event.stopPropagation(); openLightbox('{{ asset('images/sucursales/poptun.png') }}', 'Sede Poptún')" class="flex-1 bg-white/5 hover:bg-accent-primary/10 hover:border-accent-primary/50 hover:text-accent-primary py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 shadow-sm hover:shadow-accent-primary/20 hover:-translate-y-0.5">
+                                            <button onclick="event.stopPropagation(); window.openLightbox('{{ $poptunFacadeImg ? $poptunFacadeImg : '' }}', 'Sede Poptún')" class="flex-1 bg-white/5 hover:bg-[#e67e22]/10 hover:border-[#e67e22]/50 hover:text-[#e67e22] py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 shadow-sm hover:shadow-[#e67e22]/20 hover:-translate-y-0.5">
                                                 <i class='bx bx-camera'></i> VER FOTO
                                             </button>
                                         </div>
@@ -1565,26 +1739,43 @@
                         </div>
 
                         <!-- Sede San Luis -->
-                        <div class="location-card relative group cursor-pointer" onclick="switchContactBranch('sanluis')">
+                        <div class="location-card relative group cursor-pointer" 
+                             data-branch-id="sanluis"
+                             data-coords="{{ $getD('sucursales', 'sanluis_maps', 'content', '16.1956,-89.4442') }}"
+                             data-name="Sede San Luis"
+                             data-address="{{ $getD('sucursales', 'sanluis_address', 'content', 'Zona 1, San Luis, Petén') }}"
+                             onclick="switchContactBranch(this)">
                             <div class="absolute -inset-0.5 bg-gradient-to-r from-accent-primary/0 to-accent-primary/0 group-hover:from-accent-primary/30 group-hover:to-transparent rounded-2xl blur opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                             <div class="relative bg-tactical-900/60 backdrop-blur-xl border border-white/5 rounded-2xl p-5 group-hover:border-accent-primary/30 transition-all duration-300">
                                 <div class="flex items-center gap-5">
-                                    <div class="w-24 h-24 rounded-xl overflow-hidden shrink-0 border border-white/10 group-hover:border-accent-primary/50 transition-all relative">
-                                        <img src="{{ $getD('sucursales', 'sanluis', 'image', 'https://images.unsplash.com/photo-1595590424283-b8f17842773f?q=80&w=600&auto=format&fit=crop') }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                    <div class="w-24 h-24 rounded-xl overflow-hidden shrink-0 border border-white/10 group-hover:border-accent-primary/50 transition-all relative bg-tactical-950 flex items-center justify-center">
+                                        @php $slFacadeImg = $getD('sucursales', 'sanluis_image', 'image', null); @endphp
+                                        @if($slFacadeImg)
+                                            <img src="{{ $slFacadeImg }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                        @else
+                                            <div class="flex flex-col items-center justify-center p-2 text-center">
+                                                <i class='bx bx-camera text-2xl text-accent-primary/40 mb-1'></i>
+                                                <span class="text-[7px] font-mono text-gray-500 uppercase tracking-tighter leading-tight">PRÓXIMAMENTE<br>FOTO DEL LOCAL</span>
+                                            </div>
+                                        @endif
                                         <div class="absolute inset-0 bg-accent-primary/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center justify-between mb-1">
                                             <span class="text-[10px] font-black text-accent-primary tracking-widest uppercase">BALAM 02</span>
                                         </div>
-                                        <h4 class="text-2xl font-bold text-white group-hover:text-accent-primary transition-colors leading-tight">Sede San Luis</h4>
-                                        <p class="text-gray-300 text-xs tracking-wide opacity-80 mt-1 font-medium">Calle Principal, Petén</p>
+                                        <h4 class="text-2xl font-bold text-white group-hover:text-accent-primary transition-colors leading-tight">{{ $getD('sucursales', 'sanluis_image', 'header', 'Sede San Luis') }}</h4>
+                                        <p class="text-gray-300 text-xs tracking-wide opacity-80 mt-1 font-medium">{{ $getD('sucursales', 'sanluis_address', 'content', 'Zona 1, San Luis, Petén') }}</p>
                                         
                                         <div class="flex gap-2 mt-4">
-                                            <button onclick="event.stopPropagation(); window.open('https://www.google.com/maps/search/?api=1&query=16.1956,-89.4442','_blank')" class="flex-1 bg-white/5 hover:bg-accent-primary hover:text-black py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 hover:border-accent-primary">
+                                            @php 
+                                                $slCoords = $getD('sucursales', 'sanluis_maps', 'content', '16.1956,-89.4442');
+                                                $slMapLink = "https://www.google.com/maps/search/?api=1&query=$slCoords";
+                                            @endphp
+                                            <button onclick="event.stopPropagation(); window.open('{{ $slMapLink }}','_blank')" class="flex-1 bg-white/5 hover:bg-[#e67e22] hover:text-black py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 hover:border-[#e67e22]">
                                                 <i class='bx bxs-map'></i> MAPS
                                             </button>
-                                            <button onclick="event.stopPropagation(); openLightbox('https://images.unsplash.com/photo-1595590424283-b8f17842773f?q=80&w=1200', 'Sede San Luis')" class="flex-1 bg-white/5 hover:bg-accent-primary/10 hover:border-accent-primary/50 hover:text-accent-primary py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 shadow-sm hover:shadow-accent-primary/20 hover:-translate-y-0.5">
+                                            <button onclick="event.stopPropagation(); window.openLightbox('{{ $slFacadeImg ? $slFacadeImg : '' }}', 'Sede San Luis')" class="flex-1 bg-white/5 hover:bg-[#e67e22]/10 hover:border-[#e67e22]/50 hover:text-[#e67e22] py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 shadow-sm hover:shadow-[#e67e22]/20 hover:-translate-y-0.5">
                                                 <i class='bx bx-camera'></i> VER FOTO
                                             </button>
                                         </div>
@@ -1594,26 +1785,43 @@
                         </div>
 
                         <!-- Sede Melchor -->
-                        <div class="location-card relative group cursor-pointer" onclick="switchContactBranch('melchor')">
+                        <div class="location-card relative group cursor-pointer" 
+                             data-branch-id="melchor"
+                             data-coords="{{ $getD('sucursales', 'melchor_maps', 'content', '17.0655,-89.1557') }}"
+                             data-name="Sede Melchor"
+                             data-address="{{ $getD('sucursales', 'melchor_address', 'content', 'Calle Principal, Melchor de Mencos, Petén') }}"
+                             onclick="switchContactBranch(this)">
                             <div class="absolute -inset-0.5 bg-gradient-to-r from-accent-primary/0 to-accent-primary/0 group-hover:from-accent-primary/30 group-hover:to-transparent rounded-2xl blur opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                             <div class="relative bg-tactical-900/60 backdrop-blur-xl border border-white/5 rounded-2xl p-5 group-hover:border-accent-primary/30 transition-all duration-300">
                                 <div class="flex items-center gap-5">
-                                    <div class="w-24 h-24 rounded-xl overflow-hidden shrink-0 border border-white/10 group-hover:border-accent-primary/50 transition-all relative">
-                                        <img src="{{ $getD('sucursales', 'melchor', 'image', 'https://images.unsplash.com/photo-1584282361661-04eecb31548e?q=80&w=600&auto=format&fit=crop') }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                    <div class="w-24 h-24 rounded-xl overflow-hidden shrink-0 border border-white/10 group-hover:border-accent-primary/50 transition-all relative bg-tactical-950 flex items-center justify-center">
+                                        @php $mFacadeImg = $getD('sucursales', 'melchor_image', 'image', null); @endphp
+                                        @if($mFacadeImg)
+                                            <img src="{{ $mFacadeImg }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                        @else
+                                            <div class="flex flex-col items-center justify-center p-2 text-center">
+                                                <i class='bx bx-camera text-2xl text-accent-primary/40 mb-1'></i>
+                                                <span class="text-[7px] font-mono text-gray-500 uppercase tracking-tighter leading-tight">PRÓXIMAMENTE<br>FOTO DEL LOCAL</span>
+                                            </div>
+                                        @endif
                                         <div class="absolute inset-0 bg-accent-primary/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center justify-between mb-1">
                                             <span class="text-[10px] font-black text-accent-primary tracking-widest uppercase">BALAM 03</span>
                                         </div>
-                                        <h4 class="text-2xl font-bold text-white group-hover:text-accent-primary transition-colors leading-tight">Sede Melchor</h4>
-                                        <p class="text-gray-300 text-xs tracking-wide opacity-80 mt-1 font-medium">Frontera, Melchor de Mencos</p>
+                                        <h4 class="text-2xl font-bold text-white group-hover:text-accent-primary transition-colors leading-tight">{{ $getD('sucursales', 'melchor_image', 'header', 'Sede Melchor') }}</h4>
+                                        <p class="text-gray-300 text-xs tracking-wide opacity-80 mt-1 font-medium">{{ $getD('sucursales', 'melchor_address', 'content', 'Frontera, Melchor de Mencos') }}</p>
                                         
                                         <div class="flex gap-2 mt-4">
-                                            <button onclick="event.stopPropagation(); window.open('https://www.google.com/maps/search/?api=1&query=17.0628,-89.1558','_blank')" class="flex-1 bg-white/5 hover:bg-accent-primary hover:text-black py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 hover:border-accent-primary">
+                                            @php 
+                                                $mCoords = $getD('sucursales', 'melchor_maps', 'content', '17.0628,-89.1558');
+                                                $mMapLink = "https://www.google.com/maps/search/?api=1&query=$mCoords";
+                                            @endphp
+                                            <button onclick="event.stopPropagation(); window.open('{{ $mMapLink }}','_blank')" class="flex-1 bg-white/5 hover:bg-[#e67e22] hover:text-black py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 hover:border-[#e67e22]">
                                                 <i class='bx bxs-map'></i> MAPS
                                             </button>
-                                            <button onclick="event.stopPropagation(); openLightbox('https://images.unsplash.com/photo-1584282361661-04eecb31548e?q=80&w=1200', 'Sede Melchor')" class="flex-1 bg-white/5 hover:bg-accent-primary/10 hover:border-accent-primary/50 hover:text-accent-primary py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 shadow-sm hover:shadow-accent-primary/20 hover:-translate-y-0.5">
+                                            <button onclick="event.stopPropagation(); window.openLightbox('{{ $mFacadeImg ? $mFacadeImg : '' }}', 'Sede Melchor')" class="flex-1 bg-white/5 hover:bg-[#e67e22]/10 hover:border-[#e67e22]/50 hover:text-[#e67e22] py-2.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 border border-white/5 shadow-sm hover:shadow-[#e67e22]/20 hover:-translate-y-0.5">
                                                 <i class='bx bx-camera'></i> VER FOTO
                                             </button>
                                         </div>
@@ -1692,81 +1900,83 @@
             <!-- Selector de Sucursales -->
             <div class="flex flex-wrap justify-center gap-3 md:gap-6 mb-12">
                 <button onclick="switchContactBranch('poptun')" id="btn-poptun" class="contact-tab px-6 py-2.5 rounded-full border border-accent-primary bg-accent-primary/10 text-white font-mono text-[11px] font-bold uppercase tracking-widest shadow-[0_0_15px_rgba(234,179,8,0.3)] transition-all hover:scale-105 active:scale-95"><i class='bx bx-map mr-1'></i> Poptún</button>
-                <button onclick="switchContactBranch('sanluis')" id="btn-sanluis" class="contact-tab px-6 py-2.5 rounded-full border border-white/10 bg-white/5 text-gray-400 font-mono text-[11px] font-bold uppercase tracking-widest transition-all hover:bg-white/10 hover:text-white hover:scale-105 active:scale-95"><i class='bx bx-map mr-1'></i> San Luis</button>
-                <button onclick="switchContactBranch('melchor')" id="btn-melchor" class="contact-tab px-6 py-2.5 rounded-full border border-white/10 bg-white/5 text-gray-400 font-mono text-[11px] font-bold uppercase tracking-widest transition-all hover:bg-white/10 hover:text-white hover:scale-105 active:scale-95"><i class='bx bx-map mr-1'></i> Melchor</button>
+                <button onclick="switchContactBranch('sanluis_image')" id="btn-sanluis" class="contact-tab px-6 py-2.5 rounded-full border border-white/10 bg-white/5 text-gray-400 font-mono text-[11px] font-bold uppercase tracking-widest transition-all hover:bg-white/10 hover:text-white hover:scale-105 active:scale-95"><i class='bx bx-map mr-1'></i> San Luis</button>
+                <button onclick="switchContactBranch('melchor_image')" id="btn-melchor" class="contact-tab px-6 py-2.5 rounded-full border border-white/10 bg-white/5 text-gray-400 font-mono text-[11px] font-bold uppercase tracking-widest transition-all hover:bg-white/10 hover:text-white hover:scale-105 active:scale-95"><i class='bx bx-map mr-1'></i> Melchor</button>
             </div>
 
             <!-- Grid de Redes Sociales y Contacto -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 
                 <!-- [FIJO] Teléfono Central Empresa -->
-                <a href="https://wa.me/50251736991" target="_blank" class="glass-card mouse-glow flex items-center p-6 rounded-2xl group border border-[#e67e22]/30 cursor-pointer transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(230,126,34,0.15)] bg-gradient-to-r from-[#e67e22]/10 to-transparent">
+                @php $telCentral = $getD('contacto', 'telefono_central', 'content', '+502 5173 6991'); @endphp
+                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $telCentral) }}" target="_blank" class="glass-card mouse-glow flex items-center p-6 rounded-2xl group border border-[#e67e22]/30 cursor-pointer transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(230,126,34,0.15)] bg-gradient-to-r from-[#e67e22]/10 to-transparent">
                     <div class="w-14 h-14 rounded-xl bg-[#e67e22]/20 flex items-center justify-center text-[#e67e22] group-hover:text-white group-hover:bg-[#e67e22] transition-all shadow-[0_0_15px_rgba(230,126,34,0.3)]">
                         <i class='bx bxs-business text-3xl'></i>
                     </div>
                     <div class="ml-5 flex-1">
                         <p class="text-[10px] text-[#e67e22] font-mono tracking-widest uppercase font-bold">Línea Central Empresa</p>
-                        <h4 class="text-white font-bold text-lg mt-0.5 group-hover:text-gray-300 transition-colors">+502 5173 6991</h4>
+                        <h4 class="text-white font-bold text-lg mt-0.5 group-hover:text-gray-300 transition-colors">{{ $telCentral }}</h4>
                     </div>
                     <i class='bx bx-right-arrow-alt text-2xl text-[#e67e22] group-hover:text-white transition-colors group-hover:translate-x-1 duration-300'></i>
                 </a>
 
                 <!-- [FIJO] Correo -->
-                <a href="mailto:balamarmasymuniciones@gmail.com" class="glass-card mouse-glow flex items-center p-6 rounded-2xl group border border-white/5 cursor-pointer transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(255,255,255,0.05)] hover:border-gray-500/50">
+                @php $emailCentral = $getD('contacto', 'email_central', 'content', 'balamarmasymuniciones@gmail.com'); @endphp
+                <a href="mailto:{{ $emailCentral }}" class="glass-card mouse-glow flex items-center p-6 rounded-2xl group border border-white/5 cursor-pointer transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(255,255,255,0.05)] hover:border-gray-500/50">
                     <div class="w-14 h-14 rounded-xl bg-gray-500/10 flex items-center justify-center text-gray-400 group-hover:text-white group-hover:bg-gray-500/30 transition-all">
                         <i class='bx bx-envelope text-3xl'></i>
                     </div>
                     <div class="ml-5 flex-1 break-all">
                         <p class="text-[10px] text-gray-500 font-mono tracking-widest uppercase">Correo Oficial</p>
-                        <h4 class="text-white font-bold text-xs md:text-sm mt-0.5 group-hover:text-gray-300 transition-colors">balamarmasymuniciones<br>@gmail.com</h4>
+                        <h4 class="text-white font-bold text-xs md:text-sm mt-0.5 group-hover:text-gray-300 transition-colors">{{ $emailCentral }}</h4>
                     </div>
                     <i class='bx bx-right-arrow-alt text-2xl text-gray-600 group-hover:text-white transition-colors group-hover:translate-x-1 duration-300'></i>
                 </a>
 
                 <!-- [DINÁMICO] WhatsApp Sucursal -->
-                <a id="dyn-wa-link" href="https://wa.me/50240430725" target="_blank" class="glass-card mouse-glow flex items-center p-6 rounded-2xl group border border-white/5 cursor-pointer transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(37,211,102,0.15)] hover:border-[#25D366]/50">
+                <a id="dyn-wa-link" href="{{ $getD('sucursales', 'poptun_wa_link', 'content', 'https://wa.me/50240430725') }}" target="_blank" class="glass-card mouse-glow flex items-center p-6 rounded-2xl group border border-white/5 cursor-pointer transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(37,211,102,0.15)] hover:border-[#25D366]/50">
                     <div class="w-14 h-14 rounded-xl bg-[#25D366]/10 flex items-center justify-center text-[#25D366] group-hover:text-white group-hover:bg-[#25D366] transition-all shadow-[0_0_15px_rgba(37,211,102,0.2)]">
                         <i class='bx bxl-whatsapp text-3xl'></i>
                     </div>
                     <div class="ml-5 flex-1">
                         <p class="text-[10px] text-gray-500 font-mono tracking-widest uppercase">WhatsApp Sucursal</p>
-                        <h4 id="dyn-wa-num" class="text-white font-bold text-lg mt-0.5 group-hover:text-[#25D366] transition-colors">+502 4043 0725</h4>
+                        <h4 id="dyn-wa-num" class="text-white font-bold text-lg mt-0.5 group-hover:text-[#25D366] transition-colors">{{ $getD('sucursales', 'poptun_wa', 'content', '+502 4043 0725') }}</h4>
                     </div>
                     <i class='bx bx-right-arrow-alt text-2xl text-gray-600 group-hover:text-[#25D366] transition-colors group-hover:translate-x-1 duration-300'></i>
                 </a>
 
                 <!-- [DINÁMICO] Facebook -->
-                <a id="dyn-fb-link" href="https://www.facebook.com/share/1AuQFGQPtt/?mibextid=wwXIfr" target="_blank" class="glass-card mouse-glow flex items-center p-6 rounded-2xl group border border-white/5 cursor-pointer transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(24,119,242,0.15)] hover:border-[#1877F2]/50">
+                <a id="dyn-fb-link" href="{{ $getD('sucursales', 'poptun_fb_link', 'content', 'https://www.facebook.com/share/1AuQFGQPtt/?mibextid=wwXIfr') }}" target="_blank" class="glass-card mouse-glow flex items-center p-6 rounded-2xl group border border-white/5 cursor-pointer transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(24,119,242,0.15)] hover:border-[#1877F2]/50">
                     <div class="w-14 h-14 rounded-xl bg-[#1877F2]/10 flex items-center justify-center text-[#1877F2] group-hover:text-white group-hover:bg-[#1877F2] transition-all shadow-[0_0_15px_rgba(24,119,242,0.2)]">
                         <i class='bx bxl-facebook text-3xl'></i>
                     </div>
                     <div class="ml-5 flex-1">
                         <p class="text-[10px] text-gray-500 font-mono tracking-widest uppercase">Facebook</p>
-                        <h4 id="dyn-fb-alias" class="text-white font-bold text-lg mt-0.5 group-hover:text-[#1877F2] transition-colors line-clamp-1">Balam Poptún</h4>
+                        <h4 id="dyn-fb-alias" class="text-white font-bold text-lg mt-0.5 group-hover:text-[#1877F2] transition-colors line-clamp-1">{{ $getD('sucursales', 'poptun_fb', 'content', 'Balam Poptún') }}</h4>
                     </div>
                     <i class='bx bx-right-arrow-alt text-2xl text-gray-600 group-hover:text-[#1877F2] transition-colors group-hover:translate-x-1 duration-300'></i>
                 </a>
 
                 <!-- [DINÁMICO] Instagram -->
-                <a id="dyn-ig-link" href="https://www.instagram.com/balampoptun?igsh=MXNmM210ZDVxYTYzOA==" target="_blank" class="glass-card mouse-glow flex items-center p-6 rounded-2xl group border border-white/5 cursor-pointer transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(225,48,108,0.15)] hover:border-[#E1306C]/50">
+                <a id="dyn-ig-link" href="{{ $getD('sucursales', 'poptun_ig_link', 'content', 'https://www.instagram.com/balampoptun?igsh=MXNmM210ZDVxYTYzOA==') }}" target="_blank" class="glass-card mouse-glow flex items-center p-6 rounded-2xl group border border-white/5 cursor-pointer transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(225,48,108,0.15)] hover:border-[#E1306C]/50">
                     <div class="w-14 h-14 rounded-xl bg-[#E1306C]/10 flex items-center justify-center text-[#E1306C] group-hover:text-white group-hover:bg-gradient-to-br group-hover:from-[#833AB4] group-hover:via-[#FD1D1D] group-hover:to-[#F56040] transition-all shadow-[0_0_15px_rgba(225,48,108,0.2)]">
                         <i class='bx bxl-instagram text-3xl'></i>
                     </div>
                     <div class="ml-5 flex-1">
                         <p class="text-[10px] text-gray-500 font-mono tracking-widest uppercase">Instagram</p>
-                        <h4 id="dyn-ig-alias" class="text-white font-bold text-sm lg:text-md mt-0.5 group-hover:text-[#E1306C] transition-colors line-clamp-1">@balampoptun</h4>
+                        <h4 id="dyn-ig-alias" class="text-white font-bold text-sm lg:text-md mt-0.5 group-hover:text-[#E1306C] transition-colors line-clamp-1">{{ $getD('sucursales', 'poptun_ig', 'content', '@balampoptun') }}</h4>
                     </div>
                     <i class='bx bx-right-arrow-alt text-2xl text-gray-600 group-hover:text-[#E1306C] transition-colors group-hover:translate-x-1 duration-300'></i>
                 </a>
 
                 <!-- [DINÁMICO] TikTok -->
-                <a id="dyn-tk-link" href="https://www.tiktok.com/@balampoptun?_r=1&_t=ZS-959MbJz25Ya" target="_blank" class="glass-card mouse-glow flex items-center p-6 rounded-2xl group border border-white/5 cursor-pointer transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(255,0,80,0.15)] hover:border-[#FF0050]/50">
+                <a id="dyn-tk-link" href="{{ $getD('sucursales', 'poptun_tk_link', 'content', 'https://www.tiktok.com/@balampoptun?_r=1&_t=ZS-959MbJz25Ya') }}" target="_blank" class="glass-card mouse-glow flex items-center p-6 rounded-2xl group border border-white/5 cursor-pointer transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(255,0,80,0.15)] hover:border-[#FF0050]/50">
                     <div class="w-14 h-14 rounded-xl bg-[#FF0050]/10 flex items-center justify-center text-[#FF0050] group-hover:text-white group-hover:bg-gradient-to-br group-hover:from-[#00f2fe] group-hover:to-[#4facfe] transition-all shadow-[0_0_15px_rgba(255,0,80,0.2)]">
                         <i class='bx bxl-tiktok text-3xl'></i>
                     </div>
                     <div class="ml-5 flex-1">
                         <p class="text-[10px] text-gray-500 font-mono tracking-widest uppercase">TikTok</p>
-                        <h4 id="dyn-tk-alias" class="text-white font-bold text-sm lg:text-md mt-0.5 group-hover:text-[#00f2fe] transition-colors line-clamp-1">@balampoptun</h4>
+                        <h4 id="dyn-tk-alias" class="text-white font-bold text-sm lg:text-md mt-0.5 group-hover:text-[#00f2fe] transition-colors line-clamp-1">{{ $getD('sucursales', 'poptun_tk', 'content', '@balampoptun') }}</h4>
                     </div>
                     <i class='bx bx-right-arrow-alt text-2xl text-gray-600 group-hover:text-[#00f2fe] transition-colors group-hover:translate-x-1 duration-300'></i>
                 </a>
@@ -1779,107 +1989,126 @@
                     <h3 class="text-white font-bold text-2xl font-display">¿Necesitas ayuda inmediata?</h3>
                     <p class="text-gray-400 text-sm mt-2 font-light">Nuestros asesores de la sucursal activa están listos para guiar tu próxima adquisición.</p>
                 </div>
-                <a id="cta-wa-link" href="https://wa.me/50240430725" target="_blank" class="bg-[#25D366] hover:bg-[#20c35b] text-white px-8 py-4 rounded-xl font-bold tracking-widest transition-all shadow-[0_0_20px_rgba(37,211,102,0.4)] hover:shadow-[0_0_30px_rgba(37,211,102,0.6)] flex items-center gap-3 hover:-translate-y-1">
+                <a id="cta-wa-link" href="#" target="_blank" class="bg-[#25D366] hover:bg-[#20c35b] text-white px-8 py-4 rounded-xl font-bold tracking-widest transition-all shadow-[0_0_20px_rgba(37,211,102,0.4)] hover:shadow-[0_0_30px_rgba(37,211,102,0.6)] flex items-center gap-3 hover:-translate-y-1">
                     <i class='bx bxl-whatsapp text-2xl'></i>
-                    CHATEAR CON POPTÚN
+                    CHATEAR CON <span id="cta-wa-branch-name">--</span>
                 </a>
             </div>
         </div>
         
         <script>
+            // Función para limpiar los nombres de usuario (Alias)
+            const sanitizeAlias = (val, type) => {
+                if (!val || val === '#') return 'Balam Armería';
+                if (val.includes('facebook.com')) return 'Balam Armería';
+                if (val.includes('instagram.com') || val.includes('tiktok.com')) {
+                    const cleanUrl = val.split('?')[0].replace(/\/$/, '');
+                    const parts = cleanUrl.split('/');
+                    const user = parts[parts.length - 1].replace('@', '');
+                    return '@' + user;
+                }
+                return val;
+            };
+
             const branchContacts = {
                 poptun: {
                     name: '{{ $getD('sucursales', 'poptun', 'header', 'Sede Poptún') }}',
-                    address: '{{ $getD('sucursales', 'poptun', 'description', 'Barrio El Centro, Petén') }}',
-                    coords: '{{ $getD('sucursales', 'poptun', 'content', '16.3314,-89.4183') }}',
-                    wa: { num: '+502 4043 0725', link: 'https://wa.me/50240430725' },
-                    fb: { alias: 'Balam Poptún',   link: 'https://www.facebook.com/share/1AuQFGQPtt/?mibextid=wwXIfr' },
-                    ig: { alias: '@balampoptun',  link: 'https://www.instagram.com/balampoptun?igsh=MXNmM210ZDVxYTYzOA==' },
-                    tk: { alias: '@balampoptun',  link: 'https://www.tiktok.com/@balampoptun?_r=1&_t=ZS-959MbJz25Ya' }
+                    address: '{{ $getD('sucursales', 'poptun_address', 'content', 'Barrio El Centro, Petén') }}',
+                    coords: '{{ $getD('sucursales', 'poptun_maps', 'content', '16.3314,-89.4183') }}',
+                    wa: { num: '{{ $getD('sucursales', 'poptun_wa', 'content', '+502 4043 0725') }}' },
+                    fb: { link: '{{ $getD('sucursales', 'poptun_fb', 'content', 'https://www.facebook.com/share/1AuQFGQPtt/?mibextid=wwXIfr') }}' },
+                    ig: { link: '{{ $getD('sucursales', 'poptun_ig', 'content', 'https://www.instagram.com/balampoptun?igsh=MXNmM210ZDVxYTYzOA==') }}' },
+                    tk: { link: '{{ $getD('sucursales', 'poptun_tk', 'content', 'https://www.tiktok.com/@balampoptun?_r=1&_t=ZS-959MbJz25Ya') }}' }
                 },
                 sanluis: {
-                    name: '{{ $getD('sucursales', 'sanluis', 'header', 'Sede San Luis') }}',
-                    address: '{{ $getD('sucursales', 'sanluis', 'description', 'Calle Principal, Petén') }}',
-                    coords: '{{ $getD('sucursales', 'sanluis', 'content', '16.1956,-89.4442') }}',
-                    wa: { num: '+502 4903 8728', link: 'https://wa.me/50249038728' },
-                    fb: { alias: 'Balam San Luis', link: 'https://www.facebook.com/share/1NULrBuz4A/?mibextid=wwXIfr' },
-                    ig: { alias: '@balamsanluis', link: 'https://www.instagram.com/balamsanluis?igsh=enB5cHl2bTAzODd3' },
-                    tk: { alias: '@balamsanluis1', link: 'https://www.tiktok.com/@balamsanluis1?_r=1&_t=ZS-959Mvvx5eeS' }
+                    name: '{{ $getD('sucursales', 'sanluis_image', 'header', 'Sede San Luis') }}',
+                    address: '{{ $getD('sucursales', 'sanluis_address', 'content', 'Zona 1, San Luis, Petén') }}',
+                    coords: '{{ $getD('sucursales', 'sanluis_maps', 'content', '16.1956,-89.4442') }}',
+                    wa: { num: '{{ $getD('sucursales', 'sanluis_wa', 'content', '+502 4903 8728') }}' },
+                    fb: { link: '{{ $getD('sucursales', 'sanluis_fb', 'content', 'https://www.facebook.com/share/1NULrBuz4A/?mibextid=wwXIfr') }}' },
+                    ig: { link: '{{ $getD('sucursales', 'sanluis_ig', 'content', 'https://www.instagram.com/balamsanluis?igsh=enB5cHl2bTAzODd3') }}' },
+                    tk: { link: '{{ $getD('sucursales', 'sanluis_tk', 'content', 'https://www.tiktok.com/@balamsanluis1?_r=1&_t=ZS-959Mvvx5eeS') }}' }
                 },
                 melchor: {
-                    name: '{{ $getD('sucursales', 'melchor', 'header', 'Sede Melchor') }}',
-                    address: '{{ $getD('sucursales', 'melchor', 'description', 'Frontera, Melchor de Mencos') }}',
-                    coords: '{{ $getD('sucursales', 'melchor', 'content', '17.0628,-89.1558') }}',
-                    wa: { num: '+502 4499 7414', link: 'https://wa.me/50244997414' },
-                    fb: { alias: 'Balam Melchor',  link: 'https://www.facebook.com/share/1DjAQtgF6N/?mibextid=wwXIfr' },
-                    ig: { alias: '@balammelchordemencos', link: 'https://www.instagram.com/balammelchordemencos?igsh=MWsyNzU4djBocm51Yw==' },
-                    tk: { alias: '@balam__22',     link: 'https://www.tiktok.com/@balam__22?_r=1&_t=ZS-959N4cOkqtY' }
+                    name: '{{ $getD('sucursales', 'melchor_image', 'header', 'Sede Melchor') }}',
+                    address: '{{ $getD('sucursales', 'melchor_address', 'content', 'Calle Principal, Melchor') }}',
+                    coords: '{{ $getD('sucursales', 'melchor_maps', 'content', '17.0628,-89.1558') }}',
+                    wa: { num: '{{ $getD('sucursales', 'melchor_wa', 'content', '+502 4499 7414') }}' },
+                    fb: { link: '{{ $getD('sucursales', 'melchor_fb', 'content', 'https://www.facebook.com/share/1DjAQtgF6N/?mibextid=wwXIfr') }}' },
+                    ig: { link: '{{ $getD('sucursales', 'melchor_ig', 'content', 'https://www.instagram.com/balammelchordemencos?igsh=MWsyNzU4djBocm51Yw==') }}' },
+                    tk: { link: '{{ $getD('sucursales', 'melchor_tk', 'content', 'https://www.tiktok.com/@balam__22?_r=1&_t=ZS-959N4cOkqtY') }}' }
                 }
             };
 
-            function switchContactBranch(branch) {
-                // 1. Apagar todos los botones
+            function switchContactBranch(trigger) {
+                let branchName = "";
+                
+                if (typeof trigger === 'object') {
+                    // Usar el nuevo ID táctico para evitar problemas con tildes o espacios
+                    branchName = trigger.getAttribute('data-branch-id'); 
+                } else {
+                    branchName = trigger;
+                }
+
+                // 1. Apagar todos los efectos en botones y tarjetas
                 document.querySelectorAll('.contact-tab').forEach(btn => {
-                    btn.classList.remove('bg-accent-primary/10', 'border-accent-primary', 'text-white', 'shadow-[0_0_15px_rgba(234,179,8,0.3)]');
+                    btn.classList.remove('bg-[#e67e22]/20', 'border-[#e67e22]', 'text-white', 'shadow-[0_0_15px_rgba(230,126,34,0.3)]');
                     btn.classList.add('bg-white/5', 'border-white/10', 'text-gray-400');
                 });
                 
-                // Encender el botón clickeado
-                let activeBtn = document.getElementById('btn-' + branch);
-                activeBtn.classList.remove('bg-white/5', 'border-white/10', 'text-gray-400');
-                activeBtn.classList.add('bg-accent-primary/10', 'border-accent-primary', 'text-white', 'shadow-[0_0_15px_rgba(234,179,8,0.3)]');
+                document.querySelectorAll('.location-card').forEach(card => {
+                    card.classList.remove('border-[#e67e22]/50', 'bg-tactical-800');
+                });
 
-                // 2. Extraer los datos correctos
-                const data = branchContacts[branch];
-                
-                // 3. Sincronizar el Mapa (Si la función existe en main.js)
+                // 2. Encender la seleccionada
+                let activeBtn = document.getElementById('btn-' + branchName);
+                if (activeBtn) {
+                    activeBtn.classList.remove('bg-white/5', 'border-white/10', 'text-gray-400');
+                    activeBtn.classList.add('bg-[#e67e22]/20', 'border-[#e67e22]', 'text-white', 'shadow-[0_0_15px_rgba(230,126,34,0.3)]');
+                }
+
+                const data = branchContacts[branchName];
+                if (!data) return;
+
+                // 3. Sincronizar Mapa (El mapa de la derecha)
                 if (window.showLocation) {
                     window.showLocation(data.coords, data.name, data.address);
                 }
 
-                // 4. Animación GSAP para "refrescar" los datos de contacto
-                const dynElements = [
-                    'dyn-wa-link', 'dyn-fb-link', 'dyn-ig-link', 'dyn-tk-link'
-                ];
-                
+                // 4. Actualizar Visualización de Contacto (GSAP)
+                const dynElements = ['dyn-wa-link', 'dyn-fb-link', 'dyn-ig-link', 'dyn-tk-link'];
+                const waLink = "https://wa.me/" + data.wa.num.replace(/\D/g, '');
+
                 gsap.to(dynElements.map(id => document.getElementById(id)), {
-                    opacity: 0,
-                    y: 10,
-                    duration: 0.2,
-                    stagger: 0.05,
+                    opacity: 0, scale: 0.95, duration: 0.2, stagger: 0.05,
                     onComplete: () => {
-                        // Actualizar WhatsApp
-                        document.getElementById('dyn-wa-link').href = data.wa.link;
+                        document.getElementById('dyn-wa-link').href = waLink;
                         document.getElementById('dyn-wa-num').innerText = data.wa.num;
                         const ctaBtn = document.getElementById('cta-wa-link');
-                        ctaBtn.href = data.wa.link;
-                        ctaBtn.innerHTML = `<i class='bx bxl-whatsapp text-2xl'></i> CHATEAR CON ${branch.toUpperCase()}`;
-                        
-                        // Actualizar Facebook
+                        ctaBtn.href = waLink;
+                        ctaBtn.innerHTML = `<i class='bx bxl-whatsapp text-2xl'></i> CHATEAR CON SEDE ${branchName.toUpperCase()}`;
+
                         document.getElementById('dyn-fb-link').href = data.fb.link;
-                        document.getElementById('dyn-fb-alias').innerText = data.fb.alias;
-
-                        // Actualizar Instagram
+                        document.getElementById('dyn-fb-alias').innerText = sanitizeAlias(data.fb.link, 'fb');
                         document.getElementById('dyn-ig-link').href = data.ig.link;
-                        document.getElementById('dyn-ig-alias').innerText = data.ig.alias;
-
-                        // Actualizar TikTok
+                        document.getElementById('dyn-ig-alias').innerText = sanitizeAlias(data.ig.link, 'ig');
                         document.getElementById('dyn-tk-link').href = data.tk.link;
-                        document.getElementById('dyn-tk-alias').innerText = data.tk.alias;
+                        document.getElementById('dyn-tk-alias').innerText = sanitizeAlias(data.tk.link, 'tk');
 
-                        // Aparecer con animación
                         gsap.to(dynElements.map(id => document.getElementById(id)), {
-                            opacity: 1,
-                            y: 0,
-                            duration: 0.4,
-                            stagger: 0.05,
-                            ease: "back.out(1.7)"
+                            opacity: 1, scale: 1, duration: 0.4, stagger: 0.05, ease: "back.out(1.7)"
                         });
                     }
                 });
             }
-            // Exponer la función globalmente para los handlers onclick
             window.switchContactBranch = switchContactBranch;
+
+            // Inicialización
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => {
+                    switchContactBranch('poptun');
+                }, 500); 
+            });
         </script>
     </section>
 
@@ -2088,21 +2317,6 @@
         </div>
     </div>
 
-    <!-- 2. Simple Image Lightbox (Para el mapa de Sucursales) -->
-    <div id="image-lightbox" class="fixed inset-0 z-[110] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300 p-4">
-        <div class="absolute inset-0 bg-tactical-900/95 backdrop-blur-xl" onclick="closeLightbox()"></div>
-        <div class="relative z-10 w-full max-w-4xl bg-tactical-900/40 border border-white/10 rounded-[2.5rem] overflow-hidden backdrop-blur-xl shadow-[0_0_100px_rgba(0,0,0,0.8)]">
-            <div class="flex justify-between items-center px-8 py-6 border-b border-white/5">
-                <h3 id="lightbox-title" class="font-display text-white text-xl font-bold uppercase tracking-widest"></h3>
-                <button onclick="closeLightbox()" class="text-gray-400 hover:text-white transition-colors bg-white/5 w-10 h-10 rounded-full flex items-center justify-center border border-white/10"><i class='bx bx-x text-2xl'></i></button>
-            </div>
-            <div class="aspect-video w-full flex items-center justify-center bg-black/60 relative group">
-                <!-- Scan line effect over the image -->
-                <div class="absolute inset-0 bg-[linear-gradient(rgba(230,126,34,0.05)_1px,transparent_1px)] bg-[size:100%_4px] pointer-events-none opacity-30"></div>
-                <img id="lightbox-img" src="" class="w-full h-full object-contain relative z-10">
-            </div>
-            <div class="px-8 py-4 bg-black/20 flex justify-center">
-                <span class="text-[9px] font-mono text-[#e67e22] tracking-[0.3em] uppercase">Visualización de Activo Balam-01 // Operativo</span>
             </div>
         </div>
     </div>
@@ -2242,6 +2456,43 @@
     <button id="cat-fab" onclick="openCatDrawer()" style="display:none;position:fixed;left:12px;bottom:96px;z-index:8900;width:48px;height:48px;border-radius:50%;background:#0c0c0c;border:1px solid rgba(0,240,255,0.4);color:#00f0ff;font-size:1.35rem;cursor:pointer;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(0,240,255,0.25);transition:box-shadow 0.3s,transform 0.15s" title="Filtrar por Categoría">
         <i class='bx bx-filter-alt'></i>
     </button>
+    
+    <!-- 2. Simple Image Lightbox (Para el mapa de Sucursales) - MOVIMIENTO TÁCTICO AL FINAL DEL BODY -->
+    <div id="image-lightbox" class="hidden fixed inset-0 z-[9999] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300 p-4">
+        <div class="absolute inset-0 bg-tactical-950/98 backdrop-blur-2xl pointer-events-auto" onclick="closeLightbox()"></div>
+        <div class="relative z-[10000] w-full max-w-4xl bg-tactical-900/40 border border-white/10 rounded-[2.5rem] overflow-hidden backdrop-blur-xl shadow-[0_0_100px_rgba(0,0,0,0.9)]">
+            <div class="flex justify-between items-center px-8 py-6 border-b border-white/5 bg-black/20">
+                <h3 id="lightbox-title" class="font-display text-white text-xl font-bold uppercase tracking-widest"></h3>
+                <button onclick="closeLightbox()" class="text-gray-400 hover:text-white transition-colors bg-white/5 w-10 h-10 rounded-full flex items-center justify-center border border-white/10 hover:bg-accent-primary hover:text-black">
+                    <i class='bx bx-x text-2xl'></i>
+                </button>
+            </div>
+            <div class="aspect-video w-full flex items-center justify-center bg-black/80 relative group overflow-hidden">
+                <!-- Scan line effect over the image -->
+                <div class="absolute inset-0 bg-[linear-gradient(rgba(230,126,34,0.05)_1px,transparent_1px)] bg-[size:100%_4px] pointer-events-none opacity-30 z-30"></div>
+                <!-- Imagen real (se muestra si hay foto) -->
+                <img id="lightbox-img" src="" class="w-full h-full object-contain relative z-10" style="display:none;">
+                <!-- Placeholder profesional (se muestra si no hay foto o falla la carga) -->
+                <div id="lightbox-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-12 z-20">
+                    <div class="mb-6 relative">
+                        <div class="absolute inset-0 rounded-full" style="background:rgba(230,126,34,0.15); filter:blur(30px);"></div>
+                        <i class='bx bx-camera relative z-10' style="font-size:5rem; color:rgba(230,126,34,0.4);"></i>
+                    </div>
+                    <h4 class="text-white font-display text-2xl font-black uppercase tracking-widest mb-4">Próximo a subir foto</h4>
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent-primary/10 border border-accent-primary/30 mb-8">
+                        <span class="w-2 h-2 rounded-full bg-accent-primary animate-pulse"></span>
+                        <span class="text-accent-primary font-mono text-[10px] font-bold uppercase tracking-widest text-shadow-glow">Sincronización en curso</span>
+                    </div>
+                    <p class="text-gray-400 text-xs font-medium max-w-md mx-auto leading-relaxed uppercase tracking-tighter opacity-80">
+                        Nuestras unidades tácticas están recolectando material visual de esta sede. Vuelve pronto.
+                    </p>
+                </div>
+            </div>
+            <div class="bg-black/40 px-8 py-3 flex justify-center border-t border-white/5">
+                <span class="text-[9px] font-mono text-gray-600 uppercase tracking-[0.3em]">Visualización de Activo BALAM-01 // Operativo</span>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>
