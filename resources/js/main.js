@@ -112,7 +112,7 @@ window.resetCatalog = function() {
     window.activeFilters.cat = 'all';
     window.activeFilters.subcat = 'all';
     const title = document.getElementById('current-filter-title');
-    if (title) title.innerText = 'ARSENAL DISPONIBLE';
+    if (title) title.innerText = 'NUESTRO ARSENAL DISPONIBLE';
     
     // Resetear marca y buscador
     const brandSel = document.getElementById('top-filter-brand');
@@ -136,7 +136,7 @@ window.showAllProducts = function() {
     window.activeFilters.cat = 'all';
     window.activeFilters.subcat = 'all';
     const title = document.getElementById('current-filter-title');
-    if (title) title.innerText = 'ARSENAL DISPONIBLE';
+    if (title) title.innerText = 'NUESTRO ARSENAL DISPONIBLE';
 
     // Ocultar botón de 'Ver más' si existe
     const btnContainer = document.getElementById('show-all-container');
@@ -256,6 +256,8 @@ window.applyFilters = function () {
     });
 
     const totalVisibleCount = filteredList.length;
+    const visibleCountEl = document.getElementById('catalog-visible-count');
+    if (visibleCountEl) visibleCountEl.textContent = String(totalVisibleCount);
 
     if (totalVisibleCount > 0) {
         if (noMsg) noMsg.classList.add('hidden');
@@ -279,6 +281,26 @@ window.applyFilters = function () {
         if (noMsg) noMsg.classList.remove('hidden');
         if (paginationContainer) paginationContainer.innerHTML = '';
     }
+};
+
+window.updateSidebarCounts = function () {
+    const products = Array.from(document.querySelectorAll('.product-item'));
+    const countAllEl = document.querySelector('[data-count-display="all"]');
+    if (countAllEl) countAllEl.textContent = String(products.length);
+
+    const byCat = new Map();
+    products.forEach(p => {
+        const cat = (p.getAttribute('data-cat-key') || '').trim();
+        if (!cat) return;
+        byCat.set(cat, (byCat.get(cat) || 0) + 1);
+    });
+
+    const catCountEls = document.querySelectorAll('[data-count-type="cat"][data-count-key]');
+    catCountEls.forEach(el => {
+        const key = (el.getAttribute('data-count-key') || '').trim();
+        const out = el.querySelector('[data-count-display]') || el;
+        out.textContent = String(byCat.get(key) || 0);
+    });
 };
 
 function renderPagination(totalPages) {
@@ -634,26 +656,49 @@ const runAssemblyGSAP = (slideEl) => {
         .to(slideEl.querySelectorAll('.assembly-card'), { opacity: 1, y: 0, rotationX: 0, duration: 0.7, ease: "power3.out" }, "-=0.3");
 };
 
-let assemblySwiper, videoSwiper, arsenalSwiper;
+let assemblySwiper, videoSwiper, arsenalSwiper, heroBottomSwiper;
 const initSwiper = () => {
-    assemblySwiper = new Swiper('.assembly-slider', {
-        loop: true,
-        autoplay: { delay: 5000, disableOnInteraction: false },
-        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-        observer: true,
-        observeParents: true,
-        on: {
-            init: function () {
-                setTimeout(() => {
+    const assemblyEl = document.querySelector('.assembly-slider');
+    if (assemblyEl) {
+        assemblySwiper = new Swiper('.assembly-slider', {
+            loop: true,
+            autoplay: { delay: 5000, disableOnInteraction: false },
+            navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+            observer: true,
+            observeParents: true,
+            on: {
+                init: function () {
+                    setTimeout(() => { runAssemblyGSAP(this.slides[this.activeIndex]); }, 300);
+                },
+                slideChangeTransitionStart: function () {
                     runAssemblyGSAP(this.slides[this.activeIndex]);
-                }, 300);
-            },
-            slideChangeTransitionStart: function () {
-                runAssemblyGSAP(this.slides[this.activeIndex]);
+                }
             }
-        }
-    });
+        });
+    }
 
+    const heroBottomEl = document.querySelector('.hero-bottom-slider');
+    if (heroBottomEl) {
+        heroBottomSwiper = new Swiper('.hero-bottom-slider', {
+            slidesPerView: 3,
+            spaceBetween: 18,
+            loop: true,
+            autoplay: { delay: 2800, disableOnInteraction: false },
+            navigation: {
+                nextEl: '.hero-bottom-next',
+                prevEl: '.hero-bottom-prev',
+            },
+            observer: true,
+            observeParents: true,
+            watchOverflow: true,
+            breakpoints: {
+                0: { slidesPerView: 3, spaceBetween: 12 },
+                640: { slidesPerView: 3, spaceBetween: 14 },
+                1024: { slidesPerView: 3, spaceBetween: 18 }
+            }
+        });
+        setTimeout(() => { if (heroBottomSwiper) heroBottomSwiper.update(); }, 120);
+    }
     // Inicializar Carrusel de Videoteca (Premium)
     videoSwiper = new Swiper('.video-slider', {
         slidesPerView: 3,
@@ -830,7 +875,7 @@ window.updateProductsByFilter = function (value, type = 'all', element = null) {
     if (type === 'all') {
         window.activeFilters.cat = 'all';
         window.activeFilters.subcat = 'all';
-        document.getElementById('current-filter-title').innerText = 'ARSENAL DISPONIBLE';
+        document.getElementById('current-filter-title').innerText = 'NUESTRO ARSENAL DISPONIBLE';
         
         const searchInput = document.getElementById('filter-search');
         if (searchInput) searchInput.value = '';
@@ -986,6 +1031,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (searchInput) {
         searchInput.addEventListener('input', window.applyFilters);
     }
+    window.updateSidebarCounts();
+    window.applyFilters();
 });
 
 // ==========================================
@@ -1017,10 +1064,6 @@ document.addEventListener('DOMContentLoaded', () => {
     tl.to('.intro-ambient', { opacity: 1, duration: 1.5, ease: 'power2.out' })
         // 2. Mostrar logo desde abajo
         .to('.intro-logo-container', { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: 'back.out(1.5)' }, "-=1.0")
-        // 3. Mostrar título de Armería Balam
-        .to('.intro-title', { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, "-=0.4")
-        // 4. Mostrar "Armas y Municiones"
-        .to('.intro-subtitle', { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, "-=0.5")
         // Pausa dramática para que lo vea el usuario
         .to({}, { duration: 1.5 })
         // 5. Efecto CORTINA 4D y Desvanecimiento simultáneo
@@ -1301,3 +1344,5 @@ document.addEventListener('DOMContentLoaded', () => {
     loop();
 
 })();
+
+
